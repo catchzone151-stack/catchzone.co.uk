@@ -1,6 +1,13 @@
-modules = ["web"]
+run = "npx serve . -l 3000"
+modules = ["nodejs-20"]
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
 [agent]
 expertMode = true
-
-[nix]
-channel = "stable-25_05"
