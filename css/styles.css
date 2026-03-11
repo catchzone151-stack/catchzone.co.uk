@@ -37,8 +37,21 @@ body {
 }
 
 .logo {
-  font-weight: 700;
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo-full {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+.logo {
+  display: flex;
+  align-items: center;
 }
 
 nav a {
@@ -465,38 +478,4 @@ color:#9ca3af;
 margin-top:40px;
 font-weight:600;
 color:white;
-}
-/* ABOUT PAGE */
-
-.about-section{
-padding:120px 20px;
-}
-
-.about-container{
-max-width:800px;
-margin:auto;
-display:flex;
-flex-direction:column;
-gap:60px;
-}
-
-.about-block{
-background:#14141a;
-border:1px solid #1f1f25;
-border-radius:16px;
-padding:40px;
-}
-
-.about-block h2{
-margin-bottom:16px;
-}
-
-.about-block p{
-color:#9ca3af;
-}
-
-.about-block ul{
-margin-left:18px;
-color:#9ca3af;
-line-height:1.7;
 }
