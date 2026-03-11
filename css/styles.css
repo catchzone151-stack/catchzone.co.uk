@@ -584,3 +584,22 @@ color:white;
 .privacy-container li{
   margin-bottom:8px;
 }
+
+/* Section divider for about + privacy pages */
+
+.about-block h2,
+.privacy-container h2{
+  position:relative;
+  padding-bottom:10px;
+}
+
+.about-block h2::after,
+.privacy-container h2::after{
+  content:"";
+  display:block;
+  width:60px;
+  height:2px;
+  background:linear-gradient(90deg,#6b7cff,#9b8cff);
+  margin-top:8px;
+  opacity:0.6;
+}
