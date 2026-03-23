@@ -603,3 +603,36 @@ color:white;
   margin-top:8px;
   opacity:0.6;
 }
+
+/* DIRECTORY BREADCRUMBS */
+
+.breadcrumbs{
+  margin-bottom:14px;
+  color:#777;
+  font-size:14px;
+}
+
+.breadcrumbs a{
+  color:#9ca3af;
+  text-decoration:none;
+}
+
+.breadcrumbs a:hover{
+  color:white;
+}
+
+
+
+/* APP CARD IMAGE PREVIEW */
+
+.app-preview-image{
+  padding:0;
+  overflow:hidden;
+}
+
+.app-preview-image img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
