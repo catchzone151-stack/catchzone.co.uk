@@ -636,3 +636,42 @@ color:white;
   display:block;
   object-fit:cover;
 }
+
+
+/* FEATURED BANNER CARD FIX */
+
+.app-preview-image{
+  padding: 0;
+  overflow: hidden;
+  min-height: 0;
+  aspect-ratio: 16 / 7;
+  background: #0b1020;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.app-preview-image img{
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 768px){
+  .app-preview-image{
+    aspect-ratio: 16 / 8.5;
+  }
+}
+
+
+/* MOBILE BANNER CROP FIX */
+
+@media (max-width: 640px){
+  .app-preview-image{
+    aspect-ratio: 16 / 10.5;
+  }
+
+  .app-preview-image img{
+    object-position: center top;
+  }
+}
