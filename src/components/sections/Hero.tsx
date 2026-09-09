@@ -65,7 +65,7 @@ export function Hero() {
           <SceneCanvas
             phase={phase}
             particleCount={tier === "high" ? 1800 : 900}
-            allowParallax={tier === "high"}
+            allowParallax
             frameloop={frameloop}
           />
         ) : (
@@ -79,15 +79,17 @@ export function Hero() {
         )}
       </div>
 
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-void via-void/40 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-void via-void/35 to-transparent" />
       <div
         className="pointer-events-none absolute inset-0 z-[1]"
         style={{
           background:
-            "linear-gradient(100deg, #040406 0%, rgba(4,4,6,0.92) 32%, rgba(4,4,6,0.55) 52%, transparent 72%)",
+            "linear-gradient(100deg, #040406 0%, rgba(4,4,6,0.82) 26%, rgba(4,4,6,0.42) 46%, transparent 64%)",
         }}
         aria-hidden="true"
       />
+
+      {phase === "hero" && <HeroStructuralAccent />}
 
       {shouldPlayIntro && phase !== "hero" && (
         <IntroOverlay phase={phase} onSkip={skip} />
@@ -134,5 +136,45 @@ export function Hero() {
         </motion.div>
       </div>
     </section>
+  );
+}
+
+/**
+ * A single restrained structural line connecting the typography block to
+ * the assembled product — the one piece of foreground "in front of type"
+ * layering, kept to a light/line rather than another floating label.
+ */
+function HeroStructuralAccent() {
+  return (
+    <svg
+      className="pointer-events-none absolute inset-0 z-20 hidden h-full w-full lg:block"
+      aria-hidden="true"
+    >
+      <motion.line
+        x1="42%"
+        y1="72%"
+        x2="63%"
+        y2="58%"
+        stroke="rgba(94,234,212,0.35)"
+        strokeWidth="1"
+        strokeDasharray="2 6"
+        initial={{ opacity: 0, pathLength: 0 }}
+        animate={{ opacity: 1, pathLength: 1, strokeDashoffset: [0, -16] }}
+        transition={{
+          opacity: { duration: 1.2, delay: 0.6 },
+          pathLength: { duration: 1.2, delay: 0.6 },
+          strokeDashoffset: { duration: 3, repeat: Infinity, ease: "linear" },
+        }}
+      />
+      <motion.circle
+        cx="63%"
+        cy="58%"
+        r="2.5"
+        fill="#5eead4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 0.9, 0] }}
+        transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+      />
+    </svg>
   );
 }

@@ -1,5 +1,6 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
+import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 
 const stages = [
   {
@@ -28,9 +29,10 @@ export function Process() {
   return (
     <section
       id="process"
-      className="border-t border-line bg-surface py-24 md:py-32"
+      className="relative overflow-hidden border-t border-line bg-surface py-24 md:py-32"
     >
-      <div className="shell">
+      <AtmosphereLayer />
+      <div className="shell relative z-10">
         <SectionHeading
           index="06"
           eyebrow="Process"

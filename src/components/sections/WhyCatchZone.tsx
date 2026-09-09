@@ -1,5 +1,6 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
+import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 
 const reasons = [
   {
@@ -28,9 +29,10 @@ export function WhyCatchZone() {
   return (
     <section
       id="why-catchzone"
-      className="border-t border-line bg-void py-24 md:py-32"
+      className="relative overflow-hidden border-t border-line bg-void py-24 md:py-32"
     >
-      <div className="shell">
+      <AtmosphereLayer />
+      <div className="shell relative z-10">
         <SectionHeading
           index="07"
           eyebrow="Why CatchZone"

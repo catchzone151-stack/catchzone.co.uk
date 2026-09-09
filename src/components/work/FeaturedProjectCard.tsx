@@ -1,7 +1,79 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "motion/react";
 import type { Project } from "@/data/projects";
 import { Reveal } from "@/components/ui/Reveal";
+import { viewport as viewportToken } from "@/lib/motion/tokens";
+
+function ScreenStack({ project }: { project: Project }) {
+  const shots = project.screenshots ?? [];
+  const stack = [shots[0], shots[2], shots[4]].filter(Boolean) as string[];
+
+  if (stack.length < 2 && project.heroAsset) {
+    return (
+      <div className="relative overflow-hidden rounded-2xl border border-line">
+        <Image
+          src={project.heroAsset}
+          alt={`${project.title} banner`}
+          width={900}
+          height={600}
+          className="h-full w-full object-cover"
+        />
+      </div>
+    );
+  }
+
+  const layout = [
+    { x: -130, y: 55, z: 0, rot: -8, scale: 0.86, opacity: 0.55 },
+    { x: 0, y: 0, z: 60, rot: 0, scale: 1, opacity: 1 },
+    { x: 130, y: -45, z: 24, rot: 8, scale: 0.82, opacity: 0.6 },
+  ];
+
+  return (
+    <div
+      className="relative flex h-full min-h-[480px] items-center justify-center"
+      style={{ perspective: "1400px" }}
+    >
+      <div
+        className="pointer-events-none absolute inset-0 rounded-full opacity-60"
+        style={{
+          background:
+            "radial-gradient(45% 55% at 50% 50%, rgba(94,234,212,0.10), transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+      {stack.map((src, idx) => {
+        const l = layout[idx] ?? layout[1]!;
+        return (
+          <motion.div
+            key={src}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{
+              opacity: l.opacity,
+              x: l.x,
+              y: l.y,
+              rotate: l.rot,
+              scale: l.scale,
+            }}
+            viewport={viewportToken}
+            transition={{ duration: 0.8, delay: idx * 0.12, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute aspect-[9/16] w-[46%] overflow-hidden rounded-[1.6rem] border border-line shadow-[0_30px_60px_-20px_rgba(0,0,0,0.6)]"
+            style={{ zIndex: 10 + l.z, transformStyle: "preserve-3d" }}
+          >
+            <Image
+              src={src}
+              alt={`${project.title} screen`}
+              fill
+              className="object-cover"
+            />
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
 
 export function FeaturedProjectCard({ project }: { project: Project }) {
   return (
@@ -51,17 +123,7 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
         </div>
       </div>
 
-      {project.heroAsset && (
-        <div className="relative overflow-hidden rounded-2xl border border-line">
-          <Image
-            src={project.heroAsset}
-            alt={`${project.title} banner`}
-            width={900}
-            height={600}
-            className="h-full w-full object-cover"
-          />
-        </div>
-      )}
+      <ScreenStack project={project} />
     </Reveal>
   );
 }

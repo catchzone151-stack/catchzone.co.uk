@@ -8,6 +8,14 @@ site is fully functional without any of these — nothing here blocks launch.
 Status legend: `PLACEHOLDER` (procedural / code-generated, works today) ·
 `NEEDS PRODUCTION ASSET` (should be replaced before a serious marketing push).
 
+**Phase 2 update:** the procedural device/platform geometry was substantially
+upgraded (layered chassis/glass/structural-plate/camera-detail/UI-block
+screen on the phone; a three-panel cascading interface architecture with a
+live data-node cluster on the platform; a new five-piece "ConvergenceCore"
+motif reused across the hero and the Services section). All of it is still
+code-generated primitives, not modelled art — the briefs below describe
+what a real modelling pass would add on top of what code can already do.
+
 ---
 
 ## ASSET-001 — Intro/Hero 3D Device Assembly
@@ -26,17 +34,24 @@ Status legend: `PLACEHOLDER` (procedural / code-generated, works today) ·
 - **Loop requirement:** Continuous idle motion in the hero state
 - **Desktop version:** Full particle count, full camera choreography
 - **Mobile version:** Reduced particle count, shorter camera travel
-- **Production method:** Currently procedural geometry (RoundedBox slabs,
-  plane "screens", a wireframe overlay, and a point-cloud particle field).
-  This deliberately avoids disguising placeholder geometry as finished art —
-  materials are flat and abstract rather than a literal phone render.
+- **Production method:** Procedural geometry — a layered phone (structural
+  plate, physical-material chassis with clearcoat, transmissive glass,
+  camera detail, edge-accent lines, and a screen built from individually
+  emissive "UI block" planes standing in for a status bar/cards/nav row)
+  and a three-panel cascading platform (front web surface with a browser
+  top bar, mid system plane, rear data plane carrying a small live node
+  cluster). This deliberately avoids disguising placeholder geometry as
+  finished art — no baked textures, no literal branding.
 - **Generation / modelling brief (for a future upgrade):** A low-poly
-  stylised phone chassis (roughly 1000–3000 tris) and a flat "interface
-  slab" object, both UV-unwrapped for a simple emissive screen texture,
-  exported as compressed `.glb` (Draco or meshopt compression) under
-  ~1.5MB combined. Should keep the same silhouette proportions used in
-  `phaseTargets.ts` so the intro choreography doesn't need re-tuning.
-- **Status:** PLACEHOLDER — functional, intentionally abstract.
+  stylised phone chassis (roughly 2000–4000 tris) with real bevels and a
+  proper display-cutout/camera notch, UV-unwrapped for an actual emissive
+  UI texture (see ASSET-002), plus a matching "interface slab" object with
+  bevelled panel edges. Export as compressed `.glb` (Draco or meshopt) under
+  ~2MB combined. Keep the silhouette proportions used in `phaseTargets.ts`
+  and `coreTargets.ts` so the intro choreography and Services state changes
+  don't need re-tuning.
+- **Status:** PLACEHOLDER — functional, intentionally abstract, meaningfully
+  richer after the Phase 2 pass than a flat rectangle.
 
 ---
 
@@ -52,11 +67,15 @@ Status legend: `PLACEHOLDER` (procedural / code-generated, works today) ·
 - **Target dimensions:** 512×1024 (portrait, matches phone screen aspect)
 - **Target file size:** Under 150KB
 - **Transparency:** Optional
-- **Production method:** Currently a flat emissive colour (no texture).
+- **Production method:** Currently individually emissive plane primitives
+  arranged as a status bar, content cards and a nav row (`UIBlocks` in
+  `SceneObjects.tsx`) — an abstracted interface, not a texture.
 - **Generation brief:** A stylised, non-literal abstraction of a CatchZone
   app screen (e.g. a cropped, blurred composition drawn from real IslamQuest
-  screenshots) — real interface, not a fabricated dashboard.
-- **Status:** PLACEHOLDER.
+  screenshots) baked into a single emissive texture — real interface, not a
+  fabricated dashboard.
+- **Status:** PLACEHOLDER — reads as "an interface" today; a real texture
+  would make it read as "CatchZone's interface".
 
 ---
 
@@ -94,6 +113,51 @@ Status legend: `PLACEHOLDER` (procedural / code-generated, works today) ·
 - **Production method:** Real screen capture from the shipped app.
 - **Status:** NEEDS PRODUCTION ASSET — not fabricated; simply not yet
   captured. Omitted from the site until it exists.
+
+---
+
+## ASSET-005 — ConvergenceCore Signature Motif (Services section)
+
+- **File name:** n/a (code-generated)
+- **Target path:** `src/components/canvas/ConvergenceCore.tsx`,
+  `src/lib/three/coreTargets.ts`
+- **Purpose:** The five-piece modular object (phone / web / data / system /
+  automation) that reconfigures as the visitor scrolls through Services —
+  the site's one original spatial motif, tying the hero's assembled product
+  to its deconstructed capabilities.
+- **Section:** Homepage `#what-we-build`
+- **Type:** 3D MODEL (currently CODE-GENERATED primitives — RoundedBox,
+  cylinder stack, icosahedron + torus rings, cone chevrons)
+- **Production method:** Procedural, deliberately geometric/abstract rather
+  than literal icons, so it reads as one coherent object family.
+- **Generation / modelling brief (for a future upgrade):** Five matching
+  low-poly pieces (under 500 tris each) sharing one material language
+  (the phone/web pieces already established in ASSET-001) so the whole
+  cluster reads as fragments of a single manufactured product. This is a
+  strong candidate for an eventual CatchZone brand mark if refined further.
+- **Status:** PLACEHOLDER — the concept and choreography are real; the
+  geometry itself is a first pass.
+
+---
+
+## ASSET-006 — IslamQuest Featured Case Study Screens
+
+- **File name:** existing `1_SS.png`–`8_SS.png` under
+  `/public/assets/images/islamquest/`
+- **Target path:** `src/components/work/FeaturedProjectCard.tsx`
+  (`ScreenStack`)
+- **Purpose:** The cascading Z-space screen composition on the homepage and
+  `/work` featured card.
+- **Section:** Selected Work
+- **Type:** EXISTING CATCHZONE ASSET (reused as-is)
+- **Production method:** These are already professionally composed
+  marketing captures (phone mockup + gradient background + caption), not
+  raw device screenshots, which is why they read well stacked directly.
+- **Note for future case studies:** products without pre-composed marketing
+  shots will need either real device-frame photography/mockups or a
+  consistent Figma/Blender device-frame template applied before they'd cascade
+  as cleanly as IslamQuest's do here.
+- **Status:** EXISTING CATCHZONE ASSET — no action needed for IslamQuest.
 
 ---
 
