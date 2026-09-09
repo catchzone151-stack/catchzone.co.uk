@@ -1,0 +1,23 @@
+# CatchZone Claude Project Instructions
+
+This repository is undergoing a major redesign and commercial repositioning.
+
+## Authoritative build brief
+Before making redesign changes, read `docs/CATCHZONE_MASTER_BUILD.md` completely and treat it as the authoritative creative, commercial, UX, motion, accessibility, performance and implementation specification.
+
+## Working rules
+- Inspect the existing repository and assets before changing architecture.
+- Preserve real CatchZone content/assets where useful; do not invent testimonials, client logos, awards, metrics, users, revenue, downloads or other unverifiable claims.
+- Do not stop at a scaffold, concept, hero or partial build. Continue through implementation, responsive QA, accessibility, performance, error fixing and production build unless genuinely blocked by missing external credentials/assets.
+- Keep the design cinematic, dimensional and premium without turning it into a generic cyberpunk/AI/SaaS agency template.
+- Maintain semantic DOM content for important copy, navigation, forms and SEO; use WebGL only where it materially improves the experience.
+- Treat mobile/tablet as art-directed experiences, not merely scaled desktop layouts.
+- Respect reduced motion and provide safe no-WebGL fallbacks.
+- Create/update `docs/ASSET_MANIFEST.md` for missing production assets rather than fabricating them.
+- Verify builds and visually inspect desktop, tablet and mobile states before declaring completion.
+
+## Start sequence
+1. Read `docs/CATCHZONE_MASTER_BUILD.md`.
+2. Inspect the repository thoroughly.
+3. Produce a concise implementation plan.
+4. Continue immediately into the build unless a genuinely destructive decision requires clarification.
