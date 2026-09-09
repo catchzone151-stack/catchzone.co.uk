@@ -381,6 +381,7 @@ export function ProjectConfigurator() {
 
         {step < TOTAL_STEPS - 1 ? (
           <button
+            key="continue"
             type="button"
             disabled={!canProceed}
             onClick={() => goTo(step + 1)}
@@ -390,6 +391,7 @@ export function ProjectConfigurator() {
           </button>
         ) : (
           <button
+            key="submit"
             type="submit"
             disabled={submitState.status === "submitting"}
             className="rounded-full bg-ink px-7 py-3 text-sm font-semibold text-void transition-colors hover:bg-accent-cyan disabled:cursor-not-allowed disabled:opacity-60"
