@@ -1,688 +1,375 @@
-# CatchZone — Final Launch Polish Specification
+# CatchZone — FINAL V1 Visual Completion Pass
 
-## Purpose
+## Authority
 
-This is the final V1 launch-polish pass for the current CatchZone website.
+This file is the authoritative brief for the final visual/content completion pass before launch review.
 
-The current direction is approved: dark premium theme, mint/cyan accents, atmospheric depth, subtle stars/particles, sticky premium navigation, motion-led hero, interactive service visuals, and a strong digital product / engineering studio feel.
+The current CatchZone direction is approved: premium dark theme, mint/cyan accents, atmospheric depth, stars/particles, sticky capsule navigation, motion-led hero, rich 01/02/03 service visuals, and the current overall information architecture.
 
-This pass is **not** a redesign from scratch. It is a completion and premium-polish pass intended to make the site feel launch-ready, credible to prospective clients, and visually finished.
+**Do not redesign the site again. Do not remove good existing work. This pass is targeted completion and polish.**
 
-Treat this document as the authoritative implementation specification.
-
----
-
-## Non-negotiable rules
-
-- Do not remove or regress working architecture, routes, SEO, accessibility, forms, responsiveness, performance tiers, fallbacks, app/project data, or motion systems unless required to fix a real issue.
-- Do not merge, deploy, publish, or create a PR unless explicitly instructed after review.
-- Do not skip tasks because an asset is inconvenient to obtain.
-- Do not silently leave empty, flat, placeholder-looking or unfinished sections.
-- Do not fabricate screenshots, client work, app features, testimonials, reviews, store availability, or project outcomes.
-- If an external asset genuinely cannot be fetched, continue every other task and document the exact missing asset and the exact action needed to finish it.
-- Preserve the current premium dark + mint/cyan identity. Purple may appear only as a supporting accent where it already fits; it must not dominate.
-- Do not add “Product Design” as a CatchZone service.
-- Do not bring back a blocking intro/splash sequence. The homepage hero remains the entry point.
-- Avoid unnecessary homepage length. The Work area should carry the deeper portfolio proof.
-- Keep motion premium and purposeful. No gimmicky or toy-like effects.
-- All work must be responsive at 1440, 1280, 1024, 768, 430, 390 and 360 widths.
-- Respect reduced-motion preferences and existing safe performance tiers.
+The goal is that after this pass the owner can review the site and, if happy, move directly to technical launch tasks rather than another visual rebuild.
 
 ---
 
-## 1. Homepage — keep current direction, polish it
+# P0 — NON-NEGOTIABLE: STORE BADGES MUST FINALLY ALIGN
 
-The homepage should remain visually impressive but focused.
+This has been raised repeatedly and is still visibly wrong.
+
+The Google Play badge and Apple App Store badge are currently not aligned cleanly on the homepage/featured work, Work page and project pages. **Do not mark this task complete unless the badges are visibly level in screenshots.**
+
+Create/fix ONE shared store-badge component and use it everywhere. No page-specific badge sizing.
+
+Required behaviour:
+
+- Google Play and App Store badges sit in one clean badge row.
+- Their **rendered badge rectangles must have the same visual height**.
+- Their top and bottom edges must line up.
+- Use fixed/equal badge containers (for example one shared 40–44px visual height) with `object-fit: contain`; do not let intrinsic asset dimensions create different heights.
+- Use a consistent horizontal gap.
+- The badges must not be vertically displaced by the iOS availability copy.
+- Put `iOS coming October 2026` on a second line associated with the Apple badge, while reserving layout space so it does not push the Apple badge itself out of alignment.
+- On narrow mobile widths the pair may wrap/stack deliberately, but it must still look designed rather than accidental.
+- `View Case Study` is a separate CTA and must not be allowed to disturb the alignment of the store-badge pair.
+- Where Google Play is live, its badge is a real link to the correct listing.
+- Apple remains visually present but not falsely linked if the App Store listing is not live yet.
+
+Apply this shared system with **no exceptions** to:
+
+1. homepage IslamQuest featured build
+2. `/work`
+3. `/work/islamquest`
+4. `/work/lumi`
+5. `/work/cscs`
+6. `/work/rawdah-cycle`
+7. related-work/project components that show store badges
+8. any other modern CatchZone route/component where these badges appear
+
+QA requirement: provide desktop + mobile screenshots proving the badge pair is level on at least the homepage and two project pages. Do not rely on CSS inspection only.
+
+---
+
+# 1. Attached asset package — USE IT
+
+The owner will attach **six real visual assets** with the Claude Code prompt that references this file.
+
+Client-work mapping is exact:
+
+- `1.png` = **FDE Fire & Security homepage** — PRIMARY FDE website screen
+- `2.png` = **FDE Fire & Security supporting page/section** — SECONDARY FDE visual
+- `3.png` = **The Blossom Group homepage** — PRIMARY Blossom website screen
+- `4.png` = **The Blossom Group supporting About/content screen** — SECONDARY Blossom visual
+- supplied purple/blue image clearly labelled **IEH: CSCS TEST PREP** = real IEH showcase artwork
+- supplied green image clearly labelled **Rawdah Cycle** = real Rawdah showcase artwork
+
+Do not ask to fetch those pages again if the six attachments are present. Ingest/copy the supplied assets into sensible `public/assets/...` locations and reference the local files.
+
+Do not leave `SITE PREVIEW PENDING`, generic fake screens, apology panels or abstract placeholders where one of these supplied assets should now be used.
+
+---
+
+# 2. Universal app/device visual language
+
+Keep the current premium device direction, but use real supplied/real local artwork wherever available.
+
+Phone/device treatment should feel like manufactured hardware, not a thin 1px rounded border:
+
+- visible chassis thickness
+- believable bezel/glass separation
+- restrained metallic highlight
+- subtle depth/shadow/reflection
+- notch/dynamic-island/camera detail where appropriate
+- product-specific accent without turning devices into colourful toys
+
+Approved accent family:
+
+- IslamQuest: graphite + muted warm gold
+- Lumi: graphite + restrained rose-gold/blush
+- IEH: graphite/steel + cool navy/electric blue
+- Rawdah Cycle: graphite/deep green + subdued champagne/warm-metal
+- VillageFront: dark neutral + restrained iris/mint accent
+
+**Do not double-frame a marketing banner that already contains device mockups.** Composite banner artwork may be presented as a premium hero panel with depth. Individual raw screenshots should use the premium phone chassis.
+
+Use the system consistently across homepage, Work, project pages, service-related work, related work and future gallery components.
+
+---
+
+# 3. Scroll-entry motion — apps and client work
+
+Add purposeful one-time entrance choreography. This is wanted.
+
+Desired sequence:
+
+`enters viewport -> 1–2 second premium reveal/assembly -> settles -> only tiny hover/pointer response afterwards`
+
+Do not create endless spinning/bobbing sections.
+
+For app/device compositions:
+
+- screens/devices can arrive from subtly different depth/angle/offset positions
+- stagger by a few hundred milliseconds
+- settle into the approved final composition
+- short light sweep/reflection may pass once
+- desktop hover may add tiny perspective/parallax response
+
+Product character:
+
+- IslamQuest: slightly stronger layered device assembly, warm-gold edge response
+- Lumi: softer blush/rose-gold reveal
+- IEH: cool steel/blue reveal with short controlled illumination
+- Rawdah: calmer green/champagne reveal
+
+For client-work compositions:
+
+- screen/device scene assembles once as the user reaches it
+- primary screen arrives first, secondary visual follows
+- optional subtle brand-colour light sweep, then stop
+
+Mobile/tablet:
+
+- simplify choreography substantially
+- no excessive 3D rotation
+- no off-screen overflow
+- maintain readability/performance
+- `prefers-reduced-motion` must get an immediate/static or very reduced transition
+
+---
+
+# 4. IEH: CSCS Test Prep — replace generic phone art
+
+The supplied **IEH: CSCS TEST PREP** artwork must now be used as the real visual source.
+
+Do not leave the current generic outline/monogram `BrandDeviceArt` as the main IEH image.
+
+Use the supplied artwork:
+
+- in the `/work` Live card
+- on `/work/cscs`
+- anywhere else the IEH project needs a main visual
+
+It can be presented in a premium panel/device composition with subtle depth and one-time entrance motion, but **do not fabricate extra UI screens**.
+
+Keep its real Google Play link and aligned App Store treatment.
+
+The page must contain useful truthful capabilities/description content already supported by the repo/project data. Do not leave apology copy about screenshots not being published.
+
+---
+
+# 5. Rawdah Cycle — replace generic phone art
+
+The supplied green **Rawdah Cycle** artwork must now be used as the real visual source.
+
+Do not leave the current generic outline/monogram `BrandDeviceArt` as the main Rawdah image.
+
+Use it:
+
+- in the `/work` Live card
+- on `/work/rawdah-cycle`
+- anywhere else the Rawdah project needs a main visual
+
+Premium depth and one-time entrance motion are welcome. Do not invent additional app screens.
+
+Keep the real Google Play link and the universal aligned Apple treatment.
+
+Use truthful Rawdah capabilities from existing project knowledge/repository content where available. If copy is genuinely absent, use only conservative verified product facts; do not invent metrics or claims.
+
+---
+
+# 6. Lumi
+
+Lumi remains LIVE on Google Play.
+
+Keep/use its real existing visual asset. Improve its presentation through restrained depth/lighting/entrance if useful.
+
+Do not bring back `View product page` on the modern Lumi case-study page.
 
 Keep:
-- current hero concept
-- dark atmospheric background
-- stars/particles
-- mint/cyan accent system
-- premium capsule navigation
-- glowing/pulsing “Start a Project” CTA
-- service sections 01 / 02 / 03
-- compact ecosystem idea
-- process / stages concept
-- one flagship featured build
-- concise footer CTA
 
-Do not turn the homepage into a full portfolio archive.
+- direct Google Play badge/link
+- aligned App Store badge
+- `iOS coming October 2026`
+- useful capabilities/features
+- clean CTA to Start a Project where appropriate
 
-The homepage should communicate:
-1. what CatchZone builds
-2. how it works
-3. evidence that CatchZone ships real work
-4. an easy route to Work / Services / Start a Project
+Do not wrap the whole existing composite Lumi marketing banner inside another fake phone.
 
 ---
 
-## 2. Hero — final premium polish
+# 7. IslamQuest
 
-Keep the current hero composition but improve the visual object quality if it still reads mainly as linework.
+Keep IslamQuest as the flagship CatchZone product and keep the current overall composition.
 
-Goal:
-- retain the line / engineering language
-- add more chunky, dimensional, material visual forms
-- make the centre-right visual feel like a real digital object/system rather than only a wireframe drawing
-- stronger glass, chassis, depth, panels, lighting, soft reflections and layered UI structure
-- preserve visual relationship between the headline and the object
-- keep the mint/cyan identity
+The existing real screenshots/device composition is strong; polish rather than redesign it.
 
-Motion:
-- subtle parallax
-- drifting fragments / stars
-- light traces / data motion
-- small UI/geometry movement
-- object settles rather than continuously distracting
-- reduced-motion fallback
+Requirements:
 
-Do not imitate Cuberto literally. Use it only as a benchmark for confidence, motion quality, visual richness and interaction density.
+- individual screen presentations should feel like real premium phones, not boards
+- one-time staggered entrance/assembly is desired
+- subtle graphite/gold chassis/reflection
+- keep screenshots truthful
+- keep `View Case Study`
+- Google Play + Apple pair MUST use the P0 universal aligned badge system
+- all iOS wording is `October 2026`
+
+Do not reintroduce the stale legacy product-page experience.
 
 ---
 
-## 3. Service states 01 / 02 / 03 — all three must have visuals
+# 8. Work page — Live products
 
-The 01 / 02 / 03 sequence must never show only text.
-
-All three service states must have a finished, visible, animated visual.
-
-### 01 — Mobile & Digital Product Engineering
-- premium device/product visual
-- dimensional phone / app system
-- more substance than a flat line drawing
-- tasteful motion and entrance
-
-### 02 — Premium Web Platforms & Digital Experiences
-- browser / laptop / web-platform visual
-- layered interface panels
-- dimensional depth
-- motion should communicate web/platform work
-
-### 03 — Custom Business Systems & Digital Infrastructure
-- richer systems visual
-- dashboard/database/automation/integration language
-- dimensional system objects rather than thin lines only
-- may use stacked data layers, nodes, orbiting system pieces, dashboard fragments, structured blocks, etc.
-
-All three should:
-- visibly appear at the correct state
-- survive slow rendering / sticky-scroll timing
-- not scroll off-screen because of sticky/overflow conflicts
-- work on desktop/tablet/mobile fallbacks
-- have safe reduced-motion behaviour
-
----
-
-## 4. Signature “sketch to build” moment
-
-Keep / improve the signature drawn-build sequence.
-
-Preferred direction:
-- an animated line begins loose and expressive
-- draws/builds a phone
-- transitions into another stroke
-- forms a browser/laptop/web surface
-- continues into backend/system/data infrastructure
-- shapes become increasingly material / dimensional
-- a mint light / pulse travels through the completed system
-- sequence settles into a finished composition
-
-This should feel like “idea → engineered product”, not like a children’s drawing animation.
-
-Do not overrun the user with a forced long animation. It should be scroll-triggered, skippable by normal scrolling and respectful of reduced motion.
-
----
-
-## 5. Process / four stages — more visual life
-
-Current message:
-“One build. Four stages. Built to last.”
-
-Keep the four-stage message but make the presentation more premium.
-
-Preferred visual direction:
-- four steps/stages are revealed as small dimensional steps/platforms/blocks
-- each stage forms/raises into position as the section enters view
-- supporting copy remains readable
-- a mint trace/light travels through stages 01 → 04
-- animation settles after entrance
-
-Do not create a huge empty section.
-Do not make the four stages feel like a plain spreadsheet/table.
-
----
-
-## 6. Homepage featured build — IslamQuest
-
-Keep IslamQuest as the flagship featured product.
-
-Important:
-- one strong flagship presentation is enough for the homepage
-- the other apps may appear as a compact “also live” strip / secondary proof
-- the homepage must not become a four-app portfolio grid
-
-### Store buttons
-
-Use the official-looking Google Play and App Store badge treatment consistently.
-
-Layout:
-- View Case Study
-- Google Play badge/link
-- App Store badge
-- “iOS coming October 2026” neatly associated with the App Store badge
-
-They must be aligned and visually balanced.
-
-Do not leave mismatched heights or awkward baselines.
-
-Update any site-wide references from April 2026 to October 2026.
-
----
-
-## 7. Universal app screenshot / phone presentation system
-
-This is a major requirement.
-
-Everywhere app screenshots appear across the modern CatchZone site, use a premium, consistent phone presentation system.
-
-Do not simply draw a 1px rounded border around screenshots.
-
-The phone frame should include:
-- proper visible chassis thickness
-- believable bezel depth
-- glass/screen separation
-- subtle highlights/reflections
-- camera/notch/dynamic-island treatment where appropriate
-- soft shadow/depth
-- premium materials
-- realistic perspective when used in a cascade
-
-The screenshot itself must remain truthful and readable.
-
-### Product-specific frame accents
-
-Use restrained product-specific metallic/material accents, while preserving a shared CatchZone design system:
-
-- IslamQuest: dark graphite / warm gold accent
-- Lumi: soft rose-gold / blush metallic accent
-- Rawdah Cycle: deep green / champagne or soft warm-metal accent
-- IEH: CSCS Test Prep: cool steel / dark navy / blue-metal accent
-
-These should feel like premium devices, not coloured toy phones.
-
-### Motion
-
-Where appropriate:
-- phones may enter from different angles
-- settle into a clean composition
-- have very subtle idle float / pointer tilt
-- stop/settle after entrance rather than constantly spinning
-
-On mobile:
-- simplify
-- keep screenshots readable
-- no excessive 3D tilt
-- no horizontal overflow
-
-Use this system universally on:
-- homepage featured work
-- Work page
-- project pages
-- related work sections
-- app/service pages where screenshots appear
-- any future app gallery component
-
----
-
-## 8. Live apps — four products
-
-Treat the following as live products on Google Play:
+Keep the four live products clearly represented:
 
 1. IslamQuest
 2. Lumi
 3. IEH: CSCS Test Prep
 4. Rawdah Cycle
 
-All four should have:
-- correct live status
-- direct Google Play link
-- App Store badge with iOS coming October 2026
-- correct project title
-- useful summary
-- relevant capabilities/features
-- strong visual presentation
+The three secondary Live cards must not feel dead.
 
-Do not label Lumi, Rawdah or IEH as “Coming Soon” or “Product Lab”.
-
-VillageFront is not live. It belongs under In Development.
+- Lumi uses its real asset.
+- IEH uses the supplied IEH artwork.
+- Rawdah uses the supplied Rawdah artwork.
+- use premium entry motion but keep the page scannable
+- no fake screenshots
+- do not return to flat text-only placeholders
 
 ---
 
-## 9. Work page — portfolio structure
+# 9. Client Work — real assets, premium scenes
 
-The Work page should be the main proof/portfolio destination.
+Keep the Work-page order exactly:
 
-Recommended sections and order:
+1. **The Blossom Group**
+2. **FDE Fire & Security**
 
-### A. Featured / Live Products
-- IslamQuest
-- Lumi
-- IEH: CSCS Test Prep
-- Rawdah Cycle
+Both are CLIENT WORK. Do not describe either as a CatchZone-owned product.
 
-### B. Client Work
-Client work must be clearly labelled as client work.
+Remove repeated `CLIENT WORK` labels within each individual card if the section heading already establishes the category; avoid visual repetition.
 
-Order is mandatory:
-1. The Blossom Group
-2. FDE Fire & Security
+## Blossom composition
 
-Do not describe either as CatchZone-owned products.
+Use `3.png` as the PRIMARY/homepage screen.
+Use `4.png` as the SECONDARY support screen.
 
-### C. In Development
-- VillageFront
-- FDE operations/job-management platform if shown, clearly marked as in development / current client work
-- other honest in-development items only where there is meaningful content
+Preferred visual direction:
 
-### D. Future / Product Lab
-Optional, restrained.
-Do not clutter the launch site with a large grid of vague “coming soon” ideas.
+- elegant premium laptop as the hero hardware
+- warm, sophisticated champagne/gold/cream reflections taken from the Blossom brand
+- primary laptop display shows `3.png`
+- secondary `4.png` appears as a smaller companion browser/display surface beside or behind it
+- do **not** force a desktop screenshot into a fake portrait phone if that makes the page unreadable/untruthful
+- subtle grounded shadow/desk-light impression is fine, but do not turn it into cheesy stock-product photography
+- 1–2 second entrance: laptop/device settles in, secondary view glides into place, soft warm light/reflection passes once, then stops
+- tiny pointer depth on desktop after settlement is fine
 
-If the old CatchZone site’s exam-prep concepts are referenced, group them intelligently rather than displaying a large wall of unfinished cards.
+Use concise factual copy only.
+`View project` may open `https://blossomgroup.co.uk`.
 
-Possible grouped direction:
-- Exam & Certification Platforms
-- future/localised exam-prep products
+## FDE composition
 
-This should communicate pipeline/capability, not fake shipped products.
+Use `1.png` as the PRIMARY/homepage screen.
+Use `2.png` as the SECONDARY support screen.
 
----
+Preferred visual direction:
 
-## 10. Client work — The Blossom Group first
+- darker graphite/technical workstation or premium laptop treatment, visually distinct from Blossom
+- restrained FDE red accent/edge trace and dark navy/graphite materials
+- primary display shows `1.png`
+- secondary screen/browser layer uses `2.png`
+- short one-time assembly + red edge/light trace, then settle
+- tiny pointer depth after settlement is fine
 
-The Blossom Group is **client work**.
+Use concise factual copy only.
+`View project` may open `https://fde.uk.com`.
 
-Source:
-- the existing public Blossom Group website
-
-Presentation:
-- premium laptop/browser mockup
-- show a high-quality real page view from the live site
-- do not present a raw screenshot floating in space
-- use subtle perspective/depth
-- entrance motion can bring the laptop/browser into place
-- optional 2–4 second subtle page/interface motion or parallax, then settle
-- tasteful brand-colour glow can reflect the project, while remaining inside the CatchZone dark design system
-
-Suggested label:
-CLIENT WORK
-
-Suggested project naming:
-The Blossom Group
-
-Suggested supporting copy:
-A concise, factual statement about the website/brand experience based on the actual site.
-Do not invent performance results or commercial outcomes.
-
-Action:
-- “View project” may link to the public site
-- optionally include a CatchZone project detail/case-study page if useful
-
-This must appear before FDE.
+Do not show the screenshots as raw rectangles floating on black. The hardware/environment should frame them as finished client work.
 
 ---
 
-## 11. Client work — FDE Fire & Security second
+# 10. FDE operations/job-management platform
 
-FDE Fire & Security is **client work**.
+Do not forget this continuation of the FDE client relationship.
 
-Source:
-- the existing public FDE website
+It is **in development**, not delivered.
 
-Presentation:
-- premium laptop/browser mockup
-- real website visual
-- subtle entrance motion / perspective
-- premium presentation consistent with Blossom but visually distinct
-- may use restrained red/navy project accents inside the CatchZone system
+Best placement:
 
-Suggested label:
-CLIENT WORK
+- a compact secondary module attached to the FDE Work/project story and/or In Development section
+- **not** a major homepage showcase
 
-Suggested project naming:
-FDE Fire & Security
+Use truthful wording such as an operational/job-management platform currently in development.
 
-Important:
-FDE is more than a static website relationship.
-
-Where useful, a small secondary status/phase can truthfully show:
-- website delivered / client website work
-- operational/job-management platform in development
-
-Do not pretend the app/platform is finished.
-Do not show fabricated app screens.
-
-If there is no real app UI asset available yet, show a tasteful “platform in development” secondary module using abstract system architecture / workflow language, not fake screenshots.
-
-The FDE app/platform should not dominate the CatchZone homepage.
-
-Best home:
-- FDE project detail page
-- Work page
-- possibly a small “in development” continuation panel attached to the FDE client case study
+Do not fabricate app screens. If no real UI screenshots are available, use an abstract premium workflow/system visual only.
 
 ---
 
-## 12. VillageFront
+# 11. VillageFront
 
-VillageFront should appear as an in-development CatchZone product.
+Keep VillageFront under In Development.
 
-Use:
-- IN DEVELOPMENT label
-- concise real description
-- no store badges
+- no fake store availability
 - no invented launch date
 - no fake screenshots
-
-If usable real UI assets exist, present them in the universal premium device system.
-If they do not exist in this repository, use a polished system/product-development visual and state it is in development.
-
-It should feel intentional, not like a blank placeholder.
+- premium intentional visual treatment
+- should not look like an abandoned placeholder
 
 ---
 
-## 13. Lumi project page
+# 12. Homepage scope
 
-Lumi is live on Google Play.
+Do not add Blossom/FDE as large new homepage case studies in this pass. The homepage already has enough content.
 
-Fix:
-- remove the “View product page” button from the modern Lumi work/case-study page
-- keep direct Google Play access
-- keep App Store badge with iOS coming October 2026
-- align store badges professionally
+Homepage proof remains:
 
-The page must include a useful Capabilities / Features section based on truthful product information.
+- one strong IslamQuest flagship
+- compact secondary proof/links where already present
+- route visitors to Work for deeper portfolio/client proof
 
-Use a richer visual treatment than the current single flat banner where possible.
+Keep the existing hero, service 01/02/03 visuals, sketch-to-build idea, ecosystem, stages/process and overall dark/mint direction unless fixing a genuine bug.
 
-If discrete Lumi screenshots exist locally, show them in premium phone frames.
-If only the existing banner is available, keep the truthful banner but present it more deliberately and do not falsely crop/blow up low-resolution pieces.
+Do not add `Product Design` as a CatchZone service.
 
 ---
 
-## 14. Rawdah Cycle project page
+# 13. Avoid dead space / preserve rhythm
 
-Rawdah Cycle is live on Google Play.
+Review large viewport-height gaps throughout the modern site.
 
-The project page must not consist of a large empty gradient panel saying screenshots are elsewhere.
+Keep premium breathing room, but remove accidental dead vertical territory.
 
-Required:
-- direct Google Play link
-- App Store badge + iOS coming October 2026
-- real feature/capability copy
-- real visual content
-- premium app-device treatment
+Desired rhythm:
 
-Use real screenshots if they are available locally or can be lawfully retrieved from the supplied Play Store listing.
+`message -> visual moment -> breathing room -> next story`
 
-If the environment cannot fetch them:
-- do not fabricate
-- search the repository fully for original/source screenshots
-- use any real local app/store artwork available
-- document exactly which screenshot assets are missing
-- keep the page visually finished with an honest branded product visual rather than a dead placeholder
+not
+
+`message -> huge black gap -> next section`
+
+Do not compress everything into a cramped grid; just remove obviously unintentional emptiness.
 
 ---
 
-## 15. IEH: CSCS Test Prep project page
+# 14. Accuracy / dates / links
 
-IEH: CSCS Test Prep is live on Google Play.
+Site-wide:
 
-The current empty blue gradient “screenshots aren’t published” panel is not acceptable for launch.
-
-Required:
-- direct Google Play link
-- App Store badge + iOS coming October 2026
-- real app feature/capability copy
-- meaningful visual content
-- premium device treatment
-
-Use real screenshots if locally available or retrievable from the supplied Play Store listing.
-
-Never invent app screenshots.
+- IslamQuest = live on Google Play
+- Lumi = live on Google Play
+- IEH: CSCS Test Prep = live on Google Play
+- Rawdah Cycle = live on Google Play
+- all four: iOS coming **October 2026**
+- remove any remaining `April 2026` references
+- preserve direct real Google Play URLs already in project data
+- preserve legacy redirects already implemented
+- no dead buttons / `#` links / localhost links
 
 ---
 
-## 16. Store badges — universal component
+# 15. Responsive QA is mandatory
 
-Create/use one shared store-badge component for all projects.
+Preserve and re-test:
 
-Requirements:
-- Google Play badge
-- App Store badge
-- consistent height
-- consistent baseline
-- responsive wrapping
-- clean spacing
-- optional secondary status text under the App Store badge
-- iOS status text: “iOS coming October 2026”
-
-Do not mix custom text-buttons with store badges in a way that looks misaligned.
-
-Where a Google Play page is live, the badge should be a real link.
-
-Where App Store is not live yet, the App Store badge may be non-clickable/disabled-looking but must remain visually clean.
-
----
-
-## 17. Project page content depth
-
-All live app project pages should feel like legitimate project/case-study pages, not empty product stubs.
-
-Each should include appropriate truthful content such as:
-- concise overview
-- capabilities/features
-- platform/store status
-- technical or product highlights where already supported by the repository/product
-- visual gallery/product presentation
-- relevant CTA
-- related work
-
-Avoid huge walls of text.
-
-Do not claim unverified metrics, downloads, revenue, users, results or client outcomes.
-
----
-
-## 18. Old / legacy app routes
-
-The old CatchZone app pages should not create a confusing duplicate public experience after the new site launches.
-
-Review the legacy routes such as old `/apps/...` pages.
-
-Preferred behaviour:
-- preserve useful SEO/history if needed
-- redirect legacy app pages to the corresponding modern `/work/...` page where technically appropriate
-- do not leave a visibly outdated duplicated IslamQuest landing page with old dates/copy
-- at minimum remove April 2026 references and other stale status information
-
-Do not break existing inbound links.
-
-Document any redirects added.
-
----
-
-## 19. Google Play / App Store branding
-
-Where Google Play or App Store is referenced:
-- use recognisable official-style store badges/icons already available in the project or properly sourced
-- do not recreate a fake Google Play triangle/logo manually if a proper asset/component can be used
-- preserve accessibility labels
-- external store links should open correctly
-
-Apply the same principle to other recognisable third-party brand icons where used.
-
----
-
-## 20. Header / navigation
-
-Keep the current improved capsule navigation direction.
-
-Requirements:
-- sticky/fixed behaviour remains
-- active page indicator works
-- desktop nav looks premium, not empty
-- mobile menu works
-- Start a Project CTA keeps the tasteful mint glow/breathing halo
-- glow must not look like a gaming/neon button
-- no layout shift
-- no overlapping page content
-- accessible keyboard/focus states
-
-Do not return to the old plain three-words-floating-in-the-middle look.
-
----
-
-## 21. Motion / hover interaction quality
-
-Across project/media cards, use premium interaction where it materially helps.
-
-Desktop possibilities:
-- subtle image tilt/parallax
-- light sweep
-- 2–4 second silent micro-preview / interface motion when real media exists
-- layered cards that separate/recompose on hover
-- cursor-reactive depth
-- soft glow response
-
-Mobile:
-- no hover dependency
-- static final composition or tap-through
-- motion should trigger on view where appropriate
-- keep performance high
-
-Do not fake video where no source exists.
-Do not animate everything.
-
----
-
-## 22. Background / tonal balance
-
-Keep the dark theme.
-
-The problem to avoid is not “dark”; it is “dead”.
-
-Use controlled variation:
-- black / charcoal / deep navy-black bases
-- subtle section tonal shifts
-- mint/cyan light spill
-- occasional restrained project-specific colour
-- soft atmospheric gradients
-- stars/particles only where useful
-- some lighter visual/media blocks inside the dark experience
-
-The website should feel premium and alive, not like a continuous flat black canvas.
-
-Do not convert the site to a light theme.
-
----
-
-## 23. Copy cleanup
-
-Remove defensive or amateur-sounding copy.
-
-Avoid phrases like:
-- “no client logos to show yet”
-- “not stock mockups”
-- “we have no screenshots”
-- explanations that expose implementation limitations to visitors
-
-Use confident, factual, restrained language.
-
-CatchZone should sound like a capable independent studio/company.
-
-Do not refer to a “team” where it inaccurately implies multiple permanent staff if the existing factual copy does not support that claim.
-
-Do not overclaim scale.
-
----
-
-## 24. Contact / Start-a-Project form
-
-Preserve and verify the current server-side form implementation.
-
-Production target:
-- enquiries delivered through Resend
-- recipient should be `info@catchzone.co.uk`
-- do not display or expose the private CatchZone Gmail address anywhere on the public site
-- Reply-To should use the enquirer’s email
-- sender should use an appropriate verified CatchZone-domain sender configured in Resend
-- no API key exposed client-side
-
-Verify:
-- validation
-- honeypot
-- sanitisation
-- rate limiting
-- success state
-- error state
-- mobile UX
-- keyboard/accessibility
-
-Do not hardcode a secret into source control.
-
-If deployment environment variables are not available in the current environment, leave code correct and clearly report the exact required production variables.
-
----
-
-## 25. SEO
-
-Do not start a major SEO rewrite in this pass.
-
-Preserve existing SEO work.
-
-Only fix:
-- stale titles/descriptions
-- outdated April 2026 references
-- incorrect app/project statuses
-- duplicate/obviously broken metadata
-- missing basic canonical/OG fields where already expected by the current architecture
-- legacy route problems that would create obvious duplicate pages
-
-A deeper SEO campaign can follow after launch.
-
----
-
-## 26. Next.js / dependency / security
-
-Do not force a major framework migration if it breaks the R3F/Three.js visual system.
-
-For this pass:
-- keep the current working stack unless a safe compatible patch exists
-- apply only safe, low-risk dependency/security fixes that preserve the site
-- do not run `npm audit fix --force`
-- document remaining vulnerabilities accurately
-- identify which are runtime-relevant vs transitive/dev-only where possible
-- provide a recommended post-launch framework upgrade path if a larger migration is still required
-
-The site must build cleanly after any dependency change.
-
----
-
-## 27. Logo
-
-Do not redesign the CatchZone logo in this pass.
-
-A new CatchZone logo is being prepared separately.
-
-Keep the current logo implementation functional and make sure replacing the asset later is straightforward without restructuring the header/site.
-
----
-
-## 28. Responsive QA
-
-Perform real visual QA at:
 - 1440
 - 1280
 - 1024
@@ -691,121 +378,63 @@ Perform real visual QA at:
 - 390
 - 360
 
-Verify:
-- no horizontal overflow
-- no clipped phone/laptop mockups
-- hero remains readable
-- project cards remain usable
-- sticky navigation does not cover headings/buttons
-- all store badges align
-- mobile device mockups do not become microscopic
-- motion fallbacks work
-- no dead/blank states caused by sticky/canvas timing
-- no hidden service visuals on states 02/03
+No horizontal overflow.
+No sticky nav overlap.
+No device art clipped accidentally.
+No text hidden behind the header.
+No store-badge misalignment.
+No client screenshot cropped beyond usefulness.
+
+Test desktop and mobile interactions, not just static render.
 
 ---
 
-## 29. Route / link QA
+# 16. Scope guard: do NOT do technical migration in this pass
 
-Crawl and verify all current public routes.
+Do not perform the separate Next.js/dependency/security migration work in this visual pass.
 
-Check:
-- Work
-- Services
-- About
-- Start a Project
-- Mobile & Digital Products
-- Premium Web Platforms
-- Business Systems
-- IslamQuest
-- Lumi
-- Rawdah Cycle
-- IEH: CSCS Test Prep
-- VillageFront
-- Privacy
-- any client-work detail routes added
-- any legacy app redirects retained
+Specifically:
 
-Verify:
-- no 404s
-- no broken buttons
-- no dead `#` links
-- no accidental localhost links
-- external links correct
-- Google Play links correct
-- Start a Project CTAs work
-- contact/email references correct
+- do not run `npm audit fix --force`
+- do not force a major Next.js/React migration
+- do not merge/deploy/publish
+
+That is a separate final technical-launch step after visual approval.
 
 ---
 
-## 30. Client-work visual quality
+# 17. Definition of DONE
 
-Blossom and FDE should visually compete with the app work.
+Do **not** say complete until all of the following are true:
 
-Do not show plain screenshots.
+- [ ] Google Play + Apple badges are visibly level everywhere, proven by screenshots
+- [ ] supplied IEH artwork is actually used; generic IEH placeholder art is gone from main presentation
+- [ ] supplied Rawdah artwork is actually used; generic Rawdah placeholder art is gone from main presentation
+- [ ] Lumi remains real/polished with no modern `View product page` button
+- [ ] IslamQuest remains strong and uses premium device treatment
+- [ ] 3.png is the primary Blossom homepage screen; 4.png is secondary
+- [ ] 1.png is the primary FDE homepage screen; 2.png is secondary
+- [ ] Blossom comes before FDE
+- [ ] both client projects are presented in finished dimensional hardware/browser scenes, not `SITE PREVIEW PENDING`
+- [ ] one-time entrance motion exists for major app/client visuals and settles after entry
+- [ ] FDE platform is honestly represented as in development without fake screenshots
+- [ ] VillageFront remains intentional and in development
+- [ ] April 2026 is gone; October 2026 is consistent
+- [ ] no dead/placeholder/apology panels remain where supplied assets solve them
+- [ ] desktop/tablet/mobile responsive QA passes
+- [ ] typecheck, lint and production build pass
+- [ ] link/button audit passes
 
-Use:
-- laptop/browser/device presentation
-- realistic depth
-- strong crop
-- clean frame
-- subtle entrance motion
-- optional micro-motion that settles
-- project-brand accent lighting while staying inside CatchZone’s system
+After implementation, give a concise final report containing:
 
-Order is mandatory:
-1. The Blossom Group
-2. FDE Fire & Security
+1. exact files changed
+2. asset paths created and which attachment maps to each path
+3. exact shared component used for store badges and confirmation of rendered equal height
+4. where each of the six supplied images is used
+5. motion/entry changes
+6. responsive QA results
+7. typecheck/lint/build results
+8. remaining blockers, if any
+9. final commit SHA
 
-Both must be labelled as CLIENT WORK.
-
----
-
-## 31. Final delivery standard
-
-Do not declare completion until:
-
-- typecheck passes
-- lint passes
-- production build passes
-- route crawl passes
-- no known broken links/buttons remain
-- all three 01/02/03 visual states render
-- store badges align
-- October 2026 is consistent
-- all four live apps are correctly labelled
-- Blossom and FDE are correctly labelled as client work and in the correct order
-- VillageFront is correctly labelled as in development
-- no public Gmail address is exposed
-- no fake screenshots or fake claims were added
-- desktop/tablet/mobile QA is complete
-- no horizontal overflow
-- no obvious empty/dead project sections remain
-
----
-
-## Final report required
-
-At the end, return a concise but complete implementation report with:
-
-1. What changed
-2. Homepage changes
-3. Service visual changes
-4. App/device presentation changes
-5. Live app page changes
-6. Client work added/updated — Blossom first, FDE second
-7. VillageFront / in-development changes
-8. Store link/status/date corrections
-9. Contact/Resend status
-10. Legacy-route handling
-11. Responsive QA results
-12. Link/route QA results
-13. Typecheck/lint/build status
-14. Dependency/security status
-15. Any genuine remaining blockers
-16. Exact files materially changed
-17. Commit hash
-
-Do not merge, create a PR or deploy.
-
-The site should be left in a clean, reviewable branch state ready for the owner to inspect locally before launch.
+Commit and push only to `claude/catchzone-redesign-uht3tr` unless explicitly told otherwise. Do not create a PR, merge or deploy.
