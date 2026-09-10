@@ -2,18 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { services, flagshipService } from "@/data/services";
 import { Reveal } from "@/components/ui/Reveal";
+import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 
 export const metadata: Metadata = {
   title: "Services",
   description:
     "Mobile & digital products, premium web platforms, business systems, and complete connected digital ecosystems.",
+  alternates: { canonical: "/services" },
 };
 
 export default function ServicesPage() {
   return (
     <div className="pt-32">
-      <section className="border-b border-line pb-16">
-        <div className="shell">
+      <section className="relative overflow-hidden border-b border-line pb-16">
+        <AtmosphereLayer />
+        <div className="shell relative z-10">
           <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
             Services
           </p>
