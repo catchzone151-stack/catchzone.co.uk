@@ -1,0 +1,253 @@
+name: CatchZone V1 QA
+
+on:
+  push:
+    branches:
+      - "claude/catchzone-redesign-uht3tr"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Check out V1 branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Capture dependency audit
+        shell: bash
+        run: |
+          npm audit --json > audit.json || true
+          npm audit || true
+
+      - name: TypeScript
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Production build
+        run: npm run build
+
+      - name: Launch-content string audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          failed=0
+          check_forbidden() {
+            local label="$1"
+            local pattern="$2"
+            if grep -RniE --exclude-dir=node_modules --exclude-dir=.next "$pattern" src public next.config.mjs 2>/dev/null; then
+              echo "::error::$label found"
+              failed=1
+            else
+              echo "$label: clear"
+            fi
+          }
+          check_forbidden "April 2026 reference" 'April[[:space:]]+2026'
+          check_forbidden "Personal Gmail address" '[A-Za-z0-9._%+-]+@gmail\.com'
+          check_forbidden "Localhost URL" 'https?://(localhost|127\.0\.0\.1)'
+          check_forbidden "Placeholder hash link" 'href=["'"']#["'"']'
+          exit "$failed"
+
+      - name: Install Chromium QA runtime
+        shell: bash
+        run: |
+          npm install --no-save --no-package-lock playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Start production server
+        shell: bash
+        run: |
+          npm start -- -p 3000 > server.log 2>&1 &
+          echo $! > server.pid
+          for i in {1..60}; do
+            if curl -fsS http://127.0.0.1:3000/ >/dev/null; then
+              echo "Production server is ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          cat server.log
+          exit 1
+
+      - name: API and legacy-route smoke tests
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # The CI runner intentionally has no production Resend secret. A valid
+          # brief must therefore reach the server route and return the explicit
+          # unconfigured state, while malformed input must be rejected.
+          invalid_status=$(curl -sS -o /tmp/invalid.json -w '%{http_code}' \
+            -H 'content-type: application/json' \
+            -d '{"name":"","email":"bad","description":""}' \
+            http://127.0.0.1:3000/api/start-a-project)
+          test "$invalid_status" = "400"
+
+          valid_status=$(curl -sS -o /tmp/valid.json -w '%{http_code}' \
+            -H 'content-type: application/json' \
+            -d '{"buildType":"mobile-app","startingPoint":"idea","priorities":["premium-design"],"budget":"10k-25k","name":"QA Test","email":"qa@example.com","company":"","phone":"","description":"Automated launch-readiness smoke test with enough detail to pass validation.","website":""}' \
+            http://127.0.0.1:3000/api/start-a-project)
+          test "$valid_status" = "200"
+          grep -q '"reason":"unconfigured"' /tmp/valid.json
+
+          honeypot_status=$(curl -sS -o /tmp/honeypot.json -w '%{http_code}' \
+            -H 'content-type: application/json' \
+            -d '{"buildType":"mobile-app","startingPoint":"idea","priorities":[],"budget":"10k-25k","name":"Bot","email":"bot@example.com","company":"","description":"This request should be silently accepted by the honeypot path.","website":"spam"}' \
+            http://127.0.0.1:3000/api/start-a-project)
+          test "$honeypot_status" = "200"
+          grep -q '"ok":true' /tmp/honeypot.json
+
+          for pair in \
+            '/apps/islamquest|/work/islamquest' \
+            '/apps/lumi|/work/lumi' \
+            '/apps/cscs-citb-hse|/work/cscs'; do
+            source_path="${pair%%|*}"
+            expected="${pair##*|}"
+            location=$(curl -sSI "http://127.0.0.1:3000${source_path}" | tr -d '\r' | awk 'tolower($1)=="location:" {print $2}' | tail -1)
+            case "$location" in
+              "$expected"|"http://127.0.0.1:3000$expected") ;;
+              *) echo "Unexpected redirect for $source_path: $location"; exit 1 ;;
+            esac
+          done
+
+      - name: Browser responsive and visual QA capture
+        shell: bash
+        run: |
+          cat > .qa-ci.mjs <<'NODE'
+          import { chromium } from 'playwright';
+          import fs from 'node:fs/promises';
+
+          const routes = [
+            '/',
+            '/work',
+            '/work/islamquest',
+            '/work/lumi',
+            '/work/cscs',
+            '/work/rawdah-cycle',
+            '/work/villagefront',
+            '/services',
+            '/services/apps',
+            '/services/web',
+            '/services/systems',
+            '/about',
+            '/start-a-project',
+            '/privacy',
+          ];
+          const widths = [1440, 1280, 1024, 768, 430, 390, 360];
+          const browser = await chromium.launch();
+          const findings = [];
+
+          function slugFor(route) {
+            return route === '/' ? 'home' : route.slice(1).replaceAll('/', '--');
+          }
+
+          for (const width of widths) {
+            const height = width <= 430 ? 900 : 1000;
+            const context = await browser.newContext({ viewport: { width, height } });
+            for (const route of routes) {
+              const page = await context.newPage();
+              const consoleErrors = [];
+              const pageErrors = [];
+              page.on('console', (msg) => {
+                if (msg.type() === 'error') consoleErrors.push(msg.text());
+              });
+              page.on('pageerror', (error) => pageErrors.push(String(error)));
+
+              const response = await page.goto(`http://127.0.0.1:3000${route}`, {
+                waitUntil: 'domcontentloaded',
+                timeout: 30000,
+              });
+              await page.waitForTimeout(900);
+
+              const metrics = await page.evaluate(() => ({
+                scrollWidth: document.documentElement.scrollWidth,
+                clientWidth: document.documentElement.clientWidth,
+                h1Count: document.querySelectorAll('h1').length,
+                bodyTextLength: document.body.innerText.trim().length,
+              }));
+              const status = response?.status() ?? 0;
+              const overflow = metrics.scrollWidth > metrics.clientWidth + 1;
+              const failed = status >= 400 || status === 0 || overflow || metrics.h1Count !== 1 || consoleErrors.length > 0 || pageErrors.length > 0;
+
+              findings.push({
+                route,
+                width,
+                status,
+                overflow,
+                h1Count: metrics.h1Count,
+                scrollWidth: metrics.scrollWidth,
+                clientWidth: metrics.clientWidth,
+                bodyTextLength: metrics.bodyTextLength,
+                consoleErrors,
+                pageErrors,
+                failed,
+              });
+
+              await fs.mkdir(`qa/screens/${width}`, { recursive: true });
+              await page.screenshot({
+                path: `qa/screens/${width}/${slugFor(route)}.jpg`,
+                type: 'jpeg',
+                quality: 72,
+                fullPage: true,
+              });
+              await page.close();
+            }
+            await context.close();
+          }
+
+          // Reduced-motion sanity check on the two most motion-heavy entry points.
+          const reduced = await browser.newContext({
+            viewport: { width: 390, height: 900 },
+            reducedMotion: 'reduce',
+          });
+          for (const route of ['/', '/services']) {
+            const page = await reduced.newPage();
+            const errors = [];
+            page.on('console', (msg) => { if (msg.type() === 'error') errors.push(msg.text()); });
+            page.on('pageerror', (error) => errors.push(String(error)));
+            const response = await page.goto(`http://127.0.0.1:3000${route}`, { waitUntil: 'domcontentloaded' });
+            await page.waitForTimeout(700);
+            const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
+            findings.push({ route, width: 390, mode: 'reduced-motion', status: response?.status() ?? 0, overflow, errors, failed: (response?.status() ?? 500) >= 400 || overflow || errors.length > 0 });
+            await page.close();
+          }
+          await reduced.close();
+          await browser.close();
+
+          await fs.writeFile('qa/browser-results.json', JSON.stringify(findings, null, 2));
+          const failures = findings.filter((item) => item.failed);
+          console.log(`Browser checks: ${findings.length} cases, ${failures.length} failures`);
+          if (failures.length) {
+            console.error(JSON.stringify(failures, null, 2));
+            process.exit(1);
+          }
+          NODE
+          node .qa-ci.mjs
+          rm .qa-ci.mjs
+
+      - name: Upload QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: catchzone-v1-qa
+          path: |
+            audit.json
+            qa/
+            server.log
+          if-no-files-found: warn
+          retention-days: 14
