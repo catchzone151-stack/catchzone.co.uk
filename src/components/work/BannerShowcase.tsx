@@ -52,7 +52,7 @@ export function BannerShowcase({ src, alt, className, accent }: BannerShowcasePr
       style={{ perspective: "1600px" }}
     >
       <motion.div
-        className="relative w-full overflow-hidden rounded-[1.6rem] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7)] motion-safe:[animation:screen-float_8s_ease-in-out_infinite]"
+        className="relative w-full overflow-hidden rounded-[1.6rem] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7)]"
         style={{ rotateX: springTiltX, rotateY: springTiltY, transformStyle: "preserve-3d" }}
         initial={{ opacity: 0, y: 32, scale: 0.96 }}
         whileInView={{ opacity: 1, y: 0, scale: 1 }}

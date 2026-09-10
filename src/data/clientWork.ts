@@ -1,10 +1,12 @@
 export interface ClientWorkAccent {
-  /** Browser-chrome gradient, dark end first. */
+  /** Laptop chassis gradient, light/metal end first. */
   chrome: [string, string];
   /** Border/hardware-edge highlight colour (rgba). */
   ring: string;
-  /** Ambient glow colour behind the mockup (rgba, low alpha). */
+  /** Ambient glow colour behind the scene (rgba, low alpha). */
   glow: string;
+  /** Hinge/edge accent trace colour (solid). */
+  edge: string;
 }
 
 export interface ClientWorkProject {
@@ -15,8 +17,10 @@ export interface ClientWorkProject {
   order: number;
   /** Concise, factual, non-fabricated summary of the engagement. */
   summary: string;
-  /** Local screenshot of the real live site, once supplied — see ASSET_MANIFEST.md. */
-  screenshot?: string;
+  /** Real homepage screenshot — the primary laptop-screen visual. */
+  primaryImage: string;
+  /** Real supporting-page screenshot — the smaller companion visual. */
+  secondaryImage: string;
   accent: ClientWorkAccent;
   /** FDE-only: an honest, non-dominant "platform in development" note. */
   secondaryStatus?: {
@@ -27,10 +31,8 @@ export interface ClientWorkProject {
 
 /**
  * Real CatchZone client work. Order is mandatory (Blossom before FDE) per
- * the launch-polish spec. Screenshots are added once supplied by the site
- * owner — see docs/ASSET_MANIFEST.md for the current gap; until then each
- * card shows an honest browser-chrome mockup rather than a fabricated
- * screenshot.
+ * the launch-polish spec. Images are the real site owner-supplied captures
+ * — see docs/ASSET_MANIFEST.md.
  */
 export const clientWork: ClientWorkProject[] = [
   {
@@ -39,10 +41,13 @@ export const clientWork: ClientWorkProject[] = [
     url: "https://blossomgroup.co.uk/",
     order: 1,
     summary: "Website design and development for The Blossom Group.",
+    primaryImage: "/assets/images/client-work/blossom-primary.png",
+    secondaryImage: "/assets/images/client-work/blossom-secondary.png",
     accent: {
-      chrome: ["#2a2320", "#0d0a08"],
-      ring: "rgba(233,196,106,0.35)",
-      glow: "rgba(233,196,106,0.14)",
+      chrome: ["#8a7245", "#2a2117"],
+      ring: "rgba(233,196,106,0.4)",
+      glow: "rgba(233,196,106,0.16)",
+      edge: "#d9b872",
     },
   },
   {
@@ -51,10 +56,13 @@ export const clientWork: ClientWorkProject[] = [
     url: "https://fde.uk.com/",
     order: 2,
     summary: "Website design and development for FDE Fire & Security.",
+    primaryImage: "/assets/images/client-work/fde-primary.png",
+    secondaryImage: "/assets/images/client-work/fde-secondary.png",
     accent: {
-      chrome: ["#2a1416", "#0d0708"],
-      ring: "rgba(220,60,60,0.35)",
-      glow: "rgba(220,60,60,0.14)",
+      chrome: ["#2c2f36", "#0b0c0e"],
+      ring: "rgba(220,60,60,0.55)",
+      glow: "rgba(27,42,74,0.2)",
+      edge: "#dc3c3c",
     },
     secondaryStatus: {
       label: "In Development",

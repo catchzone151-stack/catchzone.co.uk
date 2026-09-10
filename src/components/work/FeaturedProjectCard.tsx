@@ -41,7 +41,7 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
           ))}
         </ul>
 
-        <div className="mt-8 flex flex-wrap items-end gap-6">
+        <div className="mt-8 flex flex-wrap items-start gap-6">
           <Link
             href={`/work/${project.slug}`}
             className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-void transition-colors hover:bg-accent-cyan"

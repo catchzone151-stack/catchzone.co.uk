@@ -108,6 +108,21 @@ previous site). Event names to wire up once a provider is chosen:
 `project_view`, `project_live_link`, `configurator_start`,
 `configurator_step_complete`, `configurator_submit`, `contact_error`.
 
+## Store-badge alignment fix (Final V1 visual completion pass)
+
+`StoreBadges.tsx` previously used `items-end` on its flex row. Since the
+Apple badge's column is taller than Google Play's when it carries the "iOS
+coming October 2026" caption (badge + gap + caption text vs. just the badge
+alone), `items-end` aligned the *columns'* bottom edges — i.e. the caption
+baseline — not the two badge images, visibly misaligning the pair. Fixed by
+wrapping both badges in identical `flex-col` columns with a fixed `h-11`
+(44px) badge box as the first child, and switching the row to
+`items-start`: both badge boxes now start at the same y position and share
+the same height regardless of what (if anything) sits below, so their top
+and bottom edges are pixel-identical by construction. Verified via
+Playwright bounding-box measurement (both badges report the same `y` and
+`height` on every route/breakpoint checked) and via screenshots.
+
 ## Legacy route redirects (Final launch-polish pass)
 
 Three legacy static `/apps/*` landing pages now have a modern, fully-built

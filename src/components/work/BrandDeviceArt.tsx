@@ -131,7 +131,7 @@ export function BrandDeviceArt({
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
       >
         <motion.div
-          className={`relative h-full w-full rounded-[1.7rem] p-[3px] shadow-[0_40px_70px_-25px_rgba(0,0,0,0.65)] ${isHero ? "motion-safe:[animation:screen-float_7s_ease-in-out_infinite]" : ""}`}
+          className="relative h-full w-full rounded-[1.7rem] p-[3px] shadow-[0_40px_70px_-25px_rgba(0,0,0,0.65)]"
           style={{
             background: `linear-gradient(180deg, ${accent.chassis[0]} 0%, ${accent.chassis[1]} 100%)`,
             rotateX: isHero ? springTiltX : undefined,

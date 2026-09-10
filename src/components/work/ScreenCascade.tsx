@@ -85,12 +85,11 @@ function Card({
       }}
     >
       <motion.div
-        className="relative h-full w-full rounded-[1.7rem] p-[3px] shadow-[0_40px_70px_-25px_rgba(0,0,0,0.65)] motion-safe:[animation:screen-float_7s_ease-in-out_infinite]"
+        className="relative h-full w-full rounded-[1.7rem] p-[3px] shadow-[0_40px_70px_-25px_rgba(0,0,0,0.65)]"
         style={{
           background: `linear-gradient(180deg, ${accent.chassis[0]} 0%, ${accent.chassis[1]} 100%)`,
           rotateX: springTiltX,
           rotateY: springTiltY,
-          animationDelay: `${index * 0.6}s`,
         }}
       >
         {/* chassis edge highlight — reads as a metal/glass hardware edge */}

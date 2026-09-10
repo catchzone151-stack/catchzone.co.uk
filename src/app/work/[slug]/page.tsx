@@ -83,7 +83,7 @@ export default async function ProjectPage({
             </span>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-end gap-6">
+          <div className="mt-8 flex flex-wrap items-start gap-6">
             <StoreBadges playStoreUrl={project.playStoreUrl} appStoreUrl={project.appStoreUrl} />
             {project.internalUrl && (
               <Link
