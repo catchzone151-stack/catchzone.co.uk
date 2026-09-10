@@ -60,7 +60,12 @@ jobs:
           check_forbidden "April 2026 reference" 'April[[:space:]]+2026'
           check_forbidden "Personal Gmail address" '[A-Za-z0-9._%+-]+@gmail\.com'
           check_forbidden "Localhost URL" 'https?://(localhost|127\.0\.0\.1)'
-          check_forbidden "Placeholder hash link" 'href=["'"']#["'"']'
+          if grep -RniF --exclude-dir=node_modules --exclude-dir=.next 'href="#"' src public next.config.mjs 2>/dev/null || grep -RniF --exclude-dir=node_modules --exclude-dir=.next "href='#'" src public next.config.mjs 2>/dev/null; then
+            echo "::error::Placeholder hash link found"
+            failed=1
+          else
+            echo "Placeholder hash link: clear"
+          fi
           exit "$failed"
 
       - name: Install Chromium QA runtime
