@@ -33,19 +33,20 @@ component code.
 - Cinematic intro/hero (procedural Three.js — see `docs/ASSET_MANIFEST.md`
   for what's still placeholder).
 
-## Cinematic intro / hero
+## Hero (no blocking intro)
 
-- State machine (`src/lib/intro/IntroContext.tsx`) with phases `void →
-  assembly → connection → transition → hero`, session-scoped via
-  `sessionStorage` (`cz_intro_seen`) so returning visitors within the same
-  session/tab don't replay it.
-- Bypassed entirely (straight to the `hero` phase) when
+- **Final Production Pass update:** the site previously gated the homepage
+  behind a several-second blocking intro sequence (`void → assembly →
+  connection → transition → hero`) with a "Skip Intro" button. That has
+  been removed — the hero is the entry experience now. `IntroContext.tsx`
+  keeps the `IntroPhase` type and a `phase` value (always `"hero"` from
+  first paint) purely because the hero's own DOM/3D entrance easing keys
+  off `phase === "hero"`; nothing schedules a phase transition anymore and
+  `IntroOverlay.tsx` was deleted.
+- Bypassed entirely (no WebGL canvas mounted at all) when
   `prefers-reduced-motion` is set, or when the performance tier resolves
-  to `safe` (see below) — in both cases the hero renders a static CSS
-  gradient backdrop with no WebGL canvas mounted at all.
-- Skip control is a real, focusable `<button>`; while the intro plays, the
-  rest of the page is marked `inert` so keyboard/screen-reader users land
-  directly on the skip control rather than tabbing through hidden content.
+  to `safe` (see below) — the hero renders a static CSS gradient backdrop
+  instead.
 
 ## Performance tiers
 

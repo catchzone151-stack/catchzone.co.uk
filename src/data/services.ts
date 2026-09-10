@@ -56,7 +56,7 @@ export const services: Service[] = [
     shortName: "Premium Web Platforms",
     heroTagline: "A front door that behaves like the product it represents.",
     description:
-      "Bespoke websites and interactive platforms for brands that need to look and feel like the category leader, not another template.",
+      "Bespoke websites and interactive platforms, designed and built to look and feel like the category leader.",
     outputs: [
       "Bespoke websites",
       "Interactive web platforms",
@@ -120,5 +120,5 @@ export const flagshipService = {
   name: "Complete Digital Ecosystems",
   tagline: "Website. App. Backend. Database. Admin. Automation. Integrations.",
   description:
-    "When a business needs everything connected, we design and build it as one system — not a website team, an app team and a backend team who never talk to each other.",
+    "When a business needs everything connected, we design and build it as one system — the website, app and backend engineered together from the start.",
 };

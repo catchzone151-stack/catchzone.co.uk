@@ -22,7 +22,7 @@ export function ServiceHero({ service, coreState }: ServiceHeroProps) {
   const showCanvas = tier !== "safe";
 
   return (
-    <section className="relative overflow-hidden border-b border-line bg-void pb-16 pt-32">
+    <section className="relative overflow-hidden border-b border-line bg-void pb-16 pt-32 md:min-h-[70vh] md:pb-24">
       <div className="absolute inset-0 z-0">
         {showCanvas ? (
           <ServicesCanvas state={coreState} frameloop={documentVisible ? "always" : "never"} />
@@ -40,7 +40,7 @@ export function ServiceHero({ service, coreState }: ServiceHeroProps) {
         className="pointer-events-none absolute inset-0 z-[1]"
         style={{
           background:
-            "linear-gradient(100deg, #040406 0%, rgba(4,4,6,0.85) 30%, rgba(4,4,6,0.45) 50%, transparent 68%)",
+            "linear-gradient(100deg, rgba(4,4,6,0.72) 0%, rgba(4,4,6,0.4) 26%, transparent 54%)",
         }}
         aria-hidden="true"
       />

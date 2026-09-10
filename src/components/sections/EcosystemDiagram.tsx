@@ -101,7 +101,7 @@ function NodeGlyph({ id }: { id: string }) {
   }
 }
 
-export function EcosystemDiagram() {
+export function EcosystemDiagram({ compact = false }: { compact?: boolean }) {
   const [activeId, setActiveId] = useState<string>(nodes[0]!.id);
   const active = nodes.find((n) => n.id === activeId) ?? nodes[0]!;
   const headingId = useId();
@@ -116,7 +116,9 @@ export function EcosystemDiagram() {
     <div>
       {/* Desktop / tablet: dimensional radial system diagram */}
       <div className="hidden md:block">
-        <div className="relative mx-auto aspect-square w-full max-w-2xl lg:max-w-4xl">
+        <div
+          className={`relative mx-auto aspect-square w-full ${compact ? "max-w-sm" : "max-w-2xl lg:max-w-4xl"}`}
+        >
           {/* atmospheric depth backdrop — reframes toward the active node */}
           <div
             className="pointer-events-none absolute inset-[-30%] rounded-full opacity-90 transition-[background] duration-700 ease-out"
@@ -182,12 +184,20 @@ export function EcosystemDiagram() {
           </svg>
 
           <motion.div
-            className="absolute left-1/2 top-1/2 flex h-24 w-24 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-accent-cyan/40 bg-surface-raised text-center shadow-[0_0_40px_rgba(94,234,212,0.12)]"
+            className={`absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-accent-cyan/40 bg-surface-raised text-center shadow-[0_0_40px_rgba(94,234,212,0.12)] ${
+              compact ? "h-14 w-14" : "h-24 w-24"
+            }`}
             animate={reducedMotion ? {} : { boxShadow: ["0 0 30px rgba(94,234,212,0.10)", "0 0 48px rgba(94,234,212,0.22)", "0 0 30px rgba(94,234,212,0.10)"] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           >
-            <span className="mono text-[10px] uppercase tracking-widest text-ink-faint">Your</span>
-            <span className="text-sm font-semibold text-ink">Business</span>
+            {compact ? (
+              <span className="text-[10px] font-semibold text-ink">You</span>
+            ) : (
+              <>
+                <span className="mono text-[10px] uppercase tracking-widest text-ink-faint">Your</span>
+                <span className="text-sm font-semibold text-ink">Business</span>
+              </>
+            )}
           </motion.div>
 
           {nodes.map((node) => {
@@ -203,16 +213,19 @@ export function EcosystemDiagram() {
                 aria-pressed={isActive}
                 aria-describedby={headingId}
                 style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
-                className={`absolute flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-full border px-4 py-2.5 text-xs font-semibold transition-all duration-300 ease-out ${
+                className={`absolute flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-full border font-semibold transition-all duration-300 ease-out ${
+                  compact ? "p-2 text-[10px]" : "px-4 py-2.5 text-xs"
+                } ${
                   isActive
                     ? "scale-110 border-accent-cyan bg-accent-cyan/10 text-accent-cyan"
                     : "border-ink/15 bg-surface text-ink-muted hover:border-ink/30 hover:text-ink"
                 }`}
+                title={compact ? node.label : undefined}
               >
                 <span style={{ color: isActive ? node.accent : undefined }}>
                   <NodeGlyph id={node.id} />
                 </span>
-                {node.label}
+                {!compact && node.label}
               </button>
             );
           })}
@@ -247,14 +260,16 @@ export function EcosystemDiagram() {
         })}
       </div>
 
-      {/* Shared description panel (desktop) */}
+      {/* Shared description panel (desktop) — stays present (not just
+          visual) in compact mode too, so keyboard/AT users get the same
+          per-node explanation the homepage's static copy summarises */}
       <motion.div
         key={active.id}
         id={headingId}
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="mx-auto mt-10 hidden max-w-lg text-center md:block"
+        className={`mx-auto hidden text-center md:block ${compact ? "mt-4 max-w-xs" : "mt-10 max-w-lg"}`}
       >
         <p className="mono text-xs uppercase tracking-[0.25em]" style={{ color: active.accent }}>
           {active.label}

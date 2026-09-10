@@ -4,30 +4,33 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useScroll, useMotionValueEvent } from "motion/react";
 import { primaryNav, primaryCta } from "@/data/navigation";
-import { useIntro } from "@/lib/intro/IntroContext";
 import { MobileNav } from "@/components/navigation/MobileNav";
 
 export function Nav() {
   const pathname = usePathname();
-  const { phase } = useIntro();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const hiddenForIntro = phase !== "hero";
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setScrolled(latest > 12);
+  });
 
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
 
   return (
-    <header
-      className="fixed inset-x-0 top-0 z-nav transition-opacity duration-700 ease-cinematic"
-      style={{
-        opacity: hiddenForIntro ? 0 : 1,
-        pointerEvents: hiddenForIntro ? "none" : "auto",
-      }}
-      aria-hidden={hiddenForIntro}
-    >
-      <div className="shell flex h-20 items-center justify-between border-b border-line bg-void/70 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-nav">
+      <div
+        className={`shell flex h-20 items-center justify-between transition-[background-color,border-color,backdrop-filter] duration-500 ${
+          scrolled
+            ? "border-b border-line bg-void/75 backdrop-blur-md"
+            : "border-b border-transparent bg-transparent"
+        }`}
+      >
         <Link
           href="/"
           className="flex items-center gap-2"
@@ -46,7 +49,7 @@ export function Nav() {
         </Link>
 
         <nav
-          className="hidden items-center gap-8 md:flex"
+          className="pointer-events-auto absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] px-1.5 py-1.5 backdrop-blur-md md:flex"
           aria-label="Primary"
         >
           {primaryNav.map((link) => {
@@ -56,15 +59,20 @@ export function Nav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="group relative text-sm font-medium text-ink-muted transition-colors hover:text-ink"
+                className={`relative rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 ${
+                  active
+                    ? "text-ink"
+                    : "text-ink-muted hover:text-ink"
+                }`}
                 aria-current={active ? "page" : undefined}
               >
-                {link.label}
-                <span
-                  className={`absolute -bottom-1.5 left-0 h-px bg-accent-cyan transition-all duration-300 ease-precise ${
-                    active ? "w-full" : "w-0 group-hover:w-full"
-                  }`}
-                />
+                {active && (
+                  <span
+                    className="absolute inset-0 rounded-full border border-accent-cyan/25 bg-accent-cyan/10"
+                    aria-hidden="true"
+                  />
+                )}
+                <span className="relative">{link.label}</span>
               </Link>
             );
           })}
@@ -73,14 +81,14 @@ export function Nav() {
         <div className="flex items-center gap-4">
           <Link
             href={primaryCta.href}
-            className="hidden rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-accent-cyan hover:text-accent-cyan md:inline-block"
+            className="cta-breathe hidden rounded-full border border-accent-cyan/30 bg-white/[0.02] px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-accent-cyan hover:text-accent-cyan md:inline-block"
           >
             {primaryCta.label}
           </Link>
 
           <button
             type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-ink/20 md:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-ink/20 bg-white/[0.02] md:hidden"
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}

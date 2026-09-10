@@ -43,7 +43,7 @@ export const projects: Project[] = [
       "Structured Islamic learning through quests, quizzes and global challenges.",
     type: "Mobile App",
     status: "live",
-    statusLabel: "Live on Google Play · iOS coming April 2026",
+    statusLabel: "Live on Google Play · iOS coming October 2026",
     featured: true,
     heroAsset: "/assets/images/islamquest/IslamQuestBanner.png",
     screenshots: [
@@ -56,7 +56,7 @@ export const projects: Project[] = [
       "/assets/images/islamquest/7_SS.png",
       "/assets/images/islamquest/8_SS.png",
     ],
-    platforms: ["Android — Google Play", "iOS — coming April 2026"],
+    platforms: ["Android — Google Play", "iOS — coming October 2026"],
     capabilities: [
       "Cross-platform mobile engineering",
       "Supabase-backed accounts, sync and premium entitlements",

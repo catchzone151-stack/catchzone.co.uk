@@ -6,22 +6,15 @@ import Link from "next/link";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useIntro } from "@/lib/intro/IntroContext";
 import { useDocumentVisible } from "@/hooks/useDocumentVisible";
-import { IntroOverlay } from "@/components/sections/IntroOverlay";
 import { MagneticLink } from "@/components/ui/MagneticLink";
 
 const SceneCanvas = dynamic(() => import("@/components/canvas/SceneCanvas"), {
   ssr: false,
 });
 
-const PHASE_DURATIONS_MS = {
-  desktop: { void: 1100, assembly: 2100, connection: 1900, transition: 1000 },
-  mobile: { void: 650, assembly: 1250, connection: 1150, transition: 600 },
-};
-
 export function Hero() {
-  const { phase, setPhase, skip, shouldPlayIntro, tier } = useIntro();
+  const { phase, tier } = useIntro();
   const documentVisible = useDocumentVisible();
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const [mounted, setMounted] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -35,32 +28,6 @@ export function Hero() {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   useEffect(() => setMounted(true), []);
-
-  useEffect(() => {
-    if (!shouldPlayIntro) return;
-
-    const isMobile = window.innerWidth < 768;
-    const durations = isMobile
-      ? PHASE_DURATIONS_MS.mobile
-      : PHASE_DURATIONS_MS.desktop;
-
-    let elapsed = 0;
-    const schedule = (phaseName: typeof phase, delay: number) => {
-      elapsed += delay;
-      timers.current.push(setTimeout(() => setPhase(phaseName), elapsed));
-    };
-
-    schedule("assembly", durations.void);
-    schedule("connection", durations.assembly);
-    schedule("transition", durations.connection);
-    schedule("hero", durations.transition);
-
-    return () => {
-      timers.current.forEach(clearTimeout);
-      timers.current = [];
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shouldPlayIntro]);
 
   const showCanvas = mounted && tier !== "safe";
   const frameloop = documentVisible ? "always" : "never";
@@ -104,10 +71,6 @@ export function Hero() {
       />
 
       {phase === "hero" && <HeroStructuralAccent />}
-
-      {shouldPlayIntro && phase !== "hero" && (
-        <IntroOverlay phase={phase} onSkip={skip} />
-      )}
 
       <motion.div
         className="shell relative z-10"

@@ -46,9 +46,9 @@ export default function AboutPage() {
             A focused studio that designs and builds the whole product.
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted">
-            CatchZone is a digital product and engineering studio — not a
-            freelancer, and not pretending to be a large agency either.
-            Premium positioning here comes from craft, not claimed scale.
+            CatchZone is a focused digital product and engineering studio.
+            Premium positioning here comes from craft and hands-on
+            involvement in every build, not claimed scale.
           </p>
         </div>
       </section>

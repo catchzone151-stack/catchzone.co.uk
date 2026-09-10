@@ -55,17 +55,71 @@ function PhonePiece({ state }: PieceProps) {
   );
 }
 
-/** WEB piece — a browser-style panel with a top bar. */
+/** Content cards inside the WEB piece so it reads as a real interface. */
+function WebContentBlocks({ opacityRef }: { opacityRef: React.MutableRefObject<number> }) {
+  const blocks = useMemo(
+    () => [
+      { pos: [-0.55, 0.1, 0], size: [0.55, 0.42], color: "#5eead4", i: 0.55 },
+      { pos: [0.1, 0.1, 0], size: [0.5, 0.42], color: "#6e62e5", i: 0.4 },
+      { pos: [0.62, 0.1, 0], size: [0.36, 0.42], color: "#e6ebf0", i: 0.22 },
+      { pos: [-0.4, -0.28, 0], size: [0.85, 0.1], color: "#e6ebf0", i: 0.2 },
+      { pos: [0.4, -0.28, 0], size: [0.5, 0.1], color: "#828b9a", i: 0.16 },
+    ],
+    [],
+  );
+  const mats = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
+  const clock = useRef(0);
+
+  useFrame((_, delta) => {
+    clock.current += delta;
+    mats.current.forEach((m, idx) => {
+      if (!m) return;
+      const base = blocks[idx]!.i;
+      const shimmer = 1 + Math.sin(clock.current * 0.7 + idx * 1.6) * 0.12;
+      m.emissiveIntensity = base * shimmer * opacityRef.current;
+      m.opacity = opacityRef.current;
+    });
+  });
+
+  return (
+    <group position={[0, 0, 0.028]}>
+      {blocks.map((b, idx) => (
+        <mesh key={idx} position={b.pos as [number, number, number]}>
+          <planeGeometry args={b.size as [number, number]} />
+          <meshStandardMaterial
+            ref={(el) => {
+              mats.current[idx] = el;
+            }}
+            color="#0a0b0e"
+            emissive={b.color}
+            emissiveIntensity={0}
+            transparent
+            opacity={0}
+            toneMapped={false}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+/** WEB piece — a browser-style panel with a top bar and real content cards. */
 function WebPiece({ state, secondary = false }: PieceProps & { secondary?: boolean }) {
   const group = useRef<THREE.Group>(null);
   const mat = useRef<THREE.MeshPhysicalMaterial>(null);
   const barMat = useRef<THREE.MeshStandardMaterial>(null);
   const edgeMat = useRef<THREE.LineBasicMaterial>(null);
+  const contentOpacity = useRef(0);
 
   useFrame((_, delta) => {
     if (!group.current) return;
     const target = secondary ? coreTargets[state].webSecondary : coreTargets[state].web;
     lerpPiece(group.current, target, delta, [mat.current, barMat.current, edgeMat.current]);
+    contentOpacity.current = THREE.MathUtils.lerp(
+      contentOpacity.current,
+      target.opacity,
+      1 - Math.exp(-LERP_SPEED * delta),
+    );
   });
 
   return (
@@ -81,6 +135,7 @@ function WebPiece({ state, secondary = false }: PieceProps & { secondary?: boole
         <planeGeometry args={[1.5, 0.08]} />
         <meshStandardMaterial ref={barMat} color="#0a0b0e" emissive="#5eead4" emissiveIntensity={0.4} transparent opacity={0} toneMapped={false} />
       </mesh>
+      {!secondary && <WebContentBlocks opacityRef={contentOpacity} />}
     </group>
   );
 }
@@ -110,9 +165,27 @@ function DataPiece({ state }: PieceProps) {
             metalness={0.6}
             roughness={0.3}
             emissive="#6e62e5"
-            emissiveIntensity={0.25}
+            emissiveIntensity={0.55}
             transparent
             opacity={0}
+          />
+        </mesh>
+      ))}
+      {/* thin emissive ring around the edge of each disc — reads as an
+          active server stack rather than plain blank cylinders */}
+      {discs.map((y, idx) => (
+        <mesh key={`ring-${idx}`} position={[0, y, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[0.42, 0.008, 6, 32]} />
+          <meshStandardMaterial
+            ref={(el) => {
+              mats.current[discs.length + idx] = el;
+            }}
+            color="#0a0b0e"
+            emissive="#5eead4"
+            emissiveIntensity={0.9}
+            transparent
+            opacity={0}
+            toneMapped={false}
           />
         </mesh>
       ))}

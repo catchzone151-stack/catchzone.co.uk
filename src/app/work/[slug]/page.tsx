@@ -6,6 +6,8 @@ import { projects, STATUS_LABEL, type ProjectStatus } from "@/data/projects";
 import { Reveal } from "@/components/ui/Reveal";
 import { MagneticLink } from "@/components/ui/MagneticLink";
 import { ScreenCascade } from "@/components/work/ScreenCascade";
+import { getIslamQuestHeroShots } from "@/lib/work/islamquestShots";
+import { GooglePlayIcon } from "@/components/icons/GooglePlayIcon";
 
 const STATUS_BADGE_STYLE: Record<ProjectStatus, string> = {
   live: "border-accent-cyan/30 text-accent-cyan",
@@ -35,7 +37,11 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
   const project = projects.find((p) => p.slug === params.slug);
   if (!project) notFound();
 
-  const cascadeShots = (project.screenshots ?? []).filter((_, i) => i % 2 === 0).slice(0, 4);
+  const allShots = project.screenshots ?? [];
+  const cascadeShots =
+    project.slug === "islamquest" && allShots.length >= 5
+      ? getIslamQuestHeroShots(allShots)
+      : allShots.filter((_, i) => i % 2 === 0).slice(0, 4);
   const hasDepth = Boolean(project.challenge || project.build);
   const hasSidebar = Boolean(
     project.capabilities.length || project.platforms?.length || project.technicalHighlights?.length,
@@ -74,9 +80,10 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
               <MagneticLink
                 href={project.playStoreUrl}
                 external
-                className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-void"
+                className="flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-void"
               >
-                Open on Google Play
+                <GooglePlayIcon className="h-5 w-5" />
+                Get it on Google Play
               </MagneticLink>
             )}
             {project.internalUrl && (
@@ -92,7 +99,7 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
       </section>
 
       {cascadeShots.length >= 2 ? (
-        <section className="py-16">
+        <section className="overflow-hidden py-16">
           <div className="shell">
             <ScreenCascade images={cascadeShots} alt={project.title} className="min-h-[440px] md:min-h-[520px]" />
           </div>

@@ -29,7 +29,7 @@ interface ServicesCanvasProps {
 export default function ServicesCanvas({ state, frameloop = "always" }: ServicesCanvasProps) {
   return (
     <Canvas
-      camera={{ fov: 40, position: [0.4, 0, 5.2] }}
+      camera={{ fov: 40, position: [0.32, 0, 4.1] }}
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       frameloop={frameloop}

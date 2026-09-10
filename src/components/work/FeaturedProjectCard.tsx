@@ -3,12 +3,14 @@ import Link from "next/link";
 import type { Project } from "@/data/projects";
 import { Reveal } from "@/components/ui/Reveal";
 import { ScreenCascade } from "@/components/work/ScreenCascade";
+import { getIslamQuestHeroShots } from "@/lib/work/islamquestShots";
+import { GooglePlayIcon } from "@/components/icons/GooglePlayIcon";
 
 export function FeaturedProjectCard({ project }: { project: Project }) {
   const shots = project.screenshots ?? [];
   const cascadeShots =
-    shots.length >= 5
-      ? ([shots[0], shots[2], shots[4], shots[6] ?? shots[3], shots[1]].filter(Boolean) as string[])
+    project.slug === "islamquest" && shots.length >= 5
+      ? getIslamQuestHeroShots(shots)
       : shots.filter((_, i) => i % 2 === 0).slice(0, 4);
 
   return (
@@ -50,9 +52,10 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
               href={project.playStoreUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-sm font-semibold text-ink transition-colors hover:text-accent-cyan"
+              className="flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-accent-cyan"
             >
-              Open on Google Play →
+              <GooglePlayIcon className="h-5 w-5" />
+              Get it on Google Play
             </a>
           )}
         </div>

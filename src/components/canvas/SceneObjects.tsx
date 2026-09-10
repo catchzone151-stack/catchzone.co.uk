@@ -269,6 +269,62 @@ function DataNodeCluster({
 }
 
 /**
+ * Content blocks inside the front web panel — a sidebar rail plus a grid
+ * of content cards — so the "web" surface reads as a real interface
+ * rather than an outlined rectangle with just a top bar.
+ */
+function WebUIBlocks({
+  opacityRef,
+}: {
+  opacityRef: React.MutableRefObject<number>;
+}) {
+  const blocks = useMemo(
+    () => [
+      { pos: [-1.28, 0.15, 0], size: [0.42, 1.36], color: "#828b9a", i: 0.16 },
+      { pos: [-0.55, 0.42, 0], size: [0.85, 0.52], color: "#5eead4", i: 0.55 },
+      { pos: [0.42, 0.42, 0], size: [0.85, 0.52], color: "#6e62e5", i: 0.4 },
+      { pos: [-0.55, -0.18, 0], size: [0.85, 0.32], color: "#e6ebf0", i: 0.22 },
+      { pos: [0.42, -0.18, 0], size: [0.85, 0.32], color: "#e6ebf0", i: 0.2 },
+    ],
+    [],
+  );
+  const mats = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
+  const clock = useRef(0);
+
+  useFrame((_, delta) => {
+    clock.current += delta;
+    mats.current.forEach((m, idx) => {
+      if (!m) return;
+      const base = blocks[idx]!.i;
+      const shimmer = 1 + Math.sin(clock.current * 0.6 + idx * 1.4) * 0.1;
+      m.emissiveIntensity = base * shimmer * opacityRef.current;
+      m.opacity = opacityRef.current;
+    });
+  });
+
+  return (
+    <group position={[0, 0, 0.038]}>
+      {blocks.map((b, idx) => (
+        <mesh key={idx} position={b.pos as [number, number, number]}>
+          <planeGeometry args={b.size as [number, number]} />
+          <meshStandardMaterial
+            ref={(el) => {
+              mats.current[idx] = el;
+            }}
+            color="#0a0b0e"
+            emissive={b.color}
+            emissiveIntensity={0}
+            transparent
+            opacity={0}
+            toneMapped={false}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+/**
  * The "wider digital platform" object: three cascading interface panels at
  * different depths (front web surface, mid system layer, rear data/backend
  * layer) instead of one flat slab, plus a live node cluster on the rear
@@ -284,6 +340,7 @@ export function PlatformAssembly({ phase }: DeviceProps) {
   const rearMat = useRef<THREE.MeshStandardMaterial>(null);
   const rearEdgeMat = useRef<THREE.LineBasicMaterial>(null);
   const nodeOpacity = useRef(0);
+  const webUiOpacity = useRef(0);
   const edgeClock = useRef(0);
 
   useFrame((_, delta) => {
@@ -311,6 +368,7 @@ export function PlatformAssembly({ phase }: DeviceProps) {
       target.opacity * (phase === "hero" || phase === "connection" || phase === "transition" ? 1 : 0),
       t,
     );
+    webUiOpacity.current = THREE.MathUtils.lerp(webUiOpacity.current, target.opacity, t);
   });
 
   return (
@@ -368,6 +426,7 @@ export function PlatformAssembly({ phase }: DeviceProps) {
             toneMapped={false}
           />
         </mesh>
+        <WebUIBlocks opacityRef={webUiOpacity} />
       </group>
     </group>
   );

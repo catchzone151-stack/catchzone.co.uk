@@ -26,18 +26,18 @@ export default function WorkPage() {
             Work
           </p>
           <h1 className="mt-4 max-w-2xl font-display text-4xl font-bold text-ink md:text-5xl">
-            Real products. Built and shipped by CatchZone.
+            Products taken from idea to working software.
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted">
-            No client logos to show yet — every product below is our own,
-            which means nothing here is dressed up. Status is labelled
-            honestly: live, in development, or product lab.
+            Every product below is CatchZone&apos;s own — designed, built and
+            shipped by the same team that would build yours. Each one is
+            labelled clearly: live, in development, or product lab.
           </p>
         </div>
       </section>
 
       {hero && (
-        <section className="py-16 md:py-20">
+        <section className="overflow-hidden py-16 md:py-20">
           <div className="shell">
             <FeaturedProjectCard project={hero} />
           </div>
@@ -71,9 +71,8 @@ export default function WorkPage() {
             Wider Roadmap
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-muted">
-            Category hubs already reserved on the site for upcoming CatchZone
-            products. Each is honestly labelled as roadmap, not a finished
-            case study.
+            Category hubs already reserved for upcoming CatchZone products —
+            labelled as roadmap, ahead of a full case study.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {roadmapCategories.map((category, i) => (

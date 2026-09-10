@@ -8,7 +8,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import { usePathname } from "next/navigation";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { usePerformanceTier } from "@/lib/performance/usePerformanceTier";
 
@@ -30,65 +29,32 @@ interface IntroContextValue {
 
 const IntroStateContext = createContext<IntroContextValue | null>(null);
 
-const STORAGE_KEY = "cz_intro_seen";
-
+/**
+ * The site previously gated the homepage behind a several-second blocking
+ * intro sequence (void -> assembly -> connection -> transition -> hero)
+ * with a "Skip Intro" button. That's been removed: the hero IS the entry
+ * experience now. `phase` stays "hero" from first paint and
+ * `shouldPlayIntro` stays false, so nothing renders the old overlay — the
+ * type is kept (and a couple of consumers still read it) purely so the
+ * hero's own DOM/3D entrance easing (which keys off `phase === "hero"`)
+ * continues to work unchanged.
+ */
 export function IntroProvider({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
   const reducedMotion = useReducedMotion();
   const tier = usePerformanceTier();
-  const isHome = pathname === "/";
 
-  const [shouldPlayIntro, setShouldPlayIntro] = useState(false);
+  const shouldPlayIntro = false;
   const [phase, setPhase] = useState<IntroPhase>("hero");
-
-  useEffect(() => {
-    if (!isHome) {
-      setPhase("hero");
-      setShouldPlayIntro(false);
-      return;
-    }
-
-    let seen = false;
-    try {
-      seen = window.sessionStorage.getItem(STORAGE_KEY) === "1";
-    } catch {
-      seen = false;
-    }
-
-    if (seen || reducedMotion) {
-      setPhase("hero");
-      setShouldPlayIntro(false);
-    } else {
-      setPhase("void");
-      setShouldPlayIntro(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHome]);
 
   const skip = useCallback(() => {
     setPhase("hero");
-    setShouldPlayIntro(false);
-    try {
-      window.sessionStorage.setItem(STORAGE_KEY, "1");
-    } catch {
-      /* sessionStorage unavailable — non-fatal */
-    }
   }, []);
 
   useEffect(() => {
-    if (phase === "hero") {
-      try {
-        window.sessionStorage.setItem(STORAGE_KEY, "1");
-      } catch {
-        /* ignore */
-      }
-    }
     if (typeof document !== "undefined") {
-      document.documentElement.dataset.introActive = String(
-        phase !== "hero",
-      );
+      document.documentElement.dataset.introActive = "false";
     }
-  }, [phase]);
+  }, []);
 
   const value = useMemo(
     () => ({ phase, setPhase, skip, shouldPlayIntro, reducedMotion, tier }),

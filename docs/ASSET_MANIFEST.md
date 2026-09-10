@@ -161,6 +161,27 @@ what a real modelling pass would add on top of what code can already do.
 
 ---
 
+## ASSET-007 — Lumi Google Play / App Store Listing URL
+
+- **File name:** n/a
+- **Target path:** `src/data/projects.ts` (`lumi.playStoreUrl` — currently
+  absent)
+- **Purpose:** A direct "Get it on Google Play" / App Store link on Lumi's
+  project card and case-study page, matching the pattern already wired up
+  for IslamQuest.
+- **Section:** `/work`, `/work/lumi`
+- **Status:** NEEDS PRODUCTION ASSET — no verified live store URL for Lumi
+  exists anywhere in the repository (checked `src/data/projects.ts` and the
+  legacy `public/apps/lumi/index.html`, which explicitly notes it's
+  "ready for future ... store links"). Lumi is marked and described as
+  "Live" per existing verified project data, but rather than invent a store
+  URL, the site currently routes its CTA to the internal `/apps/lumi/`
+  product page only. Add the real store URL to `projects.ts` once available
+  and the store badge/link will appear automatically (same code path as
+  IslamQuest).
+
+---
+
 ## Notes
 
 - All CatchZone logos, the IslamQuest banner/screenshots, and the Lumi
