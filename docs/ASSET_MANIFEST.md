@@ -193,14 +193,18 @@ what a real modelling pass would add on top of what code can already do.
   as one image (see `BannerShowcase`) rather than chopped up. Rawdah Cycle
   and CSCS have **no** local screenshot assets at all — not the banner,
   not individual captures.
-- **Current honest treatment:**
+- **Current honest treatment (Final launch-polish pass):**
   - Lumi: the existing banner shown via `BannerShowcase` (pointer-tilt +
-    settle-in motion instead of a flat static image).
-  - Rawdah Cycle / CSCS: a brand-colour gradient panel
-    (`work/[slug]/page.tsx`, keyed off `project.brandGradient` — green/cream
-    for Rawdah Cycle, dark/light blue for CSCS) stating the product is live
-    on Google Play and that the individual screen gallery isn't published on
-    the site yet. This is explicitly not presented as a screenshot.
+    settle-in motion instead of a flat static image), now themed with a
+    rose-gold/blush device-frame accent.
+  - Rawdah Cycle / CSCS: the flat brand-gradient apology panel from the
+    previous pass was replaced with `BrandDeviceArt`
+    (`src/components/work/BrandDeviceArt.tsx`) — a dimensional phone-chassis
+    composition (real bezel/notch/ring hardware detail matching
+    `ScreenCascade`, product-specific metallic accent, an abstract monogram
+    glyph, and structural "interface bar" elements) plus real capability
+    copy and store links. It is deliberately abstract and is never labelled
+    or presented as a real screenshot.
 - **Status:** NEEDS PRODUCTION ASSET — export 3–5 real screenshots per app
   (ideally 1080×1920 or the actual device resolution used for the Play
   Store listing) directly from the Play Console or the source design files
@@ -209,6 +213,55 @@ what a real modelling pass would add on top of what code can already do.
   `projects.ts` — the existing `ScreenCascade` device-frame system picks
   them up automatically with no other code changes, exactly as it does for
   IslamQuest.
+
+---
+
+## ASSET-009 — Rawdah Cycle feature/capability copy
+
+- **Target path:** `src/data/projects.ts` (`capabilities` array — currently
+  empty for `rawdah-cycle`)
+- **Purpose:** Section 14 of the Final Launch Polish spec asks for "real
+  feature/capability copy" on the Rawdah Cycle project page.
+- **What was checked:** a repo-wide search for any existing factual
+  description of what Rawdah Cycle actually does (beyond "a CatchZone
+  product, live on Google Play") returned nothing — no legacy page, no prior
+  spec, no data file describes its features.
+- **Why nothing was added:** inventing plausible-sounding feature bullets
+  would violate the standing no-fabrication rule (features are exactly the
+  kind of unverifiable product claim that must never be guessed at).
+- **Status:** NEEDS INPUT — supply 2–5 real Rawdah Cycle feature bullets
+  (the same way Lumi's and CSCS's capability lists were sourced) and they
+  can be dropped straight into `projects.ts`; no other code changes needed.
+
+---
+
+## ASSET-010 — The Blossom Group / FDE Fire & Security client-work visuals
+
+- **Target path:** `src/data/clientWork.ts` (`screenshot` field — currently
+  absent for both), `src/components/work/ClientWorkCard.tsx`
+- **Purpose:** Section 10/11/30 of the Final Launch Polish spec require a
+  "high-quality real page view from the live site" for each client-work
+  laptop/browser mockup.
+- **What was attempted:** the real public sites
+  (`https://blossomgroup.co.uk/` and `https://fde.uk.com/`) were identified
+  and confirmed with the site owner, but this environment's network egress
+  proxy blocks fetching arbitrary third-party domains directly (confirmed
+  `EGRESS_BLOCKED` via `WebFetch` for both), so a real screenshot could not
+  be captured or downloaded in this session — the same hard constraint
+  already documented for the Play Store listings in ASSET-008.
+- **Current honest treatment:** `ClientWorkCard` renders a real browser-chrome
+  frame (traffic-light dots + an address bar showing the real hostname) with
+  an abstract brand-accent placeholder inside labelled "Site preview
+  pending" instead of a fabricated screenshot. The company name, real URL,
+  "CLIENT WORK" label and mandatory Blossom-before-FDE order are all in
+  place; only the visual capture and a fuller factual description of the
+  engagement (per section 10's "concise, factual statement about the
+  website/brand experience based on the actual site") are outstanding.
+- **Status:** NEEDS INPUT — the site owner is supplying a real screenshot
+  and short factual description for each site directly. Once received: drop
+  the image under `public/assets/images/client-work/` and set
+  `screenshot` on the matching entry in `clientWork.ts`; update `summary`
+  (and FDE's `secondaryStatus.description` if more detail is supplied).
 
 ---
 

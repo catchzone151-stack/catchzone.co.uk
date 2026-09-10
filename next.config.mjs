@@ -20,6 +20,17 @@ const nextConfig = {
         destination: "/",
         permanent: true,
       },
+      // Legacy static app landing pages superseded by modern /work/* case
+      // studies — see docs/IMPLEMENTATION_NOTES.md "Legacy route redirects".
+      // Only these three have a modern equivalent; the ~35 other /apps/*
+      // exam-prep placeholder pages are left reachable (no /work page exists
+      // for them yet) and are not redirected.
+      { source: "/apps/islamquest", destination: "/work/islamquest", permanent: true },
+      { source: "/apps/islamquest/", destination: "/work/islamquest", permanent: true },
+      { source: "/apps/lumi", destination: "/work/lumi", permanent: true },
+      { source: "/apps/lumi/", destination: "/work/lumi", permanent: true },
+      { source: "/apps/cscs-citb-hse", destination: "/work/cscs", permanent: true },
+      { source: "/apps/cscs-citb-hse/", destination: "/work/cscs", permanent: true },
     ];
   },
   async headers() {

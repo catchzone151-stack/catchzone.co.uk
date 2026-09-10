@@ -7,6 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { MagneticLink } from "@/components/ui/MagneticLink";
 import { ScreenCascade } from "@/components/work/ScreenCascade";
 import { BannerShowcase } from "@/components/work/BannerShowcase";
+import { BrandDeviceArt } from "@/components/work/BrandDeviceArt";
 import { getIslamQuestHeroShots } from "@/lib/work/islamquestShots";
 import { StoreBadges } from "@/components/work/StoreBadges";
 
@@ -99,36 +100,37 @@ export default async function ProjectPage({
       {cascadeShots.length >= 2 ? (
         <section className="overflow-hidden py-16">
           <div className="shell">
-            <ScreenCascade images={cascadeShots} alt={project.title} className="min-h-[440px] md:min-h-[520px]" />
+            <ScreenCascade
+              images={cascadeShots}
+              alt={project.title}
+              accent={project.accent}
+              className="min-h-[440px] md:min-h-[520px]"
+            />
           </div>
         </section>
       ) : project.heroAsset ? (
         <section className="py-16">
           <div className="shell">
-            <BannerShowcase src={project.heroAsset} alt={`${project.title} product overview`} className="max-w-3xl" />
+            <BannerShowcase
+              src={project.heroAsset}
+              alt={`${project.title} product overview`}
+              accent={project.accent}
+              className="max-w-3xl"
+            />
           </div>
         </section>
-      ) : project.status === "live" && project.brandGradient ? (
+      ) : project.accent && project.brandGlyph ? (
         <section className="py-16">
           <div className="shell">
-            <Reveal
-              className="flex min-h-[280px] flex-col items-center justify-center rounded-2xl p-10 text-center"
-              style={{
-                background: `linear-gradient(135deg, ${project.brandGradient[0]} 0%, ${project.brandGradient[1]} 100%)`,
-              }}
-            >
-              <p className="font-display text-2xl font-bold text-white drop-shadow-sm md:text-3xl">
-                {project.title}
-              </p>
-              <p className="mono mt-3 text-xs uppercase tracking-[0.25em] text-white/80">
-                Live on Google Play
-              </p>
-              <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/85">
-                Individual screen captures for this product aren&apos;t
-                published on the site yet — the listing on Google Play has
-                the full gallery.
-              </p>
-            </Reveal>
+            <BrandDeviceArt
+              title={project.title}
+              statusLabel={
+                project.status === "live" ? "Live on Google Play" : STATUS_LABEL[project.status]
+              }
+              accent={project.accent}
+              glyph={project.brandGlyph}
+              className="min-h-[420px]"
+            />
           </div>
         </section>
       ) : (

@@ -1,5 +1,25 @@
 export type ProjectStatus = "live" | "in-development" | "product-lab";
 
+/**
+ * Per-project metallic/material accent used to theme the shared device-frame
+ * system (ScreenCascade, BannerShowcase, BrandDeviceArt) — restrained
+ * product-specific colour while every frame stays inside the same CatchZone
+ * chassis system. Never used to imply a real screenshot exists.
+ */
+export interface AccentTheme {
+  /** Chassis bezel gradient, dark end first. */
+  chassis: [string, string];
+  /** Inset ring / hardware-edge highlight colour (rgba). */
+  ring: string;
+  /** Ambient glow colour behind the device (rgba, low alpha). */
+  glow: string;
+  /** Solid, full-opacity accent colour for icon strokes / small details. */
+  icon: string;
+}
+
+/** Abstract glyph id for BrandDeviceArt — never a literal app screenshot. */
+export type BrandGlyph = "cycle" | "shield-check" | "in-progress";
+
 export interface Project {
   slug: string;
   title: string;
@@ -19,9 +39,10 @@ export interface Project {
   appStoreUrl?: string;
   playStoreUrl?: string;
   internalUrl?: string;
-  /** Brand colour pair used for an honest gradient composition when no
-   * screenshot assets are available yet — never presented as a screenshot. */
-  brandGradient?: [string, string];
+  /** Product-specific device-frame accent (see AccentTheme). */
+  accent?: AccentTheme;
+  /** Abstract brand glyph shown in BrandDeviceArt when no screenshots exist. */
+  brandGlyph?: BrandGlyph;
 }
 
 const STATUS_LABEL: Record<ProjectStatus, string> = {
@@ -78,7 +99,12 @@ export const projects: Project[] = [
     ],
     playStoreUrl:
       "https://play.google.com/store/apps/details?id=com.islamquest.app&hl=en_GB",
-    internalUrl: "/apps/islamquest/",
+    accent: {
+      chassis: ["#2b2b2f", "#0d0d0f"],
+      ring: "rgba(212,175,55,0.35)",
+      glow: "rgba(212,175,55,0.12)",
+      icon: "#d4af37",
+    },
   },
   {
     slug: "lumi",
@@ -98,7 +124,12 @@ export const projects: Project[] = [
       "No ads, no tracking, no third-party data sharing",
     ],
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.catchzone.lumi",
-    internalUrl: "/apps/lumi/",
+    accent: {
+      chassis: ["#3a2a2e", "#1a1214"],
+      ring: "rgba(247,202,208,0.4)",
+      glow: "rgba(183,110,121,0.16)",
+      icon: "#f7cad0",
+    },
   },
   {
     slug: "cscs",
@@ -116,8 +147,13 @@ export const projects: Project[] = [
       "Part of CatchZone's Construction & Trades product line",
     ],
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.catchzone.cscs",
-    internalUrl: "/apps/cscs-citb-hse/",
-    brandGradient: ["#0b3d91", "#8ecae6"],
+    accent: {
+      chassis: ["#232a35", "#0a0d12"],
+      ring: "rgba(142,202,230,0.4)",
+      glow: "rgba(27,42,74,0.2)",
+      icon: "#8ecae6",
+    },
+    brandGlyph: "shield-check",
   },
   {
     slug: "rawdah-cycle",
@@ -130,7 +166,13 @@ export const projects: Project[] = [
     platforms: ["Android — Google Play", "iOS — coming October 2026"],
     capabilities: [],
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.catchzone.rawdahcycle",
-    brandGradient: ["#4c7a3d", "#f4ecd8"],
+    accent: {
+      chassis: ["#1f3320", "#0a120a"],
+      ring: "rgba(240,226,182,0.4)",
+      glow: "rgba(79,122,61,0.18)",
+      icon: "#f0e2b6",
+    },
+    brandGlyph: "cycle",
   },
   {
     slug: "villagefront",
@@ -141,6 +183,13 @@ export const projects: Project[] = [
     statusLabel: "In Development",
     featured: true,
     capabilities: [],
+    accent: {
+      chassis: ["#23242b", "#0a0a0d"],
+      ring: "rgba(110,98,229,0.35)",
+      glow: "rgba(110,98,229,0.16)",
+      icon: "#8a80ec",
+    },
+    brandGlyph: "in-progress",
   },
 ];
 

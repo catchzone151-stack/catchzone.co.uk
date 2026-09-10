@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Project, ProjectStatus } from "@/data/projects";
 import { Reveal } from "@/components/ui/Reveal";
+import { BrandDeviceArt } from "@/components/work/BrandDeviceArt";
 
 const STATUS_STYLE: Record<ProjectStatus, string> = {
   live: "text-accent-cyan",
@@ -16,13 +17,22 @@ export function ProjectCard({ project, delay = 0 }: { project: Project; delay?: 
       className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-colors hover:border-ink/25"
     >
       <Link href={`/work/${project.slug}`} className="flex h-full flex-col">
-        <div className="relative aspect-[4/3] bg-surface-raised">
+        <div className="relative aspect-[4/3] overflow-hidden bg-surface-raised">
           {project.heroAsset ? (
             <Image
               src={project.heroAsset}
               alt={`${project.title} preview`}
               fill
               className="object-cover transition-transform duration-500 ease-cinematic group-hover:scale-105"
+            />
+          ) : project.accent && project.brandGlyph ? (
+            <BrandDeviceArt
+              title={project.title}
+              statusLabel={project.type}
+              accent={project.accent}
+              glyph={project.brandGlyph}
+              variant="card"
+              className="h-full w-full"
             />
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-2 bg-[radial-gradient(circle_at_50%_40%,rgba(110,98,229,0.08),transparent_65%)]">

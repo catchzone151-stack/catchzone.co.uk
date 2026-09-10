@@ -3,6 +3,7 @@ import type { Project } from "@/data/projects";
 import { Reveal } from "@/components/ui/Reveal";
 import { ScreenCascade } from "@/components/work/ScreenCascade";
 import { BannerShowcase } from "@/components/work/BannerShowcase";
+import { BrandDeviceArt } from "@/components/work/BrandDeviceArt";
 import { getIslamQuestHeroShots } from "@/lib/work/islamquestShots";
 import { StoreBadges } from "@/components/work/StoreBadges";
 
@@ -55,10 +56,24 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
         <ScreenCascade
           images={cascadeShots}
           alt={project.title}
+          accent={project.accent}
           className="min-h-[520px] md:min-h-[640px] md:-mr-[8%] lg:-mr-[12%]"
         />
       ) : project.heroAsset ? (
-        <BannerShowcase src={project.heroAsset} alt={`${project.title} product overview`} className="min-h-[320px]" />
+        <BannerShowcase
+          src={project.heroAsset}
+          alt={`${project.title} product overview`}
+          accent={project.accent}
+          className="min-h-[320px]"
+        />
+      ) : project.accent && project.brandGlyph ? (
+        <BrandDeviceArt
+          title={project.title}
+          statusLabel="Live on Google Play"
+          accent={project.accent}
+          glyph={project.brandGlyph}
+          className="min-h-[320px]"
+        />
       ) : null}
     </Reveal>
   );

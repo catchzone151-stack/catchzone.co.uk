@@ -4,11 +4,20 @@ import Image from "next/image";
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { viewport as viewportToken } from "@/lib/motion/tokens";
+import type { AccentTheme } from "@/data/projects";
+
+const DEFAULT_ACCENT: AccentTheme = {
+  chassis: ["#1c1e24", "#0a0a0c"],
+  ring: "rgba(255,255,255,0.15)",
+  glow: "rgba(94,234,212,0.10)",
+  icon: "#5eead4",
+};
 
 interface ScreenCascadeProps {
   images: string[];
   alt: string;
   className?: string;
+  accent?: AccentTheme;
 }
 
 const TRAJECTORIES = [
@@ -29,12 +38,14 @@ function Card({
   index,
   pointerX,
   pointerY,
+  accent,
 }: {
   src: string;
   alt: string;
   index: number;
   pointerX: ReturnType<typeof useMotionValue<number>>;
   pointerY: ReturnType<typeof useMotionValue<number>>;
+  accent: AccentTheme;
 }) {
   const t = TRAJECTORIES[index % TRAJECTORIES.length]!;
   const depth = DEPTH[index % DEPTH.length]!;
@@ -74,8 +85,9 @@ function Card({
       }}
     >
       <motion.div
-        className="relative h-full w-full rounded-[1.7rem] bg-gradient-to-b from-[#1c1e24] to-[#0a0a0c] p-[3px] shadow-[0_40px_70px_-25px_rgba(0,0,0,0.65)] motion-safe:[animation:screen-float_7s_ease-in-out_infinite]"
+        className="relative h-full w-full rounded-[1.7rem] p-[3px] shadow-[0_40px_70px_-25px_rgba(0,0,0,0.65)] motion-safe:[animation:screen-float_7s_ease-in-out_infinite]"
         style={{
+          background: `linear-gradient(180deg, ${accent.chassis[0]} 0%, ${accent.chassis[1]} 100%)`,
           rotateX: springTiltX,
           rotateY: springTiltY,
           animationDelay: `${index * 0.6}s`,
@@ -83,7 +95,8 @@ function Card({
       >
         {/* chassis edge highlight — reads as a metal/glass hardware edge */}
         <div
-          className="pointer-events-none absolute inset-0 rounded-[1.7rem] ring-1 ring-inset ring-white/15"
+          className="pointer-events-none absolute inset-0 rounded-[1.7rem]"
+          style={{ boxShadow: `inset 0 0 0 1px ${accent.ring}` }}
           aria-hidden="true"
         />
         {/* speaker/camera notch */}
@@ -118,7 +131,7 @@ function Card({
   );
 }
 
-export function ScreenCascade({ images, alt, className }: ScreenCascadeProps) {
+export function ScreenCascade({ images, alt, className, accent = DEFAULT_ACCENT }: ScreenCascadeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
@@ -147,13 +160,20 @@ export function ScreenCascade({ images, alt, className }: ScreenCascadeProps) {
       <div
         className="pointer-events-none absolute inset-0 rounded-full opacity-70"
         style={{
-          background:
-            "radial-gradient(45% 55% at 50% 50%, rgba(94,234,212,0.10), transparent 70%)",
+          background: `radial-gradient(45% 55% at 50% 50%, ${accent.glow}, transparent 70%)`,
         }}
         aria-hidden="true"
       />
       {images.map((src, i) => (
-        <Card key={src} src={src} alt={`${alt} screen ${i + 1}`} index={i} pointerX={pointerX} pointerY={pointerY} />
+        <Card
+          key={src}
+          src={src}
+          alt={`${alt} screen ${i + 1}`}
+          index={i}
+          pointerX={pointerX}
+          pointerY={pointerY}
+          accent={accent}
+        />
       ))}
     </div>
   );

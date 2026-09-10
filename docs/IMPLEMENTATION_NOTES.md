@@ -108,6 +108,34 @@ previous site). Event names to wire up once a provider is chosen:
 `project_view`, `project_live_link`, `configurator_start`,
 `configurator_step_complete`, `configurator_submit`, `contact_error`.
 
+## Legacy route redirects (Final launch-polish pass)
+
+Three legacy static `/apps/*` landing pages now have a modern, fully-built
+`/work/*` case-study page that supersedes them, so leaving both live would
+create a confusing duplicate public experience (stale April-2026-era copy
+sitting alongside the current site). `next.config.mjs` now issues a
+permanent (308) redirect for each:
+
+- `/apps/islamquest` (and the trailing-slash form) → `/work/islamquest`
+- `/apps/lumi` (and the trailing-slash form) → `/work/lumi`
+- `/apps/cscs-citb-hse` (and the trailing-slash form) → `/work/cscs`
+
+These are checked by Next.js before `middleware.ts`'s directory-index
+rewrite for `/apps/**`, so the redirect wins and the stale HTML is never
+served for these three paths — no code in `public/apps/{islamquest,lumi,
+cscs-citb-hse}/` needed to change. A permanent redirect (rather than
+deleting the old files) preserves any inbound-link/SEO value those URLs
+already had.
+
+The other ~35 `/apps/*` exam-prep placeholder pages (asbestos-awareness,
+aws-cloud-practitioner, etc.) have no `/work/*` equivalent yet and are
+intentionally left untouched and reachable via `middleware.ts` as before.
+
+The `internalUrl` "View product page" link was removed from the IslamQuest
+and CSCS project data (in addition to Lumi, per the spec) because it would
+now just redirect back to the very `/work/*` page the visitor is already
+on — a dead, self-referential control once the legacy pages redirect away.
+
 ## Known launch prerequisites (not blocking, but real)
 
 1. Configure `RESEND_API_KEY` / `RESEND_TO_EMAIL` (or chosen alternative)

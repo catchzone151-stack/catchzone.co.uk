@@ -4,11 +4,13 @@ import Image from "next/image";
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { viewport as viewportToken } from "@/lib/motion/tokens";
+import type { AccentTheme } from "@/data/projects";
 
 interface BannerShowcaseProps {
   src: string;
   alt: string;
   className?: string;
+  accent?: AccentTheme;
 }
 
 /**
@@ -18,7 +20,7 @@ interface BannerShowcaseProps {
  * pointer tilt and a soft settle-in entrance instead of a flat static
  * image, so it doesn't read as a placeholder rectangle.
  */
-export function BannerShowcase({ src, alt, className }: BannerShowcaseProps) {
+export function BannerShowcase({ src, alt, className, accent }: BannerShowcaseProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
@@ -67,7 +69,8 @@ export function BannerShowcase({ src, alt, className }: BannerShowcaseProps) {
           aria-hidden="true"
         />
         <div
-          className="pointer-events-none absolute inset-0 rounded-[1.6rem] ring-1 ring-inset ring-white/10"
+          className="pointer-events-none absolute inset-0 rounded-[1.6rem]"
+          style={{ boxShadow: `inset 0 0 0 1px ${accent?.ring ?? "rgba(255,255,255,0.1)"}` }}
           aria-hidden="true"
         />
       </motion.div>
