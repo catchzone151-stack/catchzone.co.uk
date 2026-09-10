@@ -116,16 +116,22 @@ export function EcosystemDiagram() {
     <div>
       {/* Desktop / tablet: dimensional radial system diagram */}
       <div className="hidden md:block">
-        <div className="relative mx-auto aspect-square w-full max-w-xl">
-          {/* atmospheric depth backdrop */}
+        <div className="relative mx-auto aspect-square w-full max-w-2xl lg:max-w-4xl">
+          {/* atmospheric depth backdrop — reframes toward the active node */}
           <div
-            className="pointer-events-none absolute inset-[-15%] rounded-full opacity-70"
+            className="pointer-events-none absolute inset-[-30%] rounded-full opacity-90 transition-[background] duration-700 ease-out"
             style={{
-              background:
-                "radial-gradient(circle, rgba(110,98,229,0.10) 0%, rgba(94,234,212,0.05) 45%, transparent 70%)",
+              background: `radial-gradient(32% 32% at ${nodePosition(active.angle).x}% ${nodePosition(active.angle).y}%, ${active.accent}26, transparent 62%), radial-gradient(circle, rgba(110,98,229,0.10) 0%, rgba(94,234,212,0.05) 45%, transparent 72%)`,
             }}
             aria-hidden="true"
           />
+          {!reducedMotion && (
+            <div
+              className="pointer-events-none absolute inset-[-8%] rounded-full border border-line/60"
+              style={{ animation: "ecosystem-spin 140s linear infinite" }}
+              aria-hidden="true"
+            />
+          )}
           <div
             className="pointer-events-none absolute inset-0 rounded-full border border-line"
             aria-hidden="true"

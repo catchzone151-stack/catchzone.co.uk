@@ -11,6 +11,7 @@ import { usePerformanceTier } from "@/lib/performance/usePerformanceTier";
 import { useDocumentVisible } from "@/hooks/useDocumentVisible";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 
 const ServicesCanvas = dynamic(() => import("@/components/canvas/ServicesCanvas"), {
   ssr: false,
@@ -135,8 +136,9 @@ export function WhatWeBuild() {
   const coreState = SERVICE_CORE_STATE[services[active]!.slug];
 
   return (
-    <section id="what-we-build" className="border-t border-line bg-void">
-      <div className="shell py-24 md:py-28">
+    <section id="what-we-build" className="relative overflow-hidden border-t border-line bg-void">
+      <AtmosphereLayer tone="cyan" />
+      <div className="shell relative z-10 py-24 md:py-28">
         <SectionHeading
           index="01"
           eyebrow="What We Build"
@@ -145,7 +147,7 @@ export function WhatWeBuild() {
         />
       </div>
 
-      <div className="shell grid gap-x-16 lg:grid-cols-2">
+      <div className="shell relative z-10 grid gap-x-16 lg:grid-cols-2">
         {showCanvas && (
           <div className="relative hidden lg:sticky lg:top-0 lg:block lg:h-screen">
             <div className="absolute inset-0 flex items-center justify-center">
@@ -168,8 +170,8 @@ export function WhatWeBuild() {
         </div>
       </div>
 
-      <div className="shell pb-24 md:pb-28">
-        <Reveal className="rounded-2xl border border-accent-iris/25 bg-surface-raised p-8 md:p-10">
+      <div className="shell relative z-10 pb-24 md:pb-28">
+        <Reveal className="max-w-2xl border-t border-accent-iris/25 pt-8">
           <span className="mono text-xs uppercase tracking-wider text-accent-iris">
             04 · Flagship Service
           </span>

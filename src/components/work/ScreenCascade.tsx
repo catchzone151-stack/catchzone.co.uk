@@ -12,15 +12,16 @@ interface ScreenCascadeProps {
 }
 
 const TRAJECTORIES = [
-  { from: { x: -160, y: 90, rotateZ: -14, rotateY: 22 }, settle: { x: -128, y: 48, rotateZ: -7, rotateY: 10 } },
-  { from: { x: 0, y: -60, rotateZ: 0, rotateY: 0 }, settle: { x: 0, y: 0, rotateZ: 0, rotateY: 0 } },
-  { from: { x: 170, y: 110, rotateZ: 15, rotateY: -20 }, settle: { x: 132, y: -42, rotateZ: 8, rotateY: -10 } },
-  { from: { x: -60, y: -130, rotateZ: 6, rotateY: -8 }, settle: { x: 46, y: 96, rotateZ: 4, rotateY: 6 } },
+  { from: { x: -220, y: 120, rotateZ: -18, rotateY: 26 }, settle: { x: -172, y: 58, rotateZ: -9, rotateY: 13 } },
+  { from: { x: 0, y: -90, rotateZ: 0, rotateY: 0 }, settle: { x: 0, y: -6, rotateZ: 0, rotateY: 0 } },
+  { from: { x: 230, y: 150, rotateZ: 17, rotateY: -24 }, settle: { x: 178, y: -50, rotateZ: 9, rotateY: -12 } },
+  { from: { x: -80, y: -170, rotateZ: 7, rotateY: -9 }, settle: { x: 62, y: 122, rotateZ: 5, rotateY: 7 } },
+  { from: { x: 90, y: -190, rotateZ: -8, rotateY: 14 }, settle: { x: -70, y: -128, rotateZ: -5, rotateY: 9 } },
 ];
 
-const DEPTH = [0, 60, 24, 40];
-const SCALE = [0.86, 1, 0.82, 0.72];
-const OPACITY = [0.7, 1, 0.72, 0.55];
+const DEPTH = [0, 60, 24, 40, 12];
+const SCALE = [0.86, 1, 0.82, 0.7, 0.62];
+const OPACITY = [0.72, 1, 0.74, 0.55, 0.42];
 
 function Card({
   src,
@@ -47,7 +48,7 @@ function Card({
 
   return (
     <motion.div
-      className="absolute aspect-[9/17.5] w-[42%]"
+      className="absolute aspect-[9/17.5] w-[38%] sm:w-[36%] md:w-[34%]"
       style={{ zIndex: 10 + depth, transformStyle: "preserve-3d" }}
       initial={{
         opacity: 0,
@@ -124,7 +125,7 @@ export function ScreenCascade({ images, alt, className }: ScreenCascadeProps) {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={`relative flex items-center justify-center ${className ?? ""}`}
-      style={{ perspective: "1600px" }}
+      style={{ perspective: "1800px" }}
     >
       <div
         className="pointer-events-none absolute inset-0 rounded-full opacity-70"

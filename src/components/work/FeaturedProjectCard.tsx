@@ -5,15 +5,19 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ScreenCascade } from "@/components/work/ScreenCascade";
 
 export function FeaturedProjectCard({ project }: { project: Project }) {
-  const cascadeShots = (project.screenshots ?? []).filter((_, i) => i % 2 === 0).slice(0, 4);
+  const shots = project.screenshots ?? [];
+  const cascadeShots =
+    shots.length >= 5
+      ? ([shots[0], shots[2], shots[4], shots[6] ?? shots[3], shots[1]].filter(Boolean) as string[])
+      : shots.filter((_, i) => i % 2 === 0).slice(0, 4);
 
   return (
-    <Reveal className="grid gap-10 overflow-hidden rounded-3xl border border-line bg-surface-raised p-8 md:grid-cols-2 md:p-12">
-      <div className="flex flex-col justify-center">
+    <Reveal className="relative grid gap-16 md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-8">
+      <div className="relative z-10 flex flex-col justify-center">
         <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
           Featured Build
         </p>
-        <h3 className="mt-4 font-display text-3xl font-bold text-ink md:text-4xl">
+        <h3 className="mt-4 font-display text-3xl font-bold text-ink md:text-4xl lg:text-5xl">
           {project.title}
         </h3>
         <p className="mt-4 text-sm font-medium text-ink-muted">
@@ -55,9 +59,13 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
       </div>
 
       {cascadeShots.length >= 2 ? (
-        <ScreenCascade images={cascadeShots} alt={project.title} className="min-h-[440px]" />
+        <ScreenCascade
+          images={cascadeShots}
+          alt={project.title}
+          className="min-h-[520px] md:min-h-[640px] md:-mr-[8%] lg:-mr-[12%]"
+        />
       ) : project.heroAsset ? (
-        <div className="relative min-h-[300px] overflow-hidden rounded-2xl border border-line">
+        <div className="relative min-h-[320px] overflow-hidden rounded-2xl">
           <Image
             src={project.heroAsset}
             alt={`${project.title} banner`}

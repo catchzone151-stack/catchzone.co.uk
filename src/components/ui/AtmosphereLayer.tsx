@@ -1,3 +1,3 @@
-export function AtmosphereLayer() {
-  return <div className="atmosphere" aria-hidden="true" />;
+export function AtmosphereLayer({ tone }: { tone?: "cyan" | "iris" }) {
+  return <div className="atmosphere" data-tone={tone} aria-hidden="true" />;
 }

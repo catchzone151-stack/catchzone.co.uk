@@ -56,11 +56,11 @@ export const phaseTargets: Record<IntroPhase, PhaseTarget> = {
     screenIntensity: 1,
   },
   hero: {
-    camera: [0.55, 0.02, 6.5],
-    lookAt: [0.45, -0.05, 0],
-    phone: { pos: [-0.55, -0.5, -0.9], rot: [0.04, 0.34, 0.01], scale: 0.78, opacity: 0.92 },
-    platform: { pos: [2.05, -0.1, -0.9], rot: [0, -0.24, 0], scale: 1.02, opacity: 0.95 },
-    beamOpacity: 0.45,
-    screenIntensity: 0.9,
+    camera: [0.3, 0.04, 5.1],
+    lookAt: [0.2, -0.05, 0],
+    phone: { pos: [-0.1, -0.3, -0.5], rot: [0.04, 0.32, 0.01], scale: 1.45, opacity: 0.96 },
+    platform: { pos: [2.35, -0.05, -1.25], rot: [0, -0.2, 0], scale: 1.75, opacity: 0.95 },
+    beamOpacity: 0.5,
+    screenIntensity: 0.95,
   },
 };

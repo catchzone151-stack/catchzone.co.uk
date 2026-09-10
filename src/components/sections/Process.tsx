@@ -46,7 +46,7 @@ export function Process() {
       id="process"
       className="relative overflow-hidden border-t border-line bg-surface py-24 md:py-32"
     >
-      <AtmosphereLayer />
+      <AtmosphereLayer tone="iris" />
       <div className="shell relative z-10">
         <SectionHeading
           index="06"
@@ -83,9 +83,13 @@ export function Process() {
           </ol>
         </div>
 
-        <div className="mt-20 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3">
+        <div className="mt-20 grid gap-10 sm:grid-cols-3 sm:gap-8">
           {values.map((value, i) => (
-            <Reveal key={value.title} delay={i * 0.06} className="bg-surface-raised p-7">
+            <Reveal
+              key={value.title}
+              delay={i * 0.06}
+              className="border-t border-accent-cyan/25 pt-6"
+            >
               <h3 className="font-display text-base font-bold text-ink">
                 {value.title}
               </h3>

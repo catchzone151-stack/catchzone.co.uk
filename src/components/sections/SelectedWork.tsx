@@ -13,7 +13,7 @@ export function SelectedWork() {
       id="work"
       className="relative overflow-hidden border-t border-line bg-void py-24 md:py-32"
     >
-      <AtmosphereLayer />
+      <AtmosphereLayer tone="cyan" />
       <div className="shell relative z-10">
         <SectionHeading
           index="05"

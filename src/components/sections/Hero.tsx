@@ -93,12 +93,12 @@ export function Hero() {
         )}
       </motion.div>
 
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-void via-void/35 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-void via-void/30 to-transparent" />
       <div
         className="pointer-events-none absolute inset-0 z-[1]"
         style={{
           background:
-            "linear-gradient(100deg, #040406 0%, rgba(4,4,6,0.82) 26%, rgba(4,4,6,0.42) 46%, transparent 64%)",
+            "linear-gradient(100deg, rgba(4,4,6,0.7) 0%, rgba(4,4,6,0.34) 22%, transparent 46%)",
         }}
         aria-hidden="true"
       />
@@ -117,38 +117,38 @@ export function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={phase === "hero" ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-3xl"
         >
           <p className="mono text-xs uppercase tracking-[0.3em] text-accent-cyan">
             Digital Product &amp; Engineering Studio
           </p>
-          <h1 className="mt-6 font-display text-4xl font-bold leading-[1.05] text-ink sm:text-5xl md:text-6xl lg:text-7xl">
+          <h1 className="relative z-10 mt-6 max-w-5xl font-display text-4xl font-bold leading-[1.02] text-ink sm:text-6xl md:text-7xl lg:text-[5.5rem] lg:leading-[0.98]">
             We build digital products that move your business forward.
           </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
-            Apps. Web platforms. Business systems. Complete digital
-            ecosystems — designed and engineered as one connected build.
-          </p>
-
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <MagneticLink
-              href="/start-a-project"
-              className="rounded-full bg-ink px-7 py-3.5 text-sm font-semibold text-void transition-colors hover:bg-accent-cyan"
-            >
-              Start a Project
-            </MagneticLink>
-            <Link
-              href="/services"
-              className="group flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-accent-cyan"
-            >
-              Explore Capabilities
-              <span
-                aria-hidden="true"
-                className="transition-transform group-hover:translate-x-1"
+          <div className="mt-8 flex flex-col items-start gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <p className="max-w-md text-base leading-relaxed text-ink-muted md:text-lg">
+              Apps. Web platforms. Business systems. Complete digital
+              ecosystems — designed and engineered as one connected build.
+            </p>
+            <div className="flex flex-wrap items-center gap-4">
+              <MagneticLink
+                href="/start-a-project"
+                className="rounded-full bg-ink px-7 py-3.5 text-sm font-semibold text-void transition-colors hover:bg-accent-cyan"
               >
-                →
-              </span>
-            </Link>
+                Start a Project
+              </MagneticLink>
+              <Link
+                href="/services"
+                className="group flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-accent-cyan"
+              >
+                Explore Capabilities
+                <span
+                  aria-hidden="true"
+                  className="transition-transform group-hover:translate-x-1"
+                >
+                  →
+                </span>
+              </Link>
+            </div>
           </div>
         </motion.div>
       </motion.div>

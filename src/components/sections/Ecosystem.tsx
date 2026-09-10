@@ -1,14 +1,16 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EcosystemDiagram } from "@/components/sections/EcosystemDiagram";
+import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 import { flagshipService } from "@/data/services";
 
 export function Ecosystem() {
   return (
     <section
       id="ecosystem"
-      className="border-t border-line bg-surface py-24 md:py-32"
+      className="relative overflow-hidden border-t border-line bg-surface py-24 md:py-32"
     >
-      <div className="shell">
+      <AtmosphereLayer tone="iris" />
+      <div className="shell relative z-10">
         <SectionHeading
           index={flagshipService.index}
           eyebrow="Flagship Service"

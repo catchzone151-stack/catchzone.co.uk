@@ -35,8 +35,8 @@ function CameraRig({ phase, allowParallax }: { phase: IntroPhase; allowParallax:
     let [x, y, z] = target.camera;
     z *= distanceScale;
     if (allowParallax && phase === "hero") {
-      x += pointer.x * 0.5;
-      y += pointer.y * 0.26;
+      x += pointer.x * 0.85;
+      y += pointer.y * 0.4;
     }
 
     camera.position.lerp(new THREE.Vector3(x, y, z), t);
