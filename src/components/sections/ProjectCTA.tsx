@@ -15,7 +15,7 @@ export function ProjectCTA() {
       <div className="shell relative text-center">
         <Reveal className="mx-auto max-w-2xl">
           <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
-            08 · Start a Build
+            07 · Start a Build
           </p>
           <h2 className="mt-5 font-display text-3xl font-bold text-ink sm:text-4xl md:text-5xl">
             Bring us the problem. We&apos;ll help you build the product.

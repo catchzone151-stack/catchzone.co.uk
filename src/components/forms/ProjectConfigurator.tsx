@@ -95,6 +95,7 @@ export function ProjectConfigurator() {
     phone: "",
     description: "",
   });
+  const [website, setWebsite] = useState("");
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
   const headingRef = useRef<HTMLHeadingElement>(null);
 
@@ -132,7 +133,7 @@ export function ProjectConfigurator() {
       const res = await fetch("/api/start-a-project", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(brief),
+        body: JSON.stringify({ ...brief, website }),
       });
       const data = await res.json();
       if (data.ok) {
@@ -274,6 +275,21 @@ export function ProjectConfigurator() {
               >
                 Tell us about the project
               </h2>
+
+              {/* Honeypot — hidden from real visitors, catches basic bots */}
+              <div className="absolute left-[-9999px] top-auto h-0 w-0 overflow-hidden" aria-hidden="true">
+                <label htmlFor="website">Leave this field empty</label>
+                <input
+                  id="website"
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+              </div>
+
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
                 <div className="sm:col-span-1">
                   <label htmlFor="name" className="mono text-xs uppercase tracking-wider text-ink-faint">

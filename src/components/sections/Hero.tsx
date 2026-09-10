@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { useIntro } from "@/lib/intro/IntroContext";
 import { useDocumentVisible } from "@/hooks/useDocumentVisible";
 import { IntroOverlay } from "@/components/sections/IntroOverlay";
@@ -23,6 +23,16 @@ export function Hero() {
   const documentVisible = useDocumentVisible();
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const [mounted, setMounted] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const canvasOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.25]);
+  const canvasScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   useEffect(() => setMounted(true), []);
 
@@ -57,10 +67,14 @@ export function Hero() {
 
   return (
     <section
+      ref={sectionRef}
       id="hero"
       className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden bg-void pb-20 pt-32 sm:justify-center sm:pb-0"
     >
-      <div className="absolute inset-0 z-0">
+      <motion.div
+        className="absolute inset-0 z-0"
+        style={tier !== "safe" ? { opacity: canvasOpacity, scale: canvasScale } : undefined}
+      >
         {showCanvas ? (
           <SceneCanvas
             phase={phase}
@@ -77,7 +91,7 @@ export function Hero() {
             }}
           />
         )}
-      </div>
+      </motion.div>
 
       <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-void via-void/35 to-transparent" />
       <div
@@ -95,7 +109,10 @@ export function Hero() {
         <IntroOverlay phase={phase} onSkip={skip} />
       )}
 
-      <div className="shell relative z-10">
+      <motion.div
+        className="shell relative z-10"
+        style={tier !== "safe" ? { y: contentY, opacity: contentOpacity } : undefined}
+      >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={phase === "hero" ? { opacity: 1, y: 0 } : {}}
@@ -134,7 +151,7 @@ export function Hero() {
             </Link>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 }

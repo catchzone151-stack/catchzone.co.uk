@@ -1,4 +1,4 @@
-export type ProjectStatus = "live" | "in-development";
+export type ProjectStatus = "live" | "in-development" | "product-lab";
 
 export interface Project {
   slug: string;
@@ -18,13 +18,22 @@ export interface Project {
   liveUrl?: string;
   appStoreUrl?: string;
   playStoreUrl?: string;
-  internalUrl: string;
+  internalUrl?: string;
 }
 
+const STATUS_LABEL: Record<ProjectStatus, string> = {
+  live: "Live",
+  "in-development": "In Development",
+  "product-lab": "Product Lab",
+};
+
+export { STATUS_LABEL };
+
 /**
- * Only verified CatchZone products with real, shippable substance live here.
- * Placeholder roadmap pages are represented separately in roadmapCategories —
- * they are not dressed up as case studies.
+ * The principal builds CatchZone shows as proof. Every field here is either
+ * verified project fact or omitted — nothing is invented to fill a gap.
+ * Status taxonomy: live / in-development / product-lab (named but not yet
+ * publicly detailed) — see STATUS_LABEL.
  */
 export const projects: Project[] = [
   {
@@ -74,19 +83,48 @@ export const projects: Project[] = [
     shortDescription:
       "A privacy-safe period tracker designed for teenagers.",
     type: "Mobile App",
-    status: "in-development",
-    statusLabel: "In development",
+    status: "live",
+    statusLabel: "Live",
+    featured: true,
     heroAsset: "/assets/images/Lumi/LumiBanner.png",
     capabilities: [
       "Privacy-first data model — no unnecessary personal data collected",
       "Supabase-backed account and data layer",
       "Interface designed specifically for a teenage audience",
+      "No ads, no tracking, no third-party data sharing",
     ],
     internalUrl: "/apps/lumi/",
   },
+  {
+    slug: "cscs",
+    title: "CSCS Exam Prep",
+    shortDescription:
+      "Exam preparation for the CSCS / CITB Health, Safety & Environment test and CSCS card routes.",
+    type: "Mobile App",
+    status: "product-lab",
+    statusLabel: "Product Lab · Coming Soon",
+    featured: true,
+    capabilities: [
+      "CSCS / CITB HS&E test question practice",
+      "CSCS card route reference (CSCS MAP)",
+      "Part of CatchZone's Construction & Trades product line",
+    ],
+    internalUrl: "/apps/cscs-citb-hse/",
+  },
+  {
+    slug: "rawdah-cycle",
+    title: "Rawdah Cycle",
+    shortDescription: "Announced internally — not yet publicly detailed.",
+    type: "Mobile App",
+    status: "product-lab",
+    statusLabel: "Product Lab · Details Coming Soon",
+    featured: true,
+    capabilities: [],
+  },
 ];
 
-export const featuredProject = projects.find((p) => p.featured) ?? projects[0]!;
+export const featuredProjects = projects.filter((p) => p.featured);
+export const featuredProject = featuredProjects[0] ?? projects[0]!;
 
 export interface RoadmapCategory {
   name: string;

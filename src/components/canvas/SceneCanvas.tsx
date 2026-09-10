@@ -7,6 +7,9 @@ import type { IntroPhase } from "@/lib/intro/IntroContext";
 import { phaseTargets } from "@/lib/three/phaseTargets";
 import {
   ConnectionBeam,
+  DataPacket,
+  InterfaceFragments,
+  NearParticleField,
   ParticleField,
   PhoneAssembly,
   PlatformAssembly,
@@ -32,8 +35,8 @@ function CameraRig({ phase, allowParallax }: { phase: IntroPhase; allowParallax:
     let [x, y, z] = target.camera;
     z *= distanceScale;
     if (allowParallax && phase === "hero") {
-      x += pointer.x * 0.35;
-      y += pointer.y * 0.18;
+      x += pointer.x * 0.5;
+      y += pointer.y * 0.26;
     }
 
     camera.position.lerp(new THREE.Vector3(x, y, z), t);
@@ -80,9 +83,12 @@ export default function SceneCanvas({
 
       <CameraRig phase={phase} allowParallax={allowParallax} />
       <ParticleField count={particleCount} />
+      <NearParticleField />
+      <InterfaceFragments phase={phase} />
       <PhoneAssembly phase={phase} />
       <PlatformAssembly phase={phase} />
       <ConnectionBeam phase={phase} />
+      <DataPacket phase={phase} />
     </Canvas>
   );
 }

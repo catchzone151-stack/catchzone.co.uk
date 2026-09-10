@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { featuredProject, projects, roadmapCategories } from "@/data/projects";
+import { featuredProjects } from "@/data/projects";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FeaturedProjectCard } from "@/components/work/FeaturedProjectCard";
 import { ProjectCard } from "@/components/work/ProjectCard";
-import { Reveal } from "@/components/ui/Reveal";
 
 export function SelectedWork() {
-  const secondary = projects.filter((p) => p.slug !== featuredProject.slug);
+  const [hero, ...rest] = featuredProjects;
 
   return (
     <section
@@ -21,39 +20,29 @@ export function SelectedWork() {
           description="Every product here is our own — built, shipped and maintained by the same team that would build yours."
         />
 
-        <div className="mt-16">
-          <FeaturedProjectCard project={featuredProject} />
-        </div>
+        {hero && (
+          <div className="mt-16">
+            <FeaturedProjectCard project={hero} />
+          </div>
+        )}
 
-        {secondary.length > 0 && (
+        {rest.length > 0 && (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {secondary.map((project, i) => (
+            {rest.map((project, i) => (
               <ProjectCard key={project.slug} project={project} delay={i * 0.06} />
             ))}
           </div>
         )}
 
-        <Reveal className="mt-14 rounded-2xl border border-line bg-surface p-8 md:p-10">
-          <p className="mono text-xs uppercase tracking-[0.25em] text-ink-faint">
-            Product Lab
-          </p>
-          <h3 className="mt-3 font-display text-xl font-bold text-ink md:text-2xl">
-            A wider roadmap of category-specific products
-          </h3>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-muted">
-            Beyond the products above, CatchZone maintains an active roadmap
-            across {roadmapCategories.length} product categories — each with
-            a reserved destination on the site, honestly labelled as
-            in-progress rather than dressed up as finished work.
-          </p>
+        <div className="mt-10 text-center">
           <Link
             href="/work"
-            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent-cyan"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-accent-cyan"
           >
-            See the full roadmap
+            See the full body of work
             <span aria-hidden="true">→</span>
           </Link>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

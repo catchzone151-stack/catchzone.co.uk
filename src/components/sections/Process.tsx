@@ -25,6 +25,21 @@ const stages = [
   },
 ];
 
+const values = [
+  {
+    title: "One Connected Build",
+    body: "Design and engineering aren't handed between unrelated teams — the same people carry a product from architecture through launch.",
+  },
+  {
+    title: "Built Around The Business",
+    body: "No forcing a business into a generic template. Architecture and interface follow how the product actually needs to work.",
+  },
+  {
+    title: "Real Products, Real Infrastructure",
+    body: "CatchZone's own products run on the same kind of stack we build for clients — including production Supabase-backed accounts and data.",
+  },
+];
+
 export function Process() {
   return (
     <section
@@ -35,8 +50,8 @@ export function Process() {
       <div className="shell relative z-10">
         <SectionHeading
           index="06"
-          eyebrow="Process"
-          title="One build. Four stages."
+          eyebrow="Process & Value"
+          title="One build. Four stages. Built to last."
           description="Design and engineering move together, not handed between disconnected teams."
         />
 
@@ -66,6 +81,19 @@ export function Process() {
               </Reveal>
             ))}
           </ol>
+        </div>
+
+        <div className="mt-20 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3">
+          {values.map((value, i) => (
+            <Reveal key={value.title} delay={i * 0.06} className="bg-surface-raised p-7">
+              <h3 className="font-display text-base font-bold text-ink">
+                {value.title}
+              </h3>
+              <p className="mt-2.5 text-sm leading-relaxed text-ink-muted">
+                {value.body}
+              </p>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>

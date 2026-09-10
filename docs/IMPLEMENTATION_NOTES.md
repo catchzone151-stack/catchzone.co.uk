@@ -79,8 +79,25 @@ flow from the brief. It posts to `POST /api/start-a-project`
 
 **To enable automatic sending before launch:** create a Resend account (or
 swap in an equivalent provider), set `RESEND_API_KEY` and
-`RESEND_TO_EMAIL` in the deployment environment, and redeploy — no code
-changes required.
+`RESEND_TO_EMAIL` (default/documented destination: `info@catchzone.co.uk`)
+in the deployment environment, and redeploy — no code changes required.
+This is the exact one remaining step to make the configurator send
+automatically; the API key is never exposed client-side (it's read from
+`process.env` inside the server-only route handler).
+
+**Hardening already in place (Phase 3):**
+- Server-side validation of every field (email format, option ids checked
+  against the real `project-config.ts` lists, length caps on all text
+  fields) — the client-side selection UI is not trusted.
+- A hidden honeypot field (`website`); a filled value is treated as a bot
+  and silently reports success without sending or logging anything real.
+- A practical in-memory per-IP rate limit (5 submissions / 10 minutes).
+  This resets on redeploy and is scoped to a single Node process — correct
+  for the current single-instance `next start` deployment. If CatchZone
+  ever moves to a multi-instance/edge deployment, swap this for a shared
+  store (e.g. Upstash Redis) rather than assuming it still holds.
+- Reply-To is set to the enquirer's own (validated) email so replying in
+  an inbox goes straight back to them.
 
 ## Analytics
 

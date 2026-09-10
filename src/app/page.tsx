@@ -4,7 +4,6 @@ import { WhatWeBuild } from "@/components/sections/WhatWeBuild";
 import { Ecosystem } from "@/components/sections/Ecosystem";
 import { SelectedWork } from "@/components/sections/SelectedWork";
 import { Process } from "@/components/sections/Process";
-import { WhyCatchZone } from "@/components/sections/WhyCatchZone";
 import { ProjectCTA } from "@/components/sections/ProjectCTA";
 
 export const metadata: Metadata = {
@@ -19,7 +18,6 @@ export default function HomePage() {
       <Ecosystem />
       <SelectedWork />
       <Process />
-      <WhyCatchZone />
       <ProjectCTA />
     </>
   );

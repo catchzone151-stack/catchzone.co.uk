@@ -59,12 +59,16 @@ function UIBlocks({
     [],
   );
   const mats = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
+  const clock = useRef(0);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
+    clock.current += delta;
     mats.current.forEach((m, idx) => {
       if (!m) return;
       const base = blocks[idx]!.i;
-      m.emissiveIntensity = base * opacityRef.current;
+      // gentle per-block shimmer so a settled screen still reads as "live"
+      const shimmer = 1 + Math.sin(clock.current * 0.8 + idx * 1.7) * 0.12;
+      m.emissiveIntensity = base * shimmer * opacityRef.current;
       m.opacity = opacityRef.current;
     });
   });
@@ -100,6 +104,8 @@ export function PhoneAssembly({ phase }: DeviceProps) {
   const cameraMat = useRef<THREE.MeshStandardMaterial>(null);
   const screenOpacity = useRef(0);
 
+  const edgeClock = useRef(0);
+
   useFrame((_, delta) => {
     if (!group.current) return;
     const target = phaseTargets[phase].phone;
@@ -113,6 +119,12 @@ export function PhoneAssembly({ phase }: DeviceProps) {
     const t = 1 - Math.exp(-LERP_SPEED * delta);
     const screenTarget = phaseTargets[phase].screenIntensity;
     screenOpacity.current = THREE.MathUtils.lerp(screenOpacity.current, screenTarget, t);
+
+    // soft reflected light travelling along the edge accent
+    edgeClock.current += delta;
+    if (edgeMat.current) {
+      edgeMat.current.opacity *= 0.8 + Math.sin(edgeClock.current * 0.6) * 0.2;
+    }
   });
 
   return (
@@ -272,6 +284,7 @@ export function PlatformAssembly({ phase }: DeviceProps) {
   const rearMat = useRef<THREE.MeshStandardMaterial>(null);
   const rearEdgeMat = useRef<THREE.LineBasicMaterial>(null);
   const nodeOpacity = useRef(0);
+  const edgeClock = useRef(0);
 
   useFrame((_, delta) => {
     if (!group.current) return;
@@ -285,6 +298,13 @@ export function PlatformAssembly({ phase }: DeviceProps) {
       rearMat.current!,
       rearEdgeMat.current!,
     ]);
+
+    edgeClock.current += delta;
+    const shimmer = 0.8 + Math.sin(edgeClock.current * 0.5) * 0.2;
+    if (frontEdgeMat.current) frontEdgeMat.current.opacity *= shimmer;
+    if (midEdgeMat.current) midEdgeMat.current.opacity *= 0.8 + Math.sin(edgeClock.current * 0.5 + 1.4) * 0.2;
+    if (rearEdgeMat.current) rearEdgeMat.current.opacity *= 0.8 + Math.sin(edgeClock.current * 0.5 + 2.8) * 0.2;
+
     const t = 1 - Math.exp(-LERP_SPEED * delta);
     nodeOpacity.current = THREE.MathUtils.lerp(
       nodeOpacity.current,
@@ -442,5 +462,104 @@ export function ParticleField({ count }: { count: number }) {
       </bufferGeometry>
       <pointsMaterial size={0.018} color="#828b9a" transparent opacity={0.55} sizeAttenuation />
     </points>
+  );
+}
+
+/**
+ * A handful of larger, closer, slower particles — depth variety alongside
+ * the distant star field rather than just more of the same dots.
+ */
+export function NearParticleField({ count = 18 }: { count?: number }) {
+  const points = useRef<THREE.Points>(null);
+  const seeds = useMemo(
+    () =>
+      Array.from({ length: count }, () => ({
+        pos: new THREE.Vector3(
+          (Math.random() - 0.5) * 7,
+          (Math.random() - 0.5) * 4,
+          Math.random() * -3 + 1,
+        ),
+        speed: 0.04 + Math.random() * 0.06,
+        phase: Math.random() * Math.PI * 2,
+      })),
+    [count],
+  );
+  const positions = useMemo(() => new Float32Array(count * 3), [count]);
+
+  useFrame(({ clock }) => {
+    if (!points.current) return;
+    const t = clock.getElapsedTime();
+    seeds.forEach((s, i) => {
+      positions[i * 3] = s.pos.x + Math.sin(t * s.speed + s.phase) * 0.4;
+      positions[i * 3 + 1] = s.pos.y + Math.cos(t * s.speed * 0.8 + s.phase) * 0.3;
+      positions[i * 3 + 2] = s.pos.z;
+    });
+    const attr = points.current.geometry.getAttribute("position") as THREE.BufferAttribute;
+    attr.needsUpdate = true;
+  });
+
+  return (
+    <points ref={points}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial size={0.05} color="#5eead4" transparent opacity={0.35} sizeAttenuation />
+    </points>
+  );
+}
+
+/**
+ * Small drifting line-frame fragments in Z-space around the device group —
+ * a restrained hint of other interface surfaces nearby, not full objects.
+ */
+export function InterfaceFragments({ phase }: DeviceProps) {
+  const configs = useMemo(
+    () => [
+      { pos: [-3.2, 1.1, -1.8] as [number, number, number], size: [0.5, 0.32] as [number, number], speed: 0.15 },
+      { pos: [3.6, -1.4, -2.2] as [number, number, number], size: [0.36, 0.5] as [number, number], speed: 0.11 },
+      { pos: [1.6, 1.7, -2.6] as [number, number, number], size: [0.42, 0.26] as [number, number], speed: 0.18 },
+    ],
+    [],
+  );
+
+  return (
+    <>
+      {configs.map((c, i) => (
+        <DriftFragment key={i} config={c} phase={phase} index={i} />
+      ))}
+    </>
+  );
+}
+
+function DriftFragment({
+  config,
+  phase,
+  index,
+}: {
+  config: { pos: [number, number, number]; size: [number, number]; speed: number };
+  phase: IntroPhase;
+  index: number;
+}) {
+  const group = useRef<THREE.Group>(null);
+  const mat = useRef<THREE.LineBasicMaterial>(null);
+  const clock = useRef(index * 1.3);
+
+  useFrame((_, delta) => {
+    if (!group.current || !mat.current) return;
+    clock.current += delta;
+    group.current.position.y = config.pos[1] + Math.sin(clock.current * config.speed) * 0.3;
+    group.current.rotation.z = Math.sin(clock.current * config.speed * 0.6) * 0.08;
+
+    const target = phaseTargets[phase].beamOpacity > 0.05 ? 0.28 : 0;
+    mat.current.opacity = THREE.MathUtils.lerp(mat.current.opacity, target, 1 - Math.exp(-1.4 * delta));
+  });
+
+  return (
+    <group ref={group} position={config.pos}>
+      <lineSegments>
+        <edgesGeometry args={[new THREE.PlaneGeometry(config.size[0], config.size[1])]} />
+        <lineBasicMaterial ref={mat} color="#828b9a" transparent opacity={0} />
+      </lineSegments>
+    </group>
   );
 }

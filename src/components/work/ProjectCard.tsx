@@ -1,7 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Project } from "@/data/projects";
+import type { Project, ProjectStatus } from "@/data/projects";
 import { Reveal } from "@/components/ui/Reveal";
+
+const STATUS_STYLE: Record<ProjectStatus, string> = {
+  live: "text-accent-cyan",
+  "in-development": "text-accent-iris",
+  "product-lab": "text-ink-faint",
+};
 
 export function ProjectCard({ project, delay = 0 }: { project: Project; delay?: number }) {
   return (
@@ -19,9 +25,12 @@ export function ProjectCard({ project, delay = 0 }: { project: Project; delay?: 
               className="object-cover transition-transform duration-500 ease-cinematic group-hover:scale-105"
             />
           ) : (
-            <div className="flex h-full items-center justify-center">
-              <span className="mono text-xs uppercase tracking-widest text-ink-faint">
+            <div className="flex h-full flex-col items-center justify-center gap-2 bg-[radial-gradient(circle_at_50%_40%,rgba(110,98,229,0.08),transparent_65%)]">
+              <span className="mono text-[10px] uppercase tracking-[0.2em] text-ink-faint">
                 {project.type}
+              </span>
+              <span className="mono text-xs uppercase tracking-widest text-ink-faint/70">
+                {project.title}
               </span>
             </div>
           )}
@@ -36,7 +45,7 @@ export function ProjectCard({ project, delay = 0 }: { project: Project; delay?: 
           <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-muted">
             {project.shortDescription}
           </p>
-          <p className="mt-4 text-xs font-medium text-accent-cyan">
+          <p className={`mt-4 text-xs font-medium ${STATUS_STYLE[project.status]}`}>
             {project.statusLabel}
           </p>
         </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { featuredProject, projects, roadmapCategories } from "@/data/projects";
+import { featuredProjects, roadmapCategories } from "@/data/projects";
 import { FeaturedProjectCard } from "@/components/work/FeaturedProjectCard";
 import { ProjectCard } from "@/components/work/ProjectCard";
 import { Reveal } from "@/components/ui/Reveal";
@@ -8,11 +8,15 @@ import { Reveal } from "@/components/ui/Reveal";
 export const metadata: Metadata = {
   title: "Work",
   description:
-    "Real CatchZone products — mobile apps, platforms and the wider product roadmap.",
+    "Real CatchZone products — live apps, in-development builds and the wider product roadmap.",
+  alternates: { canonical: "/work" },
 };
 
 export default function WorkPage() {
-  const secondary = projects.filter((p) => p.slug !== featuredProject.slug);
+  const [hero, ...rest] = featuredProjects;
+  const live = rest.filter((p) => p.status === "live");
+  const productLab = rest.filter((p) => p.status === "product-lab");
+  const inDevelopment = rest.filter((p) => p.status === "in-development");
 
   return (
     <div className="pt-32">
@@ -26,36 +30,45 @@ export default function WorkPage() {
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted">
             No client logos to show yet — every product below is our own,
-            which means nothing here is dressed up.
+            which means nothing here is dressed up. Status is labelled
+            honestly: live, in development, or product lab.
           </p>
         </div>
       </section>
 
-      <section className="py-16 md:py-20">
-        <div className="shell">
-          <FeaturedProjectCard project={featuredProject} />
-        </div>
-      </section>
-
-      {secondary.length > 0 && (
-        <section className="pb-16 md:pb-20">
+      {hero && (
+        <section className="py-16 md:py-20">
           <div className="shell">
-            <h2 className="font-display text-xl font-bold text-ink">
-              In Development
-            </h2>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {secondary.map((project, i) => (
-                <ProjectCard key={project.slug} project={project} delay={i * 0.06} />
-              ))}
-            </div>
+            <FeaturedProjectCard project={hero} />
           </div>
         </section>
       )}
 
+      {[
+        { label: "Live", items: live },
+        { label: "In Development", items: inDevelopment },
+        { label: "Product Lab", items: productLab },
+      ]
+        .filter((group) => group.items.length > 0)
+        .map((group) => (
+          <section key={group.label} className="pb-16 md:pb-20">
+            <div className="shell">
+              <h2 className="font-display text-xl font-bold text-ink">
+                {group.label}
+              </h2>
+              <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {group.items.map((project, i) => (
+                  <ProjectCard key={project.slug} project={project} delay={i * 0.06} />
+                ))}
+              </div>
+            </div>
+          </section>
+        ))}
+
       <section className="border-t border-line bg-surface py-16 md:py-20">
         <div className="shell">
           <h2 className="font-display text-xl font-bold text-ink">
-            Product Lab &amp; Roadmap
+            Wider Roadmap
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-muted">
             Category hubs already reserved on the site for upcoming CatchZone
