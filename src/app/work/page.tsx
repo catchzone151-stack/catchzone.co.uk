@@ -30,8 +30,9 @@ export default function WorkPage() {
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted">
             Every product below is CatchZone&apos;s own — designed, built and
-            shipped by the same team that would build yours. Each one is
-            labelled clearly: live, in development, or product lab.
+            shipped end-to-end with the same connected build approach used
+            for client work. Each one is labelled clearly: live, in
+            development, or product lab.
           </p>
         </div>
       </section>

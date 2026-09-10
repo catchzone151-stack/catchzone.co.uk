@@ -6,8 +6,9 @@ import { projects, STATUS_LABEL, type ProjectStatus } from "@/data/projects";
 import { Reveal } from "@/components/ui/Reveal";
 import { MagneticLink } from "@/components/ui/MagneticLink";
 import { ScreenCascade } from "@/components/work/ScreenCascade";
+import { BannerShowcase } from "@/components/work/BannerShowcase";
 import { getIslamQuestHeroShots } from "@/lib/work/islamquestShots";
-import { GooglePlayIcon } from "@/components/icons/GooglePlayIcon";
+import { StoreBadges } from "@/components/work/StoreBadges";
 
 const STATUS_BADGE_STYLE: Record<ProjectStatus, string> = {
   live: "border-accent-cyan/30 text-accent-cyan",
@@ -19,12 +20,13 @@ export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
-}): Metadata {
-  const project = projects.find((p) => p.slug === params.slug);
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const project = projects.find((p) => p.slug === slug);
   if (!project) return {};
   return {
     title: project.title,
@@ -33,8 +35,13 @@ export function generateMetadata({
   };
 }
 
-export default function ProjectPage({ params }: { params: { slug: string } }) {
-  const project = projects.find((p) => p.slug === params.slug);
+export default async function ProjectPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const project = projects.find((p) => p.slug === slug);
   if (!project) notFound();
 
   const allShots = project.screenshots ?? [];
@@ -75,17 +82,8 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
             </span>
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            {project.playStoreUrl && (
-              <MagneticLink
-                href={project.playStoreUrl}
-                external
-                className="flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-void"
-              >
-                <GooglePlayIcon className="h-5 w-5" />
-                Get it on Google Play
-              </MagneticLink>
-            )}
+          <div className="mt-8 flex flex-wrap items-end gap-6">
+            <StoreBadges playStoreUrl={project.playStoreUrl} appStoreUrl={project.appStoreUrl} />
             {project.internalUrl && (
               <Link
                 href={project.internalUrl}
@@ -107,14 +105,29 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
       ) : project.heroAsset ? (
         <section className="py-16">
           <div className="shell">
-            <Reveal className="overflow-hidden rounded-2xl border border-line">
-              <Image
-                src={project.heroAsset}
-                alt={`${project.title} banner`}
-                width={1600}
-                height={900}
-                className="w-full object-cover"
-              />
+            <BannerShowcase src={project.heroAsset} alt={`${project.title} product overview`} className="max-w-3xl" />
+          </div>
+        </section>
+      ) : project.status === "live" && project.brandGradient ? (
+        <section className="py-16">
+          <div className="shell">
+            <Reveal
+              className="flex min-h-[280px] flex-col items-center justify-center rounded-2xl p-10 text-center"
+              style={{
+                background: `linear-gradient(135deg, ${project.brandGradient[0]} 0%, ${project.brandGradient[1]} 100%)`,
+              }}
+            >
+              <p className="font-display text-2xl font-bold text-white drop-shadow-sm md:text-3xl">
+                {project.title}
+              </p>
+              <p className="mono mt-3 text-xs uppercase tracking-[0.25em] text-white/80">
+                Live on Google Play
+              </p>
+              <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/85">
+                Individual screen captures for this product aren&apos;t
+                published on the site yet — the listing on Google Play has
+                the full gallery.
+              </p>
             </Reveal>
           </div>
         </section>

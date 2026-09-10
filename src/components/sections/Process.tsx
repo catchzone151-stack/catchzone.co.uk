@@ -34,7 +34,7 @@ const stages = [
 const values = [
   {
     title: "One Connected Build",
-    body: "Design and engineering aren't handed between unrelated teams — the same people carry a product from architecture through launch.",
+    body: "Design and engineering aren't handed between unrelated teams — one connected build approach carries a product from architecture through launch.",
   },
   {
     title: "Built Around The Business",

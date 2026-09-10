@@ -27,7 +27,7 @@ export default function WebServicePage() {
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-ink-muted">
             The composition, motion and spatial work you&apos;re looking at
-            right now — intro, dimensional hero, the reconfiguring system
+            right now — the dimensional hero, the reconfiguring system
             behind this page — is the same engineering discipline we bring
             to a client web platform.
           </p>

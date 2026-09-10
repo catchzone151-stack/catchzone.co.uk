@@ -101,7 +101,7 @@ export function WhatWeBuild() {
           index="01"
           eyebrow="What We Build"
           title="Three disciplines. One connected build."
-          description="Every engagement draws on the same team and the same architecture. Scroll to see each capability take shape."
+          description="Every engagement draws on the same connected build approach and architecture. Scroll to see each capability take shape."
         />
       </div>
 

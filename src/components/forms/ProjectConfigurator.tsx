@@ -18,6 +18,7 @@ type SubmitState =
   | { status: "error" };
 
 const TOTAL_STEPS = 5;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function buildMailto(brief: ProjectBrief) {
   const subject = `Project brief — ${brief.name}${brief.company ? ` (${brief.company})` : ""}`;
@@ -97,6 +98,7 @@ export function ProjectConfigurator() {
   });
   const [website, setWebsite] = useState("");
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   function goTo(nextStep: number) {
@@ -126,8 +128,29 @@ export function ProjectConfigurator() {
     ...contact,
   };
 
+  function validateContact(): Record<string, string> {
+    const errors: Record<string, string> = {};
+    if (!contact.name.trim()) errors.name = "Please enter your name.";
+    if (!contact.email.trim()) {
+      errors.email = "Please enter your email.";
+    } else if (!EMAIL_RE.test(contact.email.trim())) {
+      errors.email = "Please enter a valid email address.";
+    }
+    if (!contact.description.trim()) {
+      errors.description = "Tell us a little about what you're building.";
+    }
+    return errors;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    const errors = validateContact();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+    setFieldErrors({});
     setSubmitState({ status: "submitting" });
     try {
       const res = await fetch("/api/start-a-project", {
@@ -298,10 +321,17 @@ export function ProjectConfigurator() {
                   <input
                     id="name"
                     required
+                    aria-invalid={Boolean(fieldErrors.name)}
+                    aria-describedby={fieldErrors.name ? "name-error" : undefined}
                     value={contact.name}
                     onChange={(e) => setContact({ ...contact, name: e.target.value })}
-                    className="mt-2 w-full rounded-lg border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan"
+                    className={`mt-2 w-full rounded-lg border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan ${fieldErrors.name ? "border-red-400/60" : "border-line"}`}
                   />
+                  {fieldErrors.name && (
+                    <p id="name-error" role="alert" className="mt-1.5 text-xs text-red-400">
+                      {fieldErrors.name}
+                    </p>
+                  )}
                 </div>
                 <div className="sm:col-span-1">
                   <label htmlFor="email" className="mono text-xs uppercase tracking-wider text-ink-faint">
@@ -311,10 +341,17 @@ export function ProjectConfigurator() {
                     id="email"
                     type="email"
                     required
+                    aria-invalid={Boolean(fieldErrors.email)}
+                    aria-describedby={fieldErrors.email ? "email-error" : undefined}
                     value={contact.email}
                     onChange={(e) => setContact({ ...contact, email: e.target.value })}
-                    className="mt-2 w-full rounded-lg border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan"
+                    className={`mt-2 w-full rounded-lg border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan ${fieldErrors.email ? "border-red-400/60" : "border-line"}`}
                   />
+                  {fieldErrors.email && (
+                    <p id="email-error" role="alert" className="mt-1.5 text-xs text-red-400">
+                      {fieldErrors.email}
+                    </p>
+                  )}
                 </div>
                 <div className="sm:col-span-1">
                   <label htmlFor="company" className="mono text-xs uppercase tracking-wider text-ink-faint">
@@ -346,10 +383,17 @@ export function ProjectConfigurator() {
                     id="description"
                     required
                     rows={5}
+                    aria-invalid={Boolean(fieldErrors.description)}
+                    aria-describedby={fieldErrors.description ? "description-error" : undefined}
                     value={contact.description}
                     onChange={(e) => setContact({ ...contact, description: e.target.value })}
-                    className="mt-2 w-full resize-none rounded-lg border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan"
+                    className={`mt-2 w-full resize-none rounded-lg border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan ${fieldErrors.description ? "border-red-400/60" : "border-line"}`}
                   />
+                  {fieldErrors.description && (
+                    <p id="description-error" role="alert" className="mt-1.5 text-xs text-red-400">
+                      {fieldErrors.description}
+                    </p>
+                  )}
                 </div>
               </div>
 

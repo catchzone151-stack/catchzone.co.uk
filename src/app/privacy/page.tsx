@@ -24,12 +24,14 @@ export default function PrivacyPage() {
             mobile applications and services.
           </p>
           <p>
-            This policy applies to CatchZone applications including{" "}
-            <strong>IslamQuest</strong>, <strong>Lumi</strong>, and any other
-            applications developed by CatchZone Ltd.
+            This policy applies to CatchZone applications — including{" "}
+            <strong>IslamQuest</strong>, <strong>Lumi</strong>,{" "}
+            <strong>Rawdah Cycle</strong> and <strong>IEH: CSCS Test Prep</strong>,
+            and any other applications developed by CatchZone Ltd — and to
+            this website, including its project enquiry form.
           </p>
 
-          <h2>1. Information We Collect</h2>
+          <h2>1. Information We Collect — Applications</h2>
           <p>
             When you create an account and use a CatchZone application, we
             may collect:
@@ -57,7 +59,7 @@ export default function PrivacyPage() {
             <li>Payment card information</li>
           </ul>
 
-          <h2>2. How We Use Your Information</h2>
+          <h2>2. How We Use Application Information</h2>
           <ul>
             <li>To create and manage your account</li>
             <li>To save and sync your progress within apps</li>
@@ -66,27 +68,58 @@ export default function PrivacyPage() {
             <li>To improve app performance and reliability</li>
           </ul>
 
-          <h2>3. Authentication and Data Storage</h2>
+          <h2>3. Website Project Enquiries</h2>
+          <p>
+            When you submit the project enquiry form on this website (the
+            &ldquo;Start a Project&rdquo; configurator), we collect the
+            information you provide: your name, email address, optional
+            company name, optional phone number, and the details you share
+            about your project — including the build type, starting point,
+            priorities and budget range you select.
+          </p>
+          <p>
+            We use this information solely to respond to your enquiry and
+            discuss your project. We do not use it for marketing, and we do
+            not sell, rent or trade it.
+          </p>
+          <p>
+            To deliver enquiries to our inbox, this form may send your
+            submission through a transactional email provider (Resend). The
+            provider processes the message only to deliver it to CatchZone
+            and does not use it for any other purpose.
+          </p>
+          <p>
+            Enquiry submissions are retained only as long as needed to
+            respond to and, where relevant, follow up on your project — after
+            which they are deleted or archived in line with normal business
+            record-keeping.
+          </p>
+
+          <h2>4. Authentication and Data Storage</h2>
           <p>
             Some CatchZone applications use Supabase (a third-party backend
             service provider) for authentication and secure data storage.
           </p>
           <p>
-            Account credentials are securely processed by Supabase.
-            Passwords are encrypted and never visible to CatchZone.
+            Account credentials are securely processed by Supabase. Passwords
+            are never stored in plain text or visible to CatchZone — they are
+            securely hashed using industry-standard methods, which is
+            stronger than reversible encryption because even Supabase cannot
+            recover your original password from it.
           </p>
           <p>User data is stored in secure cloud databases managed by Supabase.</p>
 
-          <h2>4. Data Sharing</h2>
+          <h2>5. Data Sharing</h2>
           <p>We do not sell, rent, or trade your personal information.</p>
           <p>
             Data may be shared only with service providers required to
-            operate the apps (such as Supabase for backend services or app
-            stores for payments), or if required by law.
+            operate the apps and this website (such as Supabase for backend
+            services, Resend for delivering project enquiries, or app stores
+            for payments), or if required by law.
           </p>
           <p>CatchZone applications do not use third-party advertising networks.</p>
 
-          <h2>5. Data Retention</h2>
+          <h2>6. Data Retention</h2>
           <p>
             Account data is retained for as long as your account remains
             active. If you delete your account, associated personal data
@@ -94,7 +127,7 @@ export default function PrivacyPage() {
             retention is required by law.
           </p>
 
-          <h2>6. Account Deletion</h2>
+          <h2>7. Account Deletion</h2>
           <p>
             You may delete your account at any time within supported
             applications. Deleting your account permanently removes your
@@ -102,7 +135,7 @@ export default function PrivacyPage() {
             and profile information.
           </p>
 
-          <h2>7. Children&rsquo;s Privacy</h2>
+          <h2>8. Children&rsquo;s Privacy</h2>
           <p>
             Some CatchZone applications, such as IslamQuest, may be used by
             children under the age of 13. We minimise data collection and
@@ -115,14 +148,14 @@ export default function PrivacyPage() {
             will promptly remove the information.
           </p>
 
-          <h2>8. Changes to This Policy</h2>
+          <h2>9. Changes to This Policy</h2>
           <p>
             We may update this Privacy Policy periodically. Continued use of
-            CatchZone applications after updates constitutes acceptance of
-            the revised policy.
+            CatchZone applications and this website after updates constitutes
+            acceptance of the revised policy.
           </p>
 
-          <h2>9. Contact</h2>
+          <h2>10. Contact</h2>
           <p>For privacy-related inquiries, please contact:</p>
           <p>
             <strong>info@catchzone.co.uk</strong>

@@ -161,24 +161,54 @@ what a real modelling pass would add on top of what code can already do.
 
 ---
 
-## ASSET-007 — Lumi Google Play / App Store Listing URL
+## ASSET-007 — Lumi / Rawdah Cycle / CSCS Google Play Listing URLs
 
-- **File name:** n/a
-- **Target path:** `src/data/projects.ts` (`lumi.playStoreUrl` — currently
-  absent)
-- **Purpose:** A direct "Get it on Google Play" / App Store link on Lumi's
-  project card and case-study page, matching the pattern already wired up
-  for IslamQuest.
-- **Section:** `/work`, `/work/lumi`
-- **Status:** NEEDS PRODUCTION ASSET — no verified live store URL for Lumi
-  exists anywhere in the repository (checked `src/data/projects.ts` and the
-  legacy `public/apps/lumi/index.html`, which explicitly notes it's
-  "ready for future ... store links"). Lumi is marked and described as
-  "Live" per existing verified project data, but rather than invent a store
-  URL, the site currently routes its CTA to the internal `/apps/lumi/`
-  product page only. Add the real store URL to `projects.ts` once available
-  and the store badge/link will appear automatically (same code path as
-  IslamQuest).
+- **Status:** RESOLVED (V1 launch-polish pass) — the real Google Play URLs
+  for Lumi (`com.catchzone.lumi`), Rawdah Cycle (`com.catchzone.rawdahcycle`)
+  and IEH: CSCS Test Prep (`com.catchzone.cscs`) were supplied directly in
+  `docs/CATCHZONE_LAUNCH_POLISH.md` and are now wired into `projects.ts`
+  and rendered as real Google Play store badges (`StoreBadges`) site-wide.
+  All four flagship apps now link to their real live listing.
+
+---
+
+## ASSET-008 — Individual screenshots for Lumi, Rawdah Cycle, CSCS
+
+- **Target path:** `src/data/projects.ts` (`screenshots` arrays — currently
+  absent for all three)
+- **Purpose:** The multi-device `ScreenCascade` treatment (the same
+  staggered phone composition used for IslamQuest) needs 3–5 discrete,
+  reasonably high-resolution screenshots per app.
+- **What was attempted:** Google Play (`play.google.com`) is blocked by this
+  environment's network egress policy (`EGRESS_BLOCKED`, confirmed via both
+  `WebFetch` and a direct `curl` — gateway returns 403 to the CONNECT
+  tunnel), so the real listing screenshots could not be fetched or
+  downloaded during this pass.
+- **What exists locally:** Only `Lumi/LumiBanner.png` — a single 1024×500px
+  pre-composed marketing collage (6 phone mockups + logo tile at low
+  resolution). It was considered for cropping into individual cascade tiles,
+  but at that source resolution each extracted phone would be well under
+  300px tall and visibly soft/pixelated once scaled into the cascade —
+  worse than the current honest single-asset presentation, so it was kept
+  as one image (see `BannerShowcase`) rather than chopped up. Rawdah Cycle
+  and CSCS have **no** local screenshot assets at all — not the banner,
+  not individual captures.
+- **Current honest treatment:**
+  - Lumi: the existing banner shown via `BannerShowcase` (pointer-tilt +
+    settle-in motion instead of a flat static image).
+  - Rawdah Cycle / CSCS: a brand-colour gradient panel
+    (`work/[slug]/page.tsx`, keyed off `project.brandGradient` — green/cream
+    for Rawdah Cycle, dark/light blue for CSCS) stating the product is live
+    on Google Play and that the individual screen gallery isn't published on
+    the site yet. This is explicitly not presented as a screenshot.
+- **Status:** NEEDS PRODUCTION ASSET — export 3–5 real screenshots per app
+  (ideally 1080×1920 or the actual device resolution used for the Play
+  Store listing) directly from the Play Console or the source design files
+  and drop them into `public/assets/images/{lumi,rawdah-cycle,cscs}/`. Once
+  present, add them to the corresponding `screenshots` array in
+  `projects.ts` — the existing `ScreenCascade` device-frame system picks
+  them up automatically with no other code changes, exactly as it does for
+  IslamQuest.
 
 ---
 

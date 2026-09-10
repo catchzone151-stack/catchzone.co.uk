@@ -19,7 +19,7 @@ const themes = [
   },
   {
     title: "Design & Engineering Together",
-    body: "The same team carries a product from interface to backend — nothing gets lost translating between separate design and engineering functions.",
+    body: "One connected build carries a product from interface to backend — nothing gets lost translating between separate design and engineering functions.",
   },
   {
     title: "Idea Through Launch",
@@ -61,11 +61,10 @@ export default function AboutPage() {
             </h2>
             <p className="mt-4 text-base leading-relaxed text-ink-muted">
               CatchZone designs and engineers digital products end to end —
-              apps, web platforms and the business systems behind them. We
-              work as one connected team rather than handing a project
-              between separate design and engineering functions, which means
-              the same people who shape the interface also build the backend
-              it depends on.
+              apps, web platforms and the business systems behind them. One
+              connected build approach rather than handing a project between
+              separate design and engineering functions, so the interface
+              and the backend it depends on are shaped together.
             </p>
             <p className="mt-4 text-base leading-relaxed text-ink-muted">
               Our own products, including IslamQuest and Lumi, run on the

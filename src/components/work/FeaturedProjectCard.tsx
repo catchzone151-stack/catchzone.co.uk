@@ -1,10 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/data/projects";
 import { Reveal } from "@/components/ui/Reveal";
 import { ScreenCascade } from "@/components/work/ScreenCascade";
+import { BannerShowcase } from "@/components/work/BannerShowcase";
 import { getIslamQuestHeroShots } from "@/lib/work/islamquestShots";
-import { GooglePlayIcon } from "@/components/icons/GooglePlayIcon";
+import { StoreBadges } from "@/components/work/StoreBadges";
 
 export function FeaturedProjectCard({ project }: { project: Project }) {
   const shots = project.screenshots ?? [];
@@ -40,24 +40,14 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
           ))}
         </ul>
 
-        <div className="mt-8 flex flex-wrap items-center gap-5">
+        <div className="mt-8 flex flex-wrap items-end gap-6">
           <Link
             href={`/work/${project.slug}`}
             className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-void transition-colors hover:bg-accent-cyan"
           >
             View Case Study
           </Link>
-          {project.playStoreUrl && (
-            <a
-              href={project.playStoreUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-accent-cyan"
-            >
-              <GooglePlayIcon className="h-5 w-5" />
-              Get it on Google Play
-            </a>
-          )}
+          <StoreBadges playStoreUrl={project.playStoreUrl} appStoreUrl={project.appStoreUrl} />
         </div>
       </div>
 
@@ -68,14 +58,7 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
           className="min-h-[520px] md:min-h-[640px] md:-mr-[8%] lg:-mr-[12%]"
         />
       ) : project.heroAsset ? (
-        <div className="relative min-h-[320px] overflow-hidden rounded-2xl">
-          <Image
-            src={project.heroAsset}
-            alt={`${project.title} banner`}
-            fill
-            className="object-cover"
-          />
-        </div>
+        <BannerShowcase src={project.heroAsset} alt={`${project.title} product overview`} className="min-h-[320px]" />
       ) : null}
     </Reveal>
   );

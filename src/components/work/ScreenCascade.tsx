@@ -74,28 +74,45 @@ function Card({
       }}
     >
       <motion.div
-        className={`relative h-full w-full overflow-hidden rounded-[1.4rem] border border-white/10 shadow-[0_40px_70px_-25px_rgba(0,0,0,0.65)] motion-safe:[animation:screen-float_7s_ease-in-out_infinite]`}
+        className="relative h-full w-full rounded-[1.7rem] bg-gradient-to-b from-[#1c1e24] to-[#0a0a0c] p-[3px] shadow-[0_40px_70px_-25px_rgba(0,0,0,0.65)] motion-safe:[animation:screen-float_7s_ease-in-out_infinite]"
         style={{
           rotateX: springTiltX,
           rotateY: springTiltY,
           animationDelay: `${index * 0.6}s`,
         }}
       >
-        <Image src={src} alt={alt} fill sizes="320px" className="object-cover" />
-        {/* glass reflection sweep */}
+        {/* chassis edge highlight — reads as a metal/glass hardware edge */}
         <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(115deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.02) 18%, transparent 32%)",
-          }}
+          className="pointer-events-none absolute inset-0 rounded-[1.7rem] ring-1 ring-inset ring-white/15"
           aria-hidden="true"
         />
-        {/* subtle metal edge highlight */}
+        {/* speaker/camera notch */}
         <div
-          className="pointer-events-none absolute inset-0 rounded-[1.4rem] ring-1 ring-inset ring-white/10"
+          className="pointer-events-none absolute left-1/2 top-[7px] z-10 h-[5px] w-8 -translate-x-1/2 rounded-full bg-black/80"
           aria-hidden="true"
         />
+        {/* side button hardware detail */}
+        <div
+          className="pointer-events-none absolute -right-[1.5px] top-[22%] h-[9%] w-[2px] rounded-l-sm bg-[#2a2c33]"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute -left-[1.5px] top-[16%] h-[6%] w-[2px] rounded-r-sm bg-[#2a2c33]"
+          aria-hidden="true"
+        />
+
+        <div className="relative h-full w-full overflow-hidden rounded-[1.45rem] bg-black">
+          <Image src={src} alt={alt} fill sizes="320px" className="object-cover" />
+          {/* glass reflection sweep */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(115deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.02) 18%, transparent 32%)",
+            }}
+            aria-hidden="true"
+          />
+        </div>
       </motion.div>
     </motion.div>
   );

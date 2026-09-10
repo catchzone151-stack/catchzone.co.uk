@@ -19,6 +19,9 @@ export interface Project {
   appStoreUrl?: string;
   playStoreUrl?: string;
   internalUrl?: string;
+  /** Brand colour pair used for an honest gradient composition when no
+   * screenshot assets are available yet — never presented as a screenshot. */
+  brandGradient?: [string, string];
 }
 
 const STATUS_LABEL: Record<ProjectStatus, string> = {
@@ -84,40 +87,58 @@ export const projects: Project[] = [
       "A privacy-safe period tracker designed for teenagers.",
     type: "Mobile App",
     status: "live",
-    statusLabel: "Live",
+    statusLabel: "Live on Google Play · iOS coming October 2026",
     featured: true,
     heroAsset: "/assets/images/Lumi/LumiBanner.png",
+    platforms: ["Android — Google Play", "iOS — coming October 2026"],
     capabilities: [
       "Privacy-first data model — no unnecessary personal data collected",
       "Supabase-backed account and data layer",
       "Interface designed specifically for a teenage audience",
       "No ads, no tracking, no third-party data sharing",
     ],
+    playStoreUrl: "https://play.google.com/store/apps/details?id=com.catchzone.lumi",
     internalUrl: "/apps/lumi/",
   },
   {
     slug: "cscs",
-    title: "CSCS Exam Prep",
+    title: "IEH: CSCS Test Prep",
     shortDescription:
       "Exam preparation for the CSCS / CITB Health, Safety & Environment test and CSCS card routes.",
     type: "Mobile App",
-    status: "product-lab",
-    statusLabel: "Product Lab · Coming Soon",
+    status: "live",
+    statusLabel: "Live on Google Play · iOS coming October 2026",
     featured: true,
+    platforms: ["Android — Google Play", "iOS — coming October 2026"],
     capabilities: [
       "CSCS / CITB HS&E test question practice",
       "CSCS card route reference (CSCS MAP)",
       "Part of CatchZone's Construction & Trades product line",
     ],
+    playStoreUrl: "https://play.google.com/store/apps/details?id=com.catchzone.cscs",
     internalUrl: "/apps/cscs-citb-hse/",
+    brandGradient: ["#0b3d91", "#8ecae6"],
   },
   {
     slug: "rawdah-cycle",
     title: "Rawdah Cycle",
-    shortDescription: "Announced internally — not yet publicly detailed.",
+    shortDescription: "A CatchZone product, live on Google Play.",
     type: "Mobile App",
-    status: "product-lab",
-    statusLabel: "Product Lab · Details Coming Soon",
+    status: "live",
+    statusLabel: "Live on Google Play · iOS coming October 2026",
+    featured: true,
+    platforms: ["Android — Google Play", "iOS — coming October 2026"],
+    capabilities: [],
+    playStoreUrl: "https://play.google.com/store/apps/details?id=com.catchzone.rawdahcycle",
+    brandGradient: ["#4c7a3d", "#f4ecd8"],
+  },
+  {
+    slug: "villagefront",
+    title: "VillageFront",
+    shortDescription: "A family organisation / family admin platform.",
+    type: "Mobile App",
+    status: "in-development",
+    statusLabel: "In Development",
     featured: true,
     capabilities: [],
   },
