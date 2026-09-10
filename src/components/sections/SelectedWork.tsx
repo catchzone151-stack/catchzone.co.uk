@@ -3,6 +3,7 @@ import { featuredProjects } from "@/data/projects";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FeaturedProjectCard } from "@/components/work/FeaturedProjectCard";
 import { ProjectCard } from "@/components/work/ProjectCard";
+import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 
 export function SelectedWork() {
   const [hero, ...rest] = featuredProjects;
@@ -10,9 +11,10 @@ export function SelectedWork() {
   return (
     <section
       id="work"
-      className="border-t border-line bg-void py-24 md:py-32"
+      className="relative overflow-hidden border-t border-line bg-void py-24 md:py-32"
     >
-      <div className="shell">
+      <AtmosphereLayer />
+      <div className="shell relative z-10">
         <SectionHeading
           index="05"
           eyebrow="Selected Work"

@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
 import { ProjectConfigurator } from "@/components/forms/ProjectConfigurator";
+import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 
 export const metadata: Metadata = {
   title: "Start a Project",
   description:
     "Tell CatchZone what you're building — a short configurator, not a corporate contact form.",
+  alternates: { canonical: "/start-a-project" },
 };
 
 export default function StartAProjectPage() {
   return (
-    <div className="pt-32 pb-24">
-      <div className="shell max-w-3xl">
+    <div className="relative overflow-hidden pb-24 pt-32">
+      <AtmosphereLayer />
+      <div className="shell relative z-10 max-w-3xl">
         <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
           Start a Project
         </p>
