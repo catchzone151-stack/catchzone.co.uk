@@ -1,6 +1,6 @@
-# CatchZone — Work & Featured Product Refinement Brief
+# CatchZone — Final Work, Branding & Product Refinement Brief
 
-This document is an authoritative refinement addendum for the current CatchZone redesign branch.
+This document is the authoritative refinement addendum for the current CatchZone redesign branch.
 
 Read it together with:
 
@@ -8,601 +8,622 @@ Read it together with:
 - `docs/CATCHZONE_MASTER_BUILD.md`
 - `docs/CATCHZONE_SHOWCASE_DROP.md`
 
-It does **not** replace the master build brief. It records the approved refinement direction after visual review of the current implementation.
+This file records the **latest approved direction after visual review**. Where an older refinement instruction conflicts with this file, **this file wins**.
 
-The current site already has a strong visual language. Preserve it. This is a focused refinement pass, not permission to redesign the site from scratch.
-
----
-
-## 1. Primary objective
-
-Improve the presentation of the Work experience and the homepage IslamQuest feature so they feel as premium, cinematic, spatial and intentional as the strongest parts of the CatchZone redesign.
-
-The supplied product/system screens themselves are approved. The main issue is now **presentation**:
-
-- showcase thumbnails currently read too much like flat screenshots/cards
-- showcase detail pages currently read too much like conventional stacked case-study pages
-- the IslamQuest homepage device composition does not yet feel physically premium enough
-- some customer-facing labels unnecessarily make showcase work feel tentative or obviously fictional
-- the approved CatchZone logo is being used in the wrong place
-
-Do not solve these issues by changing the whole site theme. Extend the existing CatchZone design and motion language.
+The current website already has a strong CatchZone design language. Preserve it. This is a focused refinement pass, not a redesign from scratch.
 
 ---
 
-## 2. Preserve the established CatchZone visual system
+# 1. Primary goals for this pass
 
-The existing redesign remains the outer design system.
+Complete the following without disturbing areas that already work well:
 
-Preserve and reuse where appropriate:
+1. Fix the homepage IslamQuest 3-phone composition so it reads as a premium physical product shot rather than three thin floating panels.
+2. Make Foundry Lane Events the first/lead client system on `/work`.
+3. Clearly present Foundry Lane Events + the other six operational systems as **real client systems work**.
+4. Redesign the six supporting system cards so their device/screens are large, readable and premium rather than tiny objects floating in empty boxes.
+5. Clarify the distinction between **Client Systems**, **CatchZone Products**, and **Client Websites**.
+6. Stop Future / Product Lab cards from opening legacy CatchZone pages; replace those destinations with new lightweight pages inside the current redesign.
+7. Use the newly supplied CatchZone logo assets correctly: full slogan logo wherever there is room, compact logo only where the mobile header genuinely requires it.
+8. Preserve the established CatchZone theme, motion, typography, depth, responsiveness and accessibility behaviour.
 
-- dark architectural/cinematic environment
+Do not broaden this into an unrelated redesign.
+
+---
+
+# 2. Preserve the current CatchZone visual system
+
+Keep the current redesign as the outer shell:
+
+- dark premium/cinematic environment
 - restrained teal/cyan/electric accents
-- atmospheric light and depth
+- dimensional lighting and depth
 - established typography
-- existing motion/easing language
-- pointer-reactive treatments
-- section transitions
-- reduced-motion behaviour
-- spacing and composition discipline
+- current motion/easing language
+- pointer-reactive treatments where appropriate
+- clean section transitions
+- reduced-motion support
+- current navigation structure unless specifically changed below
 
-Do not turn the Work section into a separate generic portfolio template.
-
-Project-specific colours may influence local lighting and accents, but the overall website must remain recognisably CatchZone.
+Do not replace the site with a generic agency template, generic SaaS look, stock mockup kit or disconnected mini-sites.
 
 ---
 
-## 3. Customer-facing wording: remove internal showcase language
+# 3. Truth / provenance — latest confirmed status
 
-Remove visible customer-facing wording such as:
+The user has confirmed that the following seven system projects are **client work** and should be presented that way:
 
-- `Concept Showcase`
-- `SHOWPIECE`
-- `Private System` when used as an explanatory disclaimer/badge
-- `Concept Work`
-- similar internal labels that make the work feel tentative or like mock content
+1. Foundry Lane Events
+2. Brookmere Academy
+3. Westmarch Training Centre
+4. The Alder Kitchen
+5. Alderwick House Hotel
+6. Bennett Shaw Recruitment
+7. Pennine Freight Services
 
-Remove these from:
+This **supersedes older instructions** that treated these seven as concept-only showcase systems.
 
-- Work landing cards
-- Work section headings/overlines where applicable
-- showcase detail-page badges and metadata
-- repeated labels beneath cards
-- any other visible customer-facing location
+Therefore:
 
-Use clean category labels where useful, for example:
+- It is correct to present them as client systems work.
+- Do not use visible wording such as `Concept Showcase`, `SHOWPIECE`, `Private System`, or `Concept Work` for these seven.
+- Do not call them fictional or mock projects.
+- Do not invent unsupported performance metrics, testimonials, revenue, user counts, awards or business results.
+- Present what was built and what type of operational problem it addresses.
 
-- Education Platform
-- Training Platform
-- Restaurant Operations
-- Hospitality Operations
-- Recruitment Operations
-- Logistics Operations
-- Event Operations
-
-### Accuracy rule
-
-Do **not** compensate by inventing claims.
-
-Do not state or imply that the seven showcase businesses are external commissioned clients, publicly deployed systems, paying customers, or live production systems unless that is independently true and already supported by the repository/project information.
-
-Do not invent testimonials, metrics, results, contracts, revenue, users, downloads, awards or launch claims.
-
-The desired presentation is confident and product-led without repeatedly advertising an internal “concept showcase” label.
+Real client website work should remain a distinct subsection so visitors understand CatchZone does both advanced systems/software and customer-facing websites.
 
 ---
 
-## 4. CatchZone logo placement
+# 4. `/work` page — commercial story and section structure
 
-The supplied approved full CatchZone logo belongs in the **global site header**, replacing the old CatchZone header mark.
+The Work page should clearly communicate that CatchZone builds:
 
-Rules:
+- client platforms
+- operational systems
+- connected dashboards
+- internal business tools
+- business automation
+- mobile products/apps
+- websites and customer-facing digital experiences
 
-- replace the existing old header logo/wordmark with the approved full CatchZone logo
-- remove the duplicate/stray full CatchZone logo currently placed in page content above the showcase section
-- preserve the approved logo artwork and proportions
-- do not redraw, regenerate or materially alter it
-- size it so the brand mark is clear without making the header oversized
-- ensure desktop/tablet/mobile header layouts remain balanced
-- if the slogan becomes too small at a narrow breakpoint, use a responsive treatment that preserves brand quality rather than distorting the artwork
+A visitor must not leave thinking CatchZone is only a website studio.
 
-The global header should be the primary recurring brand location.
+## Recommended top copy
 
----
+Keep the strong headline direction:
 
-## 5. Work page hierarchy
+**Products taken from idea to working software.**
 
-Reorder the Work page to tell a stronger commercial story.
+Supporting copy may be refined to something close to:
 
-Approved hierarchy:
+> Business platforms, connected systems, automation, mobile products and client-facing digital experiences — designed and engineered end to end.
 
-1. **Foundry Lane Events** — opening featured system
-2. **the other six business systems**
-3. **CatchZone-owned apps/products**
-4. **real client / delivered web work**
-
-This should communicate, in order:
-
-- CatchZone can design sophisticated business systems
-- CatchZone can build and operate its own digital products
-- CatchZone can deliver commercial/client web experiences
-
-Do not bury the seven new system presentations beneath older app listings.
+Keep it concise and premium.
 
 ---
 
-## 6. Foundry Lane Events — opening feature
+# 5. Client Systems section — wording and hierarchy
 
-Foundry Lane Events is the visual lead of the seven system pieces.
+The seven client systems should form the first major proof section on `/work`.
 
-Do not write `SHOWPIECE` anywhere in customer-facing UI. Its importance should be obvious from composition, scale and motion.
+Use a clear category label such as:
+
+**CLIENT SYSTEMS**
+
+Use a heading close to:
+
+**Platforms, dashboards and connected systems built for clients.**
+
+Use concise supporting copy close to:
+
+> Operational software, internal platforms and business automation designed around how each client actually works.
+
+This section should immediately tell a potential customer that CatchZone can build serious operational software, not only websites.
+
+---
+
+# 6. Foundry Lane Events MUST be the opening client-system feature
+
+Foundry Lane Events is the lead piece and must appear **before Brookmere Academy**.
+
+Current behaviour where Brookmere Academy is the opening feature is not approved.
 
 Requirements:
 
-- place Foundry Lane first in the system work sequence
-- give it more visual space and hierarchy than the six supporting systems
-- use its strongest supplied screens as a deliberate composition rather than a normal equal card
-- preserve its distinctive plum / graphite / violet / magenta event-tech character
-- allow those colours to influence local atmospheric lighting subtly
-- keep the outer page firmly within the CatchZone visual language
+- Foundry Lane Events first.
+- Foundry receives the largest/most cinematic system treatment.
+- No customer-facing `SHOWPIECE` badge.
+- Let scale, composition and motion establish its hierarchy.
+- Preserve Foundry's plum / graphite / violet / magenta identity.
+- Use its supplied desktop/tablet/desktop sequence intelligently.
+- Keep the surrounding page within the CatchZone visual system.
 
-Do not convert Foundry back into a generic cyan/blue technology treatment.
+Brookmere Academy and the other six follow after Foundry.
 
 ---
 
-## 7. Work landing page: device-first showcase presentation
+# 7. Supporting systems heading — replace “Six more businesses” wording
 
-The current flat screenshot cards are not premium enough.
+Do not use:
 
-The approved screenshots should remain unchanged, but their **presentation** must be upgraded so each product visibly lives inside a believable digital device.
+`Six more businesses. Six connected systems.`
 
-### Core visual direction
+The copy should communicate capability and client delivery without sounding numerically limited.
 
-The intended reference idea is the familiar premium product presentation where interface screenshots are visibly displayed in:
+Preferred direction:
 
-- a laptop
-- desktop display
-- tablet
-- phone
-- or a considered multi-device arrangement
+**More client systems, built around real operations.**
 
-However, do **not** use generic stock photography or copy a stock mockup aesthetic literally.
+Optional supporting line:
 
-Build the device presentation to match the CatchZone world.
+> Training, hospitality, recruitment, logistics and operational workflows turned into connected software systems.
 
-### Device realism requirements
+A similarly concise alternative is acceptable if it is stronger, but it must communicate:
 
-Devices must be immediately recognisable as physical devices, not merely screenshots with a thin rounded border.
+- these are client systems
+- CatchZone builds connected operational software
+- the seven shown are examples, not a limit on capability
 
-Use, where suitable:
+---
 
-- clear hardware silhouette
-- believable bezels
-- screen recess / glass plane
-- subtle edge highlights
-- material depth
-- restrained reflection
-- contact shadow / ambient shadow
+# 8. Six supporting client-system cards — major visual correction
+
+The current supporting cards are not approved because the monitor/device is tiny inside a large empty dark box.
+
+The screenshot/device must become the visual focus.
+
+## Required card structure
+
+For each supporting system:
+
+### Visual area
+
+- use a large monitor/desktop-device treatment because these are predominantly wide business dashboards
+- the device should occupy roughly **80–90% of the usable visual width** of the tile where composition allows
+- screenshot should be clearly recognisable/readable at normal desktop viewing size
+- reduce unnecessary empty space
+- device should feel physically premium with proper screen edge, bezel, stand/base where used, subtle reflection and shadow
+- use each project's accent colour subtly around the device; do not flood the whole card
+- use restrained perspective/hover/parallax only if it improves physicality
+
+### Information area beneath
+
+Below the large visual, provide a clean compact information area containing:
+
+- category label, e.g. `TRAINING PLATFORM`, `RESTAURANT OPERATIONS`, etc.
+- project/client name
+- one concise description
+- `View project →`
+
+The result may remain one semantic card/tile, but visually it should read as:
+
+**large product presentation above + compact information panel below**
+
+Do not return to tiny floating screens.
+
+## Consistency / variety
+
+It is acceptable for these six dashboard-heavy systems to use a related premium monitor language, but avoid six pixel-identical compositions.
+
+Vary subtly through:
+
 - perspective
-- convincing scale relationships
-- optional understated base/hinge/stand detail for laptops or monitors
+- accent lighting
+- stand/base style where reasonable
+- screenshot crop/focal point
+- local atmospheric glow
 
-The result should feel premium and product-photography inspired while remaining rendered/styled consistently with CatchZone.
-
-### Do not
-
-- use flat screenshot rectangles as the primary visual treatment
-- repeat one identical laptop frame for all seven projects
-- place every UI inside the same generic browser window
-- add fake Apple/Samsung branding unless already present and appropriate
-- use tacky chrome, excessive reflections or stock-mockup white studio backgrounds
-- shrink wide dashboards into tiny unreadable phone screens
-
-### Match interface to device
-
-Choose device framing based on the actual supplied screen:
-
-- wide dashboards / operational systems → desktop, laptop or large tablet
-- tablet-oriented views → tablet
-- mobile app views → phone
-
-Vary the compositions between projects.
-
-Examples of acceptable variety:
-
-- one wide monitor with a slight perspective tilt
-- laptop with a secondary tablet peeking behind
-- tablet-forward composition
-- monitor + phone pairing when the supplied material supports it
-- layered desktop surfaces for operations-heavy products
-
-### Motion on landing cards
-
-Use subtle motion that supports physicality:
-
-- small pointer-based perspective response
-- controlled device lift
-- shallow depth separation
-- restrained light movement
-- gentle parallax
-
-No excessive wobble, spinning or gimmicks.
-
-The landing page should feel like a premium product showroom, not an image gallery.
+Keep all six coherent as one client-systems family.
 
 ---
 
-## 8. Showcase detail pages: move beyond stacked screenshots
+# 9. Client Websites section — make the distinction explicit
 
-The current detail pages are clean, but the visual rhythm is too conventional:
+The website/client section is visually good and should remain distinct from Client Systems.
 
-`title → text → large screenshot → text → screenshot`
+Use a category label such as:
 
-That is not sufficiently aligned with the more cinematic direction of the CatchZone redesign.
+**CLIENT WEBSITES**
 
-### New direction
+Heading direction:
 
-Keep the approved content and supplied screenshots, but art-direct the page around them.
+**Websites and digital experiences built for clients.**
 
-Each project should feel like a product experience rather than a generic portfolio template.
+Supporting line direction:
 
-Use a richer mix of:
+> Customer-facing websites and web experiences designed and engineered with the same attention to clarity, performance and presentation.
 
-- product/device hero compositions
-- spatial screen arrangements
-- offset pairings
-- screen crops used as detail moments
-- full-width moments where appropriate
-- alternating composition
-- overlapping or depth-separated screens
-- concise copy positioned around visuals rather than always above them
-- subtle project-colour atmospheric accents
-- scroll-based reveals consistent with the site motion system
+This must sit as a separate client-work capability from the systems/platform/automation work.
 
-### Hero requirement
+The visitor should understand:
 
-Each showcase detail page should open with:
-
-- clear product/business name
-- concise proposition
-- category label
-- a strong product/device visual early in the viewport
-
-The product should be visually dominant.
-
-### Copy requirement
-
-Keep copy concise. Do not turn these into long Behance-style essays.
-
-A prospective customer should quickly understand:
-
-- what type of system it is
-- what business workflow it addresses
-- the sophistication/range of the interface
-
-Then the visuals should carry the proof.
-
-### Variation requirement
-
-Do not clone one page structure seven times.
-
-Bennett Shaw Recruitment, Pennine Freight Services, Brookmere Academy, Alderwick House Hotel, The Alder Kitchen, Westmarch Training Centre and Foundry Lane Events should each have their own controlled composition rhythm.
-
-Reuse shared components intelligently, but allow layout configuration to differ.
+- Client Systems = platforms, operations, dashboards, internal tools, automation
+- CatchZone Products = owned apps/products
+- Client Websites = customer-facing web delivery
 
 ---
 
-## 9. Existing approved screens must remain intact
+# 10. CatchZone Products section
 
-Do not regenerate or redesign the supplied product screenshots.
+Preserve the distinction for CatchZone-owned products/apps.
 
-Do not alter names, UI content, logos, dashboards, data layouts or screenshots simply to fit a device frame.
+A heading close to the current:
 
-Presentation work may include:
+**Real apps, designed, built and operated by CatchZone.**
 
-- crop
-- scale
-- positioning
-- perspective
-- masking into a screen plane
-- responsive focal positioning
-- depth treatment
-- shadow/reflection around the device
+is appropriate.
 
-But the underlying approved screenshot remains the source of truth.
+Do not let this section feel visually secondary after improving the client systems.
+
+IslamQuest remains the flagship owned-product proof point.
 
 ---
 
-## 10. Homepage IslamQuest — final device direction
+# 11. Homepage IslamQuest — final 3-phone PRODUCT SHOT direction
 
-The existing IslamQuest feature has the correct general idea but the current phones still feel more like framed flat artwork than truly premium physical phone devices.
+The current three-phone implementation is not approved because the phones remain too thin, too separated and too much like floating screen panels.
 
-The replacement should use a **three-phone product composition** with clear, premium device realism.
+The user wants a **tight, close-together three-phone composition** inspired by a premium studio product shot: three physical smartphones grouped closely on one shared visual surface/space.
 
-### Screen assignment from the three images attached to the next Claude task
+This direction is important.
 
-Use content, not attachment filename, to identify them:
+## Final composition concept
 
-- **CENTRE / MAIN PHONE:** the IslamQuest home screen with the heading/poster text `Learn Islam the fun and authentic way`
-- **LEFT SUPPORT PHONE:** the Boss Level screen with the poster text `Challenge the Dev: 12 ultra-hard questions in 30 seconds!`
-- **RIGHT SUPPORT PHONE:** the leaderboard screen with the poster text `Climb the Leaderboard. Claim the Glory.`
+Use exactly three phones and arrange them as one compact triangular product cluster:
 
-The three attached images are references for:
+- **Centre / main phone** = IslamQuest home screen; hero phone; most readable
+- **Left support phone** = Boss Level screen; lower/flatter/angled support device
+- **Right support phone** = leaderboard screen; slightly behind / leaned-back support device
 
-1. which IslamQuest screen belongs on which phone
-2. the desired feeling of a clearly recognisable real phone device
-3. the promotional/product-photography character
+All three must be **close to each other** and visually connected.
 
-### Important cropping rule
+Do not spread them across the right side of the section.
 
-The large poster copy and gradient backgrounds outside the phone hardware in the reference images are **not** to become part of the final CatchZone hero composition.
+Do not make them look like three isolated floating props.
 
-Extract/use the relevant phone-screen visual area as needed and build the final three-device composition inside the existing dark CatchZone environment.
-
-Do not paste the full tall promotional posters into the website as three rectangles.
+The final still composition should feel like a professional premium hardware product shot.
 
 ---
 
-## 11. IslamQuest — final three-phone composition
+# 12. IslamQuest phone hardware — prevent flatness aggressively
 
-### Desktop final state
+The key requirement is that the phones must read immediately as **physical premium smartphones with thickness**.
 
-Use exactly three primary phones:
+Do not simply wrap screenshots in thin rounded borders.
 
-- centre/main phone: largest, forward, most readable
-- left/Boss Level phone: slightly behind and to the left, angled inward
-- right/Leaderboard phone: slightly behind and to the right, angled inward
+## Required physical cues
 
-The three devices should form a controlled loose arc.
+Use all of the following where technically practical:
 
-The centre device should anchor the composition.
+- visibly thicker phone body / side rails than the current implementation
+- 3D perspective that exposes side edges on supporting phones
+- screen plane inset slightly inside the physical frame
+- clear separation between glass, bezel and outer chassis
+- realistic rounded-corner geometry
+- subtle chamfer / edge highlight
+- graphite / dark-metal material treatment
+- believable speaker/island/earpiece detail if used, without copying a branded device exactly
+- restrained glass reflection
+- one-sided rim light that reveals thickness
+- ambient occlusion/contact shadow where devices overlap
+- a shared grounding shadow under the cluster
+- darker shadow on the far side of each device
+- slight local reflection/light bounce from the IslamQuest screen colours
 
-The supporting phones must remain visibly phones and visibly contain real IslamQuest UI, but they may be partially occluded by the centre phone where compositionally useful.
+The device body should be thick enough to be visually obvious at normal desktop scale, but not cartoonishly thick.
 
-### Hardware quality
+## Layering / overlap
 
-The final devices should look materially better than the current treatment.
+The three devices should overlap slightly so depth is obvious.
 
-Use:
+The centre phone may occlude part of the left/right phones.
 
-- realistic dark premium smartphone body
-- believable bezel thickness
-- clear glass/screen edge separation
-- physically convincing rounded corners
-- subtle side-frame thickness
-- restrained metallic/graphite edge highlights
-- notch / island / earpiece treatment only if visually coherent
-- soft glass reflection/sheens
-- contact/depth shadows
-- perspective consistent with the angle of each phone
+Use this overlap to create contact/depth shadows and make the cluster feel physically assembled.
 
-Do not over-brand the device hardware or make it look like an inaccurate clone of a specific commercial phone.
+## Perspective
 
-The user wants the immediate impression to be: **these are clearly three real premium phone devices**, not three flat rounded image panels.
+Avoid a perfectly front-on, flat orthographic treatment for all three.
 
----
+The centre phone can be closest to front-facing for readability.
 
-## 12. IslamQuest entrance motion — staggered assembly with controlled orbit flavour
-
-Use the previously approved **Option A** as the base, with a restrained element of **Option B** during entry.
-
-### Intended choreography
-
-When the IslamQuest feature first enters the relevant viewport/state:
-
-1. **Left/Boss Level phone arrives first**
-   - begins left/back/deeper in Z-space
-   - follows a smooth curved/orbit-like path toward its final position
-   - rotates moderately on Y/Z axes while travelling
-   - becomes sharper/more present as it approaches
-
-2. **Right/Leaderboard phone arrives second**
-   - begins right/back/deeper in Z-space
-   - follows a complementary curved path
-   - uses opposite directional rotation to the left phone
-   - does not mirror mechanically; timing/arc should feel composed
-
-3. **Centre/Home phone arrives last**
-   - enters from slightly lower/front/deeper space
-   - moves forward into the dominant centre position
-   - may use a smaller rotation than the supporting phones
-   - settles with a subtle premium overshoot/spring
-
-4. **Lock into formation**
-   - the supporting phones complete their last few degrees of rotation after the centre arrives
-   - all three settle into the intended loose arc
-   - shadows/lighting settle with them
-
-### Orbit influence
-
-The orbit quality should come from the **curved approach paths**, depth changes and rotational arcs.
-
-Do not make the devices continuously orbit each other.
-
-Do not perform multiple full spins.
-
-Do not create a game-trailer or carnival effect.
-
-The movement can be dramatic enough to be memorable, but it must remain elegant and physically understandable.
-
-### Suggested motion qualities
-
-- staggered timing
-- eased cinematic arcs
-- approximately quarter-turn or smaller rotational travel where suitable, not uncontrolled full rotations
-- depth changes that make devices appear to travel through space
-- soft motion blur only if technically safe/performance-friendly; do not rely on heavy blur
-- restrained spring/overshoot at final lock
-
-Reuse the established motion stack/configuration in the project rather than introducing a conflicting animation system.
+The two support phones must expose enough side/front perspective to make their physical thickness obvious.
 
 ---
 
-## 13. IslamQuest idle motion after landing
+# 13. IslamQuest motion — one premium coordinated hero moment
 
-After the entrance completes, the composition should remain alive but calm.
+Use one strong orchestrated animation rather than many unrelated effects.
 
-Allowed:
+The final still state is the compact 3-phone product-shot cluster above.
 
-- very subtle independent floating drift
-- shallow pointer-reactive parallax on capable desktop
-- tiny perspective adjustment
-- restrained light/reflection response
-- optional single soft sheen across the centre phone after the lock-in
+## Entrance choreography
 
-Avoid:
+Use a staggered assembly with restrained orbit-like curved paths:
 
-- constant obvious spinning
-- bobbing several pixels every second like a game menu
-- large mouse-follow movement
-- repeated flashy sheen loops
-- movement that makes the UI difficult to inspect
+1. Left/Boss phone begins slightly left/back/deeper and follows a short curved path toward the cluster.
+2. Right/Leaderboard phone begins right/back/deeper and follows a complementary curved path.
+3. Main/Home phone arrives last from slightly lower/front/deeper space and settles into the hero position.
+4. Phones lock into the tight grouped composition with a subtle overshoot/spring.
 
-The entrance is the memorable moment. The idle state should feel expensive and controlled.
+The orbit feeling comes from **curved approach paths + depth + controlled rotation**.
+
+Do not make the phones continuously orbit each other.
+
+Do not perform full spins.
+
+Do not create chaotic game-trailer motion.
+
+## After landing
+
+Keep the composition calm but alive:
+
+- tiny independent drift
+- very shallow pointer parallax on capable desktop
+- tiny perspective reaction
+- one restrained sheen/reflection pass after settling if it looks premium
+- subtle lighting response
+
+No obvious perpetual bobbing.
+
+No large cursor-follow movement.
+
+No repeating flashy animation loops.
+
+## Reduced motion
+
+Respect existing reduced-motion behaviour.
+
+Reduced-motion mode should show the same final product cluster immediately or with a gentle fade/short transform, without flying/orbiting motion.
 
 ---
 
-## 14. IslamQuest responsive behaviour
+# 14. IslamQuest responsive behaviour
 
-### Desktop
+## Desktop
 
-- full three-phone cinematic composition
-- strongest entrance motion
-- centre phone readable
-- supporting phones clearly recognisable
+- full compact 3-phone product-shot cluster
+- strongest entrance choreography
+- all three devices visible
+- hardware thickness clearly visible
 
-### Tablet
+## Tablet
 
-- retain three devices if composition remains clean
-- reduce separation/rotation/depth where needed
-- maintain clear hierarchy
+- retain three phones if clean
+- tighten spacing and reduce angle/travel if needed
+- maintain one grouped cluster
 
-### Mobile
+## Mobile
 
-Do not force the desktop composition into a tiny viewport.
+Do not squeeze the desktop scene mechanically.
 
-Prefer:
-
-- dominant centre phone
-- one or both supporting phones used as controlled partial background layers/peeks
-- reduced travel distances
-- simpler rotation
+- centre phone dominates
+- support phones may sit partially behind as controlled peeks
+- keep the sense of the 3-phone family where practical
+- simplify depth/animation
 - no horizontal overflow
 
-Maintain the three-screen story where practical without sacrificing readability.
+---
+
+# 15. Future / Product Lab — remove all legacy-site destinations
+
+Current Product Lab cards can open old CatchZone pages with old branding. That is not acceptable in the new site.
+
+Use **Option A**: create new lightweight destination pages inside the current redesigned CatchZone experience.
+
+## Required behaviour
+
+Every Future / Product Lab card should open a page that uses:
+
+- current global header/navigation
+- current CatchZone branding
+- current typography
+- current dark design system
+- current motion language
+- current footer where applicable
+
+Do not expose old CatchZone page styling anywhere in this flow.
+
+## Lightweight page content
+
+Each category page should remain intentionally light because it represents future/product-lab work.
+
+Include:
+
+- category name
+- concise category description based on existing copy/data
+- clear `In development` or `Product Lab` status
+- a small high-level “what we’re exploring” / category scope treatment only where supported by existing information
+- CTA back to Work and/or Start a Project where appropriate
+
+Do not invent detailed products, release dates, client claims, metrics or fake case studies.
+
+Use clean new routes consistent with the current app architecture. Update all Product Lab links to use these routes.
+
+Legacy `/apps/...` pages may remain physically in the repository if needed for compatibility/history, but they must no longer be the destination from the redesigned Product Lab cards.
 
 ---
 
-## 15. Reduced-motion and performance
+# 16. New CatchZone logo assets — authoritative usage
 
-Respect `prefers-reduced-motion` and the project's existing reduced-motion architecture.
+The next Claude task will supply two approved CatchZone PNG logo files:
 
-Reduced-motion users should receive an elegant already-assembled or gently faded-in three-phone composition without orbiting/flying motion.
+1. **main/full logo** — includes `BUILT FOR WHAT'S NEXT`
+2. **mobile/compact logo** — same approved CatchZone identity without the slogan
 
-Keep animation GPU-friendly where practical:
+Treat those supplied files as the current approved production brand assets for this pass.
 
-- transform / opacity first
-- avoid layout-thrashing animation
-- avoid unnecessarily expensive filters
-- do not introduce a heavy 3D dependency solely for these phones if CSS/DOM/Motion/GSAP can create the result cleanly
+Do not redraw, recolour, reinterpret or regenerate them.
 
-The effect must remain smooth on normal modern hardware.
+## Main logo preference
+
+The user strongly prefers the **main/full logo with slogan**.
+
+Use the main/full slogan logo everywhere there is reasonable space, including:
+
+- desktop global header
+- larger tablet header where legible
+- footer/brand areas where appropriate
+- other larger recurring brand placements if already present
+
+Do not unnecessarily replace the full logo with the compact version on desktop.
+
+## Mobile compact logo
+
+Use the compact/no-slogan logo **only for genuinely narrow mobile header situations** where the slogan would become unreadably small or would damage navigation layout.
+
+The compact version is a responsive fallback, not the default brand mark.
+
+## Slogan visibility
+
+`BUILT FOR WHAT'S NEXT` is important to the brand.
+
+When the full logo is used:
+
+- give it sufficient rendered width for the slogan to be readable
+- do not shrink it into a tiny desktop header slot
+- adjust header logo width/spacing rather than making the slogan microscopic
+- preserve aspect ratio
+- do not blur with aggressive CSS scaling
+
+## Image quality
+
+Use the supplied source at appropriate intrinsic dimensions.
+
+Avoid upscaling a tiny raster asset beyond its useful size.
+
+Prefer `next/image` or an equivalent correct image-rendering approach where appropriate, while preserving transparency and avoiding unwanted optimization artefacts.
+
+If later supplied with true SVG/vector equivalents of these exact approved logos, those can replace the PNG source paths without changing the layout or visual proportions.
 
 ---
 
-## 16. Apps/products should not feel visually secondary
+# 17. Logo file placement in the repository
 
-After upgrading the seven business-system presentations, ensure CatchZone's owned product section still feels premium.
+When the two logo files are attached to the Claude task:
 
-IslamQuest is a flagship proof point and must not look less polished than the showcase systems.
+- copy/store them in a clear production asset location under `public/` consistent with the repository structure
+- use clear names, for example:
+  - `public/brand/catchzone-logo-full.png`
+  - `public/brand/catchzone-logo-mobile.png`
+- update the global navigation/header to use the correct responsive source
+- remove any obsolete duplicate logo usage in page content unless it serves a deliberate brand purpose
 
-Preserve useful existing copy and store/status information unless separately instructed to change it.
-
----
-
-## 17. Real client work remains distinct
-
-Real client work such as FDE Fire & Security must remain clearly distinct from showcase/system presentation through context and truthful copy.
-
-Do not relabel showcase systems as real FDE-style client engagements.
-
-Do not misstate unfinished FDE platform work as already deployed.
-
-The goal is confident presentation, not fabricated provenance.
+Do not leave task-upload temporary paths wired into production code.
 
 ---
 
-## 18. QA requirements
+# 18. Showcase/client system detail pages
 
-Before declaring this pass complete, verify all of the following:
+Keep the improved product-led direction from the previous pass.
 
-### Global / header
+Do not regress into:
 
-- approved CatchZone logo is in the global header
-- stray duplicate logo inside Work-page content is removed
-- navigation remains balanced at desktop/tablet/mobile
+`title → paragraph → screenshot → paragraph → screenshot`
 
-### Work page
+Continue to use:
 
-- Foundry Lane Events appears first among the new systems
-- Foundry has higher visual hierarchy without a `SHOWPIECE` badge
-- the other six follow in a strong structured sequence
-- CatchZone-owned products/apps follow the systems
-- real client/web work follows appropriately
-- visible `Concept Showcase` style labels are removed
-- device presentations are clearly recognisable as physical devices
-- screenshot readability remains acceptable
+- strong product/device hero moments
+- spatial screen arrangements
+- offset pairings
+- readable dashboard crops
+- project-specific accent atmosphere
+- concise copy
+- current CatchZone motion language
 
-### Showcase detail pages
+Now that the seven systems are confirmed as client work, the copy may confidently refer to them as client systems/projects where appropriate.
 
-- no repeated `Concept Showcase` / `SHOWPIECE` labels remain
-- pages do not all use the same stacked screenshot rhythm
-- supplied screens remain unchanged
-- device/presentation treatments do not crop away important UI unintentionally
-- project-specific local colour cues remain controlled
+Do not add unsupported performance/results claims.
 
-### IslamQuest
+---
 
-- exactly three primary phone screens are used in the desktop composition
-- centre = home screen
-- left = Boss Level
-- right = leaderboard
-- phone hardware reads as premium physical hardware
-- entrance uses staggered curved/orbit-influenced paths
-- no continuous/full orbit gimmick
-- final formation is stable and visually balanced
-- subtle idle motion does not distract
-- reduced-motion version works
+# 19. Do not break approved areas
 
-### Technical
+The user is broadly happy with the rest of the redesign.
 
-- no new horizontal overflow
-- no broken image paths
+Do not make unrelated changes to:
+
+- typography system
+- services page architecture
+- overall homepage composition outside the requested IslamQuest refinement
+- contact/project flow except where QA reveals a real bug
+- established motion system
+- existing real client website layouts unless required for the wording change above
+
+Prefer surgical improvements over broad rewrites.
+
+---
+
+# 20. QA requirements
+
+Before declaring this pass complete, verify:
+
+## Branding
+
+- full slogan logo appears in desktop header
+- slogan is actually readable at normal desktop size
+- compact logo is used only where narrow mobile layout requires it
+- no distorted logo aspect ratio
+- no obsolete duplicate brand mark sitting randomly inside page content
+
+## Work page
+
+- Foundry Lane Events is the FIRST client-system feature
+- Client Systems wording is clear
+- no `Concept Showcase` / `SHOWPIECE` wording remains for the seven client systems
+- supporting heading no longer says `Six more businesses. Six connected systems.`
+- six supporting device visuals are large and readable
+- no tiny monitor floating in a huge empty tile
+- client-system information blocks remain concise
+- CatchZone Products remain clearly distinct
+- Client Websites remain clearly distinct
+
+## IslamQuest
+
+- three phones form one tight grouped cluster
+- centre/home, left/Boss, right/leaderboard assignment is correct
+- phones visibly have physical thickness
+- side rails/edges are visible where expected
+- screens are not pasted-looking flat panels
+- overlap/contact shadows reinforce depth
+- entrance motion is smooth and controlled
+- no constant orbit/spin
+- reduced-motion fallback works
+- no horizontal overflow at tablet/mobile widths
+
+## Product Lab
+
+- no Product Lab card opens a legacy-styled old CatchZone page
+- all Product Lab destinations use the current redesign shell
+- all destination routes work
+- no invented release dates/features/metrics
+
+## Technical
+
+- typecheck clean
+- lint clean
+- production build clean
+- visually inspect desktop, slimmer desktop, tablet and multiple mobile widths
+- no broken image requests
 - no obvious console errors
-- no broken routes or links
-- desktop / narrower desktop / tablet / mobile visually inspected
-- typecheck passes
-- lint passes
-- production build passes
-
-Fix genuine issues discovered during QA before declaring completion.
+- no new horizontal overflow
+- navigation and Start a Project remain usable at all breakpoints
 
 ---
 
-## 19. Implementation discipline
+# 21. Delivery expectation
 
-Do not stop after producing a plan.
+Do not stop after giving a plan.
 
-Required sequence:
+Process:
 
-1. inspect current implementation
-2. read all authoritative briefs
-3. inspect the three newly attached IslamQuest references visually
-4. give the user a concise summary of what will change
-5. continue immediately into implementation without waiting for another reply
-6. QA the completed result
-7. report what changed and any genuine remaining issues
+1. Pull/sync latest branch state.
+2. Read all authoritative docs including this one.
+3. Inspect the current implementation before changing it.
+4. Inspect the newly attached logo assets.
+5. Give the user a **short implementation summary only**.
+6. Continue immediately into implementation without waiting, unless genuinely blocked.
+7. Run QA/build checks.
+8. Give a concise completion report.
 
-Do not push or deploy unless the user explicitly requests it.
-
-Do not rewrite unrelated sections simply because you are already in the repository.
+Do **not** push or deploy unless explicitly asked.
