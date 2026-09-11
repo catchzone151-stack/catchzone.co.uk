@@ -315,7 +315,13 @@ function Connectors({ state }: PieceProps) {
   return (
     <lineSegments>
       <bufferGeometry ref={geometryRef}>
-        <bufferAttribute attach="attributes-position" count={10} array={positions} itemSize={3} />
+        <bufferAttribute
+          attach="attributes-position"
+          count={10}
+          array={positions}
+          itemSize={3}
+          args={[positions, 3]}
+        />
       </bufferGeometry>
       <lineBasicMaterial ref={matRef} color="#828b9a" transparent opacity={0} />
     </lineSegments>
