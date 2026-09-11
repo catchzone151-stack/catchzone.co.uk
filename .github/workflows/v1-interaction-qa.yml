@@ -1,0 +1,270 @@
+name: CatchZone V1 Interaction QA
+
+on:
+  push:
+    branches:
+      - "claude/catchzone-redesign-uht3tr"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  interaction-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Check out V1 branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Production build
+        run: npm run build
+
+      - name: Install Chromium QA runtime
+        shell: bash
+        run: |
+          npm install --no-save --no-package-lock playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Start production server
+        shell: bash
+        run: |
+          npm start -- -p 3000 > interaction-server.log 2>&1 &
+          echo $! > interaction-server.pid
+          for i in {1..60}; do
+            if curl -fsS http://127.0.0.1:3000/ >/dev/null; then
+              echo "Production server is ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          cat interaction-server.log
+          exit 1
+
+      - name: Scroll-state, links, mobile nav and form QA
+        shell: bash
+        run: |
+          cat > .interaction-qa.mjs <<'NODE'
+          import { chromium } from 'playwright';
+          import fs from 'node:fs/promises';
+
+          const base = 'http://127.0.0.1:3000';
+          const routes = [
+            '/',
+            '/work',
+            '/work/islamquest',
+            '/work/lumi',
+            '/work/cscs',
+            '/work/rawdah-cycle',
+            '/work/villagefront',
+            '/services',
+            '/services/apps',
+            '/services/web',
+            '/services/systems',
+            '/about',
+            '/start-a-project',
+            '/privacy',
+          ];
+          const widths = [1440, 1280, 1024, 768, 430, 390, 360];
+          const expectedPlayPackages = [
+            'com.islamquest.app',
+            'com.catchzone.lumi',
+            'com.catchzone.cscs',
+            'com.catchzone.rawdahcycle',
+          ];
+
+          const browser = await chromium.launch();
+          const findings = [];
+          const internalPaths = new Set();
+          const externalHrefs = new Set();
+
+          function slugFor(route) {
+            return route === '/' ? 'home' : route.slice(1).replaceAll('/', '--');
+          }
+
+          async function activateScrollReveals(page) {
+            await page.evaluate(async () => {
+              const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+              const viewport = Math.max(window.innerHeight, 600);
+              const step = Math.max(480, Math.floor(viewport * 0.7));
+              const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+              for (let y = 0; y <= max; y += step) {
+                window.scrollTo(0, Math.min(y, max));
+                await wait(90);
+              }
+              window.scrollTo(0, max);
+              await wait(450);
+              window.scrollTo(0, 0);
+              await wait(250);
+            });
+          }
+
+          for (const width of widths) {
+            const height = width <= 430 ? 900 : 1000;
+            const context = await browser.newContext({ viewport: { width, height } });
+
+            for (const route of routes) {
+              const page = await context.newPage();
+              const consoleErrors = [];
+              const pageErrors = [];
+              page.on('console', (msg) => {
+                if (msg.type() === 'error') consoleErrors.push(msg.text());
+              });
+              page.on('pageerror', (error) => pageErrors.push(String(error)));
+
+              const response = await page.goto(`${base}${route}`, {
+                waitUntil: 'domcontentloaded',
+                timeout: 30000,
+              });
+              await page.waitForTimeout(350);
+              await activateScrollReveals(page);
+
+              const metrics = await page.evaluate(() => ({
+                scrollWidth: document.documentElement.scrollWidth,
+                clientWidth: document.documentElement.clientWidth,
+                h1Count: document.querySelectorAll('h1').length,
+                missingAlt: document.querySelectorAll('img:not([alt])').length,
+                hrefs: Array.from(document.querySelectorAll('a[href]'), (a) => a.getAttribute('href') || ''),
+              }));
+
+              for (const href of metrics.hrefs) {
+                if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) continue;
+                const resolved = new URL(href, `${base}${route}`);
+                if (resolved.origin === base) {
+                  internalPaths.add(`${resolved.pathname}${resolved.search}`);
+                } else if (resolved.protocol === 'http:' || resolved.protocol === 'https:') {
+                  externalHrefs.add(resolved.href);
+                }
+              }
+
+              const status = response?.status() ?? 0;
+              const overflow = metrics.scrollWidth > metrics.clientWidth + 1;
+              const failed =
+                status >= 400 ||
+                status === 0 ||
+                overflow ||
+                metrics.h1Count !== 1 ||
+                metrics.missingAlt !== 0 ||
+                consoleErrors.length > 0 ||
+                pageErrors.length > 0;
+
+              findings.push({
+                route,
+                width,
+                status,
+                overflow,
+                h1Count: metrics.h1Count,
+                missingAlt: metrics.missingAlt,
+                consoleErrors,
+                pageErrors,
+                failed,
+              });
+
+              await fs.mkdir(`qa-activated/screens/${width}`, { recursive: true });
+              await page.screenshot({
+                path: `qa-activated/screens/${width}/${slugFor(route)}.jpg`,
+                type: 'jpeg',
+                quality: 74,
+                fullPage: true,
+              });
+              await page.close();
+            }
+            await context.close();
+          }
+
+          const internalLinkResults = [];
+          for (const path of [...internalPaths].sort()) {
+            const response = await fetch(`${base}${path}`, { redirect: 'follow' });
+            internalLinkResults.push({ path, status: response.status, finalUrl: response.url });
+            if (response.status >= 400) {
+              throw new Error(`Internal link failed: ${path} -> ${response.status}`);
+            }
+          }
+
+          for (const packageId of expectedPlayPackages) {
+            const found = [...externalHrefs].some(
+              (href) => href.includes('play.google.com/store/apps/details') && href.includes(`id=${packageId}`),
+            );
+            if (!found) throw new Error(`Expected Google Play link not rendered for ${packageId}`);
+          }
+
+          const mobile = await browser.newContext({ viewport: { width: 390, height: 900 } });
+          const mobilePage = await mobile.newPage();
+          await mobilePage.goto(`${base}/`, { waitUntil: 'domcontentloaded' });
+          await mobilePage.getByRole('button', { name: 'Open menu' }).click();
+          await mobilePage.locator('#mobile-nav').waitFor({ state: 'visible' });
+          await mobilePage.getByRole('navigation', { name: 'Mobile' }).getByRole('link', { name: 'Work' }).click();
+          await mobilePage.waitForURL('**/work');
+          const bodyOverflowAfterNav = await mobilePage.evaluate(() => document.body.style.overflow);
+          if (bodyOverflowAfterNav === 'hidden') throw new Error('Mobile navigation left body scroll locked after route change');
+          await mobile.close();
+
+          const formContext = await browser.newContext({ viewport: { width: 390, height: 900 } });
+          const formPage = await formContext.newPage();
+          await formPage.goto(`${base}/start-a-project`, { waitUntil: 'domcontentloaded' });
+          await formPage.getByRole('button', { name: 'Mobile App', exact: true }).click();
+          await formPage.getByRole('button', { name: /Continue/ }).click();
+          await formPage.getByRole('button', { name: 'I Have An Idea', exact: true }).click();
+          await formPage.getByRole('button', { name: /Continue/ }).click();
+          await formPage.getByRole('button', { name: 'Premium design', exact: true }).click();
+          await formPage.getByRole('button', { name: /Continue/ }).click();
+          await formPage.getByRole('button', { name: /£10k/ }).click();
+          await formPage.getByRole('button', { name: /Continue/ }).click();
+          await formPage.getByLabel('Name').fill('Launch QA');
+          await formPage.getByLabel('Email').fill('qa@example.com');
+          await formPage.getByLabel('Project description').fill('Automated end-to-end UI validation of the CatchZone project enquiry flow before launch.');
+          const submit = formPage.getByRole('button', { name: 'Send Project Brief' });
+          await submit.click();
+          await formPage.getByRole('link', { name: 'Send via email' }).waitFor({ state: 'visible', timeout: 10000 });
+          const fallbackHref = await formPage.getByRole('link', { name: 'Send via email' }).getAttribute('href');
+          if (!fallbackHref?.startsWith('mailto:info@catchzone.co.uk')) {
+            throw new Error(`Unexpected emergency fallback target: ${fallbackHref}`);
+          }
+          await formPage.screenshot({ path: 'qa-activated/start-project-fallback-390.jpg', type: 'jpeg', quality: 78, fullPage: true });
+          await formContext.close();
+
+          await browser.close();
+
+          const failures = findings.filter((item) => item.failed);
+          const report = {
+            cases: findings.length,
+            failures,
+            internalLinkResults,
+            googlePlayPackagesVerifiedInRenderedLinks: expectedPlayPackages,
+            mobileNavigation: 'passed',
+            startProjectUiFlow: 'passed_to_expected_unconfigured_fallback_in_CI',
+          };
+          await fs.writeFile('qa-activated/results.json', JSON.stringify(report, null, 2));
+          console.log(`Activated browser checks: ${findings.length} cases, ${failures.length} failures`);
+          console.log(`Internal links checked: ${internalLinkResults.length}`);
+          console.log('Mobile navigation: passed');
+          console.log('Start a Project UI flow: passed to expected CI fallback');
+          console.log(`Rendered Google Play package links verified: ${expectedPlayPackages.length}`);
+          if (failures.length) {
+            console.error(JSON.stringify(failures, null, 2));
+            process.exit(1);
+          }
+          NODE
+          node .interaction-qa.mjs
+          rm .interaction-qa.mjs
+
+      - name: Upload activated-state QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: catchzone-v1-interaction-qa
+          path: |
+            qa-activated/
+            interaction-server.log
+          if-no-files-found: warn
+          retention-days: 14

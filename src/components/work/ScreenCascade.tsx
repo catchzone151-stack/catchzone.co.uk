@@ -1,0 +1,179 @@
+"use client";
+
+import Image from "next/image";
+import { useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { viewport as viewportToken } from "@/lib/motion/tokens";
+import type { AccentTheme } from "@/data/projects";
+
+const DEFAULT_ACCENT: AccentTheme = {
+  chassis: ["#1c1e24", "#0a0a0c"],
+  ring: "rgba(255,255,255,0.15)",
+  glow: "rgba(94,234,212,0.10)",
+  icon: "#5eead4",
+};
+
+interface ScreenCascadeProps {
+  images: string[];
+  alt: string;
+  className?: string;
+  accent?: AccentTheme;
+}
+
+const TRAJECTORIES = [
+  { from: { x: -220, y: 120, rotateZ: -18, rotateY: 26 }, settle: { x: -172, y: 58, rotateZ: -9, rotateY: 13 } },
+  { from: { x: 0, y: -90, rotateZ: 0, rotateY: 0 }, settle: { x: 0, y: -6, rotateZ: 0, rotateY: 0 } },
+  { from: { x: 230, y: 150, rotateZ: 17, rotateY: -24 }, settle: { x: 178, y: -50, rotateZ: 9, rotateY: -12 } },
+  { from: { x: -80, y: -170, rotateZ: 7, rotateY: -9 }, settle: { x: 62, y: 122, rotateZ: 5, rotateY: 7 } },
+  { from: { x: 90, y: -190, rotateZ: -8, rotateY: 14 }, settle: { x: -70, y: -128, rotateZ: -5, rotateY: 9 } },
+];
+
+const DEPTH = [0, 60, 24, 40, 12];
+const SCALE = [0.86, 1, 0.82, 0.7, 0.62];
+const OPACITY = [0.72, 1, 0.74, 0.55, 0.42];
+
+function Card({
+  src,
+  alt,
+  index,
+  pointerX,
+  pointerY,
+  accent,
+}: {
+  src: string;
+  alt: string;
+  index: number;
+  pointerX: ReturnType<typeof useMotionValue<number>>;
+  pointerY: ReturnType<typeof useMotionValue<number>>;
+  accent: AccentTheme;
+}) {
+  const t = TRAJECTORIES[index % TRAJECTORIES.length]!;
+  const depth = DEPTH[index % DEPTH.length]!;
+  const scale = SCALE[index % SCALE.length]!;
+  const opacity = OPACITY[index % OPACITY.length]!;
+
+  const tiltX = useTransform(pointerY, [-1, 1], [3, -3]);
+  const tiltY = useTransform(pointerX, [-1, 1], [-4, 4]);
+  const springTiltX = useSpring(tiltX, { stiffness: 120, damping: 18 });
+  const springTiltY = useSpring(tiltY, { stiffness: 120, damping: 18 });
+
+  return (
+    <motion.div
+      className="absolute aspect-[9/17.5] w-[38%] sm:w-[36%] md:w-[34%]"
+      style={{ zIndex: 10 + depth, transformStyle: "preserve-3d" }}
+      initial={{
+        opacity: 0,
+        x: t.from.x,
+        y: t.from.y,
+        rotateZ: t.from.rotateZ,
+        rotateY: t.from.rotateY,
+        scale: scale * 0.85,
+      }}
+      whileInView={{
+        opacity,
+        x: t.settle.x,
+        y: t.settle.y,
+        rotateZ: t.settle.rotateZ,
+        rotateY: t.settle.rotateY,
+        scale,
+      }}
+      viewport={viewportToken}
+      transition={{
+        duration: 1.1,
+        delay: index * 0.14,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+    >
+      <motion.div
+        className="relative h-full w-full rounded-[1.7rem] p-[3px] shadow-[0_40px_70px_-25px_rgba(0,0,0,0.65)]"
+        style={{
+          background: `linear-gradient(180deg, ${accent.chassis[0]} 0%, ${accent.chassis[1]} 100%)`,
+          rotateX: springTiltX,
+          rotateY: springTiltY,
+        }}
+      >
+        {/* chassis edge highlight — reads as a metal/glass hardware edge */}
+        <div
+          className="pointer-events-none absolute inset-0 rounded-[1.7rem]"
+          style={{ boxShadow: `inset 0 0 0 1px ${accent.ring}` }}
+          aria-hidden="true"
+        />
+        {/* speaker/camera notch */}
+        <div
+          className="pointer-events-none absolute left-1/2 top-[7px] z-10 h-[5px] w-8 -translate-x-1/2 rounded-full bg-black/80"
+          aria-hidden="true"
+        />
+        {/* side button hardware detail */}
+        <div
+          className="pointer-events-none absolute -right-[1.5px] top-[22%] h-[9%] w-[2px] rounded-l-sm bg-[#2a2c33]"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute -left-[1.5px] top-[16%] h-[6%] w-[2px] rounded-r-sm bg-[#2a2c33]"
+          aria-hidden="true"
+        />
+
+        <div className="relative h-full w-full overflow-hidden rounded-[1.45rem] bg-black">
+          <Image src={src} alt={alt} fill sizes="320px" className="object-cover" />
+          {/* glass reflection sweep */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(115deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.02) 18%, transparent 32%)",
+            }}
+            aria-hidden="true"
+          />
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+export function ScreenCascade({ images, alt, className, accent = DEFAULT_ACCENT }: ScreenCascadeProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const el = containerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    pointerX.set(((e.clientX - rect.left) / rect.width) * 2 - 1);
+    pointerY.set(((e.clientY - rect.top) / rect.height) * 2 - 1);
+  }
+
+  function handleMouseLeave() {
+    pointerX.set(0);
+    pointerY.set(0);
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={`relative flex items-center justify-center ${className ?? ""}`}
+      style={{ perspective: "1800px" }}
+    >
+      <div
+        className="pointer-events-none absolute inset-0 rounded-full opacity-70"
+        style={{
+          background: `radial-gradient(45% 55% at 50% 50%, ${accent.glow}, transparent 70%)`,
+        }}
+        aria-hidden="true"
+      />
+      {images.map((src, i) => (
+        <Card
+          key={src}
+          src={src}
+          alt={`${alt} screen ${i + 1}`}
+          index={i}
+          pointerX={pointerX}
+          pointerY={pointerY}
+          accent={accent}
+        />
+      ))}
+    </div>
+  );
+}
