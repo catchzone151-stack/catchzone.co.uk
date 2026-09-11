@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { featuredProjects, roadmapCategories } from "@/data/projects";
 import { clientWork } from "@/data/clientWork";
+import { sortedShowcaseProjects } from "@/data/showcase";
 import { FeaturedProjectCard } from "@/components/work/FeaturedProjectCard";
 import { ProjectCard } from "@/components/work/ProjectCard";
 import { ClientWorkCard } from "@/components/work/ClientWorkCard";
+import { ShowcaseCard } from "@/components/showcase/ShowcaseCard";
 import { Reveal } from "@/components/ui/Reveal";
 
 export const metadata: Metadata = {
@@ -75,6 +78,44 @@ export default function WorkPage() {
             {sortedClientWork.map((project) => (
               <ClientWorkCard key={project.slug} project={project} />
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* Concept Showcase — fictional private/internal systems demonstrating range.
+          Clearly labelled and visually distinct from real products (A) and
+          real client work (B) above. */}
+      {sortedShowcaseProjects.length > 0 && (
+        <section className="border-t border-line py-16 md:py-20">
+          <div className="shell">
+            <Image
+              src="/assets/images/CatchZone/CatchZone Logo Full.png"
+              alt="CatchZone"
+              width={2000}
+              height={667}
+              className="h-auto w-[150px] opacity-90"
+            />
+            <p className="mt-8 mono text-xs uppercase tracking-[0.25em] text-accent-iris">
+              Concept Showcase
+            </p>
+            <h2 className="mt-3 font-display text-xl font-bold text-ink md:text-2xl">
+              Seven private systems, seven different businesses.
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-muted">
+              Concept work demonstrating CatchZone&apos;s range across
+              industries — private, internal business systems rather than
+              public products or real client engagements.
+            </p>
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {sortedShowcaseProjects.map((project, i) => (
+                <ShowcaseCard
+                  key={project.slug}
+                  project={project}
+                  delay={i * 0.05}
+                  featured={project.featured}
+                />
+              ))}
+            </div>
           </div>
         </section>
       )}

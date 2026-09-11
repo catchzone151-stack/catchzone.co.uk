@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { footerNav } from "@/data/navigation";
 
@@ -6,8 +7,14 @@ export function Footer() {
     <footer className="border-t border-line bg-surface">
       <div className="shell grid gap-10 py-16 md:grid-cols-[1.2fr_1fr_1fr]">
         <div>
-          <p className="font-display text-xl text-ink">CatchZone</p>
-          <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-muted">
+          <Image
+            src="/assets/images/CatchZone/CatchZone Logo Full.png"
+            alt="CatchZone — Built for what's next"
+            width={2000}
+            height={667}
+            className="h-auto w-[220px]"
+          />
+          <p className="mt-5 max-w-xs text-sm leading-relaxed text-ink-muted">
             Apps. Web platforms. Business systems. Connected digital
             ecosystems — designed and built as one.
           </p>
