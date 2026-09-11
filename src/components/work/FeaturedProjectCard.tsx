@@ -52,8 +52,8 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
         </div>
       </div>
 
-      {isIslamQuest && project.accent ? (
-        <IslamQuestPhones accent={project.accent} />
+      {isIslamQuest ? (
+        <IslamQuestPhones className="md:mt-8" />
       ) : cascadeShots.length >= 2 ? (
         <ScreenCascade
           images={cascadeShots}

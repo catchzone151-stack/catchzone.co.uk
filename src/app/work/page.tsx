@@ -49,10 +49,9 @@ export default function WorkPage() {
               Platforms, dashboards and connected systems built for clients.
             </h1>
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-muted md:text-base">
-              Operational software, internal platforms and business
-              automation built for clients around how their businesses
-              actually work — from live event operations and education to
-              training, hospitality, recruitment and logistics.
+              Seven client systems across events, education, training,
+              hospitality, recruitment and logistics — built around each
+              client&apos;s real workflow.
             </p>
 
             <div className="mt-14 md:mt-16">
