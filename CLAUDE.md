@@ -11,6 +11,8 @@ For the current Work/showcase, branding, Product Lab and IslamQuest visual refin
 
 For the latest surgical composition corrections, also read `docs/CATCHZONE_FINAL_TWEAKS.md` completely. It is the newest authority for the specific homepage IslamQuest placement and `/work` opening/layout fixes. Where it conflicts with an older refinement note, `docs/CATCHZONE_FINAL_TWEAKS.md` wins.
 
+For the production launch dependency/security pass, read `docs/CATCHZONE_LAUNCH_SECURITY.md` completely. During that pass, it is the latest authority for dependency versions, migration scope and validation. The site design is already approved; do not use the security upgrade as an excuse to redesign it.
+
 ## Working rules
 - Inspect the existing repository and assets before changing architecture.
 - Preserve real CatchZone content/assets where useful; do not invent testimonials, client logos, awards, metrics, users, revenue, downloads or other unverifiable claims.
@@ -26,7 +28,8 @@ For the latest surgical composition corrections, also read `docs/CATCHZONE_FINAL
 1. Read `docs/CATCHZONE_MASTER_BUILD.md`.
 2. If the showcase asset drop is supplied, read `docs/CATCHZONE_SHOWCASE_DROP.md`.
 3. Read `docs/CATCHZONE_REFINEMENT_BRIEF.md`.
-4. Read `docs/CATCHZONE_FINAL_TWEAKS.md` and treat it as the latest authority for this final composition pass.
-5. Inspect the repository thoroughly.
-6. Produce a concise implementation plan.
-7. Continue immediately into the build unless a genuinely destructive decision requires clarification.
+4. Read `docs/CATCHZONE_FINAL_TWEAKS.md` and treat it as the latest authority for the final composition pass.
+5. If the task is the production dependency/security upgrade, read `docs/CATCHZONE_LAUNCH_SECURITY.md` and treat it as the latest authority for that pass.
+6. Inspect the repository thoroughly.
+7. Produce a concise implementation plan.
+8. Continue immediately into the build unless a genuinely destructive decision requires clarification.
