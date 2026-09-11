@@ -1,3 +1,5 @@
+import type { DeviceKind } from "@/components/showcase/DeviceFrame";
+
 /**
  * The CatchZone concept showcase — seven fictional private/internal
  * business systems supplied as a final approved asset pack
@@ -7,7 +9,10 @@
  * `clientWork.ts` (real client engagements like Blossom/FDE).
  *
  * Every image, copy line and feature below is sourced directly from the
- * supplied CLAUDE-HANDOFF.md files — nothing here is invented.
+ * supplied CLAUDE-HANDOFF.md files — nothing here is invented. Device
+ * framing (`frame` / `cardFrame`) is presentation only and is chosen per
+ * docs/CATCHZONE_REFINEMENT_BRIEF.md's device-variety requirement — it
+ * never implies the underlying screenshot changed.
  */
 
 export interface ShowcaseAccent {
@@ -48,6 +53,8 @@ export interface ShowcaseSection {
   images?: number[];
   /** split only — which side the image sits on. */
   imageSide?: "left" | "right";
+  /** Physical device the primary image is presented inside. */
+  frame?: DeviceKind;
 }
 
 export interface ShowcaseProject {
@@ -61,7 +68,9 @@ export interface ShowcaseProject {
   accent: ShowcaseAccent;
   images: ShowcaseImage[];
   sections: ShowcaseSection[];
-  /** Foundry Lane Events — the showpiece. */
+  /** Card thumbnail device frame on the Work landing page. */
+  cardFrame: DeviceKind;
+  /** Foundry Lane Events — the opening featured system. */
   featured?: boolean;
 }
 
@@ -104,6 +113,7 @@ export const showcaseProjects: ShowcaseProject[] = [
       glow: "rgba(59,130,196,0.16)",
       ring: "rgba(91,155,213,0.35)",
     },
+    cardFrame: "laptop",
     images: [
       IMG(
         "brookmere-academy",
@@ -141,10 +151,10 @@ export const showcaseProjects: ShowcaseProject[] = [
     sections: [
       {
         variant: "hero",
-        eyebrow: "Concept Showcase",
         heading: "One school. Every role, connected.",
         body: "Parents can see attendance, homework, upcoming events and school messages across their children without jumping between separate systems.",
         images: [0],
+        frame: "laptop",
       },
       {
         variant: "wide",
@@ -152,6 +162,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         heading: "Software with operational depth",
         body: "Teachers can manage classes, registers, marking and day-to-day pastoral information from a single operational workspace.",
         images: [2],
+        frame: "desktop",
       },
       {
         variant: "duo",
@@ -159,6 +170,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         heading: "The next action is always obvious",
         body: "Students get a clear view of their timetable, assignments, grades and progress — on desktop and on the mobile app.",
         images: [1, 3],
+        frame: "laptop",
       },
       {
         variant: "closing",
@@ -190,6 +202,7 @@ export const showcaseProjects: ShowcaseProject[] = [
       glow: "rgba(217,101,27,0.16)",
       ring: "rgba(217,101,27,0.4)",
     },
+    cardFrame: "desktop",
     images: [
       IMG(
         "westmarch-training-centre",
@@ -235,10 +248,10 @@ export const showcaseProjects: ShowcaseProject[] = [
     sections: [
       {
         variant: "hero",
-        eyebrow: "Concept Showcase",
         heading: "Build real skills for real opportunities",
         body: "A connected vocational learning platform built around real skills, assessments and learner progress.",
         images: [0],
+        frame: "desktop",
       },
       {
         variant: "wide",
@@ -246,6 +259,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         heading: "Every vocational programme, one catalogue",
         body: "A discovery view covering several vocational areas rather than a school timetable-style interface.",
         images: [1],
+        frame: "laptop",
       },
       {
         variant: "duo",
@@ -253,6 +267,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         heading: "Structured modules, clear progress",
         body: "A structured course view with modules, progress, assignments and resources — mirrored in the mobile learner app.",
         images: [2, 4],
+        frame: "tablet",
       },
       {
         variant: "split",
@@ -261,6 +276,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         body: "Trainer-side assessment queue with learner submissions and review actions — the operational contrast to the learner screens.",
         images: [3],
         imageSide: "right",
+        frame: "laptop",
       },
       {
         variant: "closing",
@@ -291,6 +307,7 @@ export const showcaseProjects: ShowcaseProject[] = [
       glow: "rgba(122,28,45,0.18)",
       ring: "rgba(184,134,63,0.35)",
     },
+    cardFrame: "tablet",
     images: [
       IMG(
         "the-alder-kitchen",
@@ -320,10 +337,10 @@ export const showcaseProjects: ShowcaseProject[] = [
     sections: [
       {
         variant: "hero",
-        eyebrow: "Concept Showcase",
         heading: "Live service, from the pass to the pass-through",
         body: "A bespoke internal platform giving the restaurant team a live view of service, table activity and stock from one connected system.",
         images: [0],
+        frame: "tablet",
       },
       {
         variant: "wide",
@@ -331,6 +348,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         heading: "Every table, at a glance",
         body: "A live floor plan showing occupied, available, reserved and cleaning tables, with selected-table detail and activity.",
         images: [1],
+        frame: "desktop",
       },
       {
         variant: "split",
@@ -339,6 +357,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         body: "Ingredient levels, reorder thresholds, suppliers and low-stock warnings in one clean, data-led screen.",
         images: [2],
         imageSide: "left",
+        frame: "laptop",
       },
       {
         variant: "closing",
@@ -369,6 +388,7 @@ export const showcaseProjects: ShowcaseProject[] = [
       glow: "rgba(31,59,44,0.2)",
       ring: "rgba(166,138,91,0.35)",
     },
+    cardFrame: "desktop",
     images: [
       IMG(
         "alderwick-house-hotel",
@@ -398,10 +418,10 @@ export const showcaseProjects: ShowcaseProject[] = [
     sections: [
       {
         variant: "hero",
-        eyebrow: "Concept Showcase",
         heading: "Everything it takes to run the property, smoothly",
         body: "A bespoke internal system giving hotel staff one connected view of arrivals, room readiness, housekeeping and guest history.",
         images: [0],
+        frame: "desktop",
       },
       {
         variant: "wide",
@@ -409,6 +429,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         heading: "Room readiness, in real time",
         body: "A live room-status board used by housekeeping and management to see clean, dirty, in-progress and out-of-service rooms at a glance.",
         images: [1],
+        frame: "tablet",
       },
       {
         variant: "split",
@@ -417,6 +438,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         body: "A private guest record with stay history, preferences and internal information for staff use.",
         images: [2],
         imageSide: "right",
+        frame: "laptop",
       },
       {
         variant: "closing",
@@ -448,6 +470,7 @@ export const showcaseProjects: ShowcaseProject[] = [
       glow: "rgba(40,86,216,0.16)",
       ring: "rgba(40,86,216,0.4)",
     },
+    cardFrame: "laptop",
     images: [
       IMG(
         "bennett-shaw-recruitment",
@@ -477,10 +500,10 @@ export const showcaseProjects: ShowcaseProject[] = [
     sections: [
       {
         variant: "hero",
-        eyebrow: "Concept Showcase",
         heading: "Every candidate, moving through one pipeline",
         body: "A bespoke internal CRM helping consultants manage candidate pipelines, live vacancies, interviews and placements from one system.",
         images: [1],
+        frame: "laptop",
       },
       {
         variant: "wide",
@@ -488,6 +511,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         heading: "The wider view, when you need it",
         body: "Vacancies, candidate volume, interviews, placements and daily activity — the full consultant dashboard.",
         images: [0],
+        frame: "desktop",
       },
       {
         variant: "split",
@@ -496,6 +520,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         body: "Availability, salary expectations, right-to-work, tags and notes in a single candidate record.",
         images: [2],
         imageSide: "left",
+        frame: "tablet",
       },
       {
         variant: "closing",
@@ -526,6 +551,7 @@ export const showcaseProjects: ShowcaseProject[] = [
       glow: "rgba(47,125,209,0.16)",
       ring: "rgba(47,125,209,0.35)",
     },
+    cardFrame: "desktop",
     images: [
       IMG(
         "pennine-freight-services",
@@ -555,10 +581,10 @@ export const showcaseProjects: ShowcaseProject[] = [
     sections: [
       {
         variant: "hero",
-        eyebrow: "Concept Showcase",
         heading: "Everything moving, on one live map",
         body: "A bespoke internal platform giving dispatch teams a live operational view of deliveries, drivers, delays and completed jobs.",
         images: [0],
+        frame: "desktop",
       },
       {
         variant: "split",
@@ -567,6 +593,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         body: "A compact jobs list for dispatch staff showing route, driver, status and ETA across active work.",
         images: [1],
         imageSide: "right",
+        frame: "tablet",
       },
       {
         variant: "wide",
@@ -574,6 +601,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         heading: "From pickup to proof of delivery",
         body: "A single-job operations view with route timeline, delivery details, driver information and proof of delivery.",
         images: [2],
+        frame: "laptop",
       },
       {
         variant: "closing",
@@ -606,6 +634,7 @@ export const showcaseProjects: ShowcaseProject[] = [
       ring: "rgba(196,120,255,0.4)",
     },
     featured: true,
+    cardFrame: "desktop",
     images: [
       IMG(
         "foundry-lane-events",
@@ -635,10 +664,10 @@ export const showcaseProjects: ShowcaseProject[] = [
     sections: [
       {
         variant: "hero",
-        eyebrow: "Concept Showcase — Showpiece",
         heading: "Real-time operations. A flawless experience.",
         body: "A private internal platform bringing live schedules, guest flow, production teams, suppliers and operational decisions into one connected control system.",
         images: [0],
+        frame: "desktop",
       },
       {
         variant: "device",
@@ -653,6 +682,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         heading: "Every cue, every crew member, one timeline",
         body: "Run-of-show, live cue stack, crew schedule, suppliers and backstage coordination — the operational story behind the event.",
         images: [2],
+        frame: "laptop",
       },
       {
         variant: "closing",

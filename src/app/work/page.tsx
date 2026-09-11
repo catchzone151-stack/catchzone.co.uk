@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { featuredProjects, roadmapCategories } from "@/data/projects";
 import { clientWork } from "@/data/clientWork";
@@ -8,21 +7,32 @@ import { FeaturedProjectCard } from "@/components/work/FeaturedProjectCard";
 import { ProjectCard } from "@/components/work/ProjectCard";
 import { ClientWorkCard } from "@/components/work/ClientWorkCard";
 import { ShowcaseCard } from "@/components/showcase/ShowcaseCard";
+import { DeviceFrame } from "@/components/showcase/DeviceFrame";
 import { Reveal } from "@/components/ui/Reveal";
 
 export const metadata: Metadata = {
   title: "Work",
   description:
-    "Real CatchZone products — live apps, in-development builds and the wider product roadmap.",
+    "CatchZone's range — business systems, CatchZone's own products, and real client work.",
   alternates: { canonical: "/work" },
 };
 
 export default function WorkPage() {
-  const [hero, ...rest] = featuredProjects;
-  const live = rest.filter((p) => p.status === "live");
-  const productLab = rest.filter((p) => p.status === "product-lab");
-  const inDevelopment = rest.filter((p) => p.status === "in-development");
+  const [heroApp, ...restApps] = featuredProjects;
+  const live = restApps.filter((p) => p.status === "live");
+  const productLab = restApps.filter((p) => p.status === "product-lab");
+  const inDevelopment = restApps.filter((p) => p.status === "in-development");
   const sortedClientWork = [...clientWork].sort((a, b) => a.order - b.order);
+
+  const [foundryLane, ...otherSystems] = sortedShowcaseProjects;
+  const foundryAccent = foundryLane
+    ? {
+        chassis: [foundryLane.accent.primary, "#050506"] as [string, string],
+        ring: foundryLane.accent.ring,
+        glow: foundryLane.accent.glow,
+      }
+    : null;
+  const foundryCover = foundryLane?.images[0];
 
   return (
     <div className="pt-32">
@@ -35,17 +45,82 @@ export default function WorkPage() {
             Products taken from idea to working software.
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted">
-            Real CatchZone products and real client work, each labelled
-            clearly: live, client work, in development, or product lab.
+            Sophisticated business systems, CatchZone&apos;s own live
+            products, and real client work — each labelled clearly.
           </p>
         </div>
       </section>
 
-      {/* A. Featured / Live Products */}
-      {hero && (
-        <section className="overflow-hidden py-16 md:py-20">
+      {/* 1. Foundry Lane Events — opening feature. Elevated purely through
+          scale/composition/motion, never a "Showpiece" label. */}
+      {foundryLane && foundryAccent && foundryCover && (
+        <section className="border-b border-line pb-20 pt-4 md:pb-28 md:pt-8">
           <div className="shell">
-            <FeaturedProjectCard project={hero} />
+            <p
+              className="mono text-xs uppercase tracking-[0.25em]"
+              style={{ color: foundryLane.accent.accent }}
+            >
+              {foundryLane.category}
+            </p>
+            <h2 className="mt-4 max-w-3xl font-display text-3xl font-bold text-ink md:text-5xl">
+              {foundryLane.tagline}
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted">
+              {foundryLane.name}
+            </p>
+            <div className="mt-8">
+              <Link
+                href={`/work/concept/${foundryLane.slug}`}
+                className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-void transition-colors hover:bg-accent-cyan"
+              >
+                View System
+              </Link>
+            </div>
+            <DeviceFrame
+              kind={foundryLane.cardFrame}
+              src={foundryCover.src}
+              alt={foundryCover.alt}
+              accent={foundryAccent}
+              className="mx-auto mt-16 max-w-[1040px]"
+              sizes="(min-width: 1024px) 1000px, 100vw"
+              priority
+            />
+          </div>
+        </section>
+      )}
+
+      {/* 2. The other six business systems */}
+      {otherSystems.length > 0 && (
+        <section className="border-b border-line py-16 md:py-20">
+          <div className="shell">
+            <h2 className="font-display text-xl font-bold text-ink md:text-2xl">
+              Six more businesses. Six connected systems.
+            </h2>
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {otherSystems.map((project, i) => (
+                <ShowcaseCard key={project.slug} project={project} delay={i * 0.05} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 3. CatchZone-owned apps/products */}
+      <section className="border-b border-line py-16 md:py-20">
+        <div className="shell">
+          <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
+            CatchZone Products
+          </p>
+          <h2 className="mt-3 font-display text-xl font-bold text-ink md:text-2xl">
+            Real apps, designed, built and operated by CatchZone.
+          </h2>
+        </div>
+      </section>
+
+      {heroApp && (
+        <section className="overflow-hidden pb-16 md:pb-20">
+          <div className="shell">
+            <FeaturedProjectCard project={heroApp} />
           </div>
         </section>
       )}
@@ -63,66 +138,8 @@ export default function WorkPage() {
         </section>
       )}
 
-      {/* B. Client Work — order is mandatory: Blossom, then FDE */}
-      {sortedClientWork.length > 0 && (
-        <section className="border-t border-line bg-surface py-16 md:py-20">
-          <div className="shell space-y-20">
-            <div>
-              <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
-                Client Work
-              </p>
-              <h2 className="mt-3 font-display text-xl font-bold text-ink md:text-2xl">
-                Real websites, built for real clients.
-              </h2>
-            </div>
-            {sortedClientWork.map((project) => (
-              <ClientWorkCard key={project.slug} project={project} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Concept Showcase — fictional private/internal systems demonstrating range.
-          Clearly labelled and visually distinct from real products (A) and
-          real client work (B) above. */}
-      {sortedShowcaseProjects.length > 0 && (
-        <section className="border-t border-line py-16 md:py-20">
-          <div className="shell">
-            <Image
-              src="/assets/images/CatchZone/CatchZone Logo Full.png"
-              alt="CatchZone"
-              width={2000}
-              height={667}
-              className="h-auto w-[150px] opacity-90"
-            />
-            <p className="mt-8 mono text-xs uppercase tracking-[0.25em] text-accent-iris">
-              Concept Showcase
-            </p>
-            <h2 className="mt-3 font-display text-xl font-bold text-ink md:text-2xl">
-              Seven private systems, seven different businesses.
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-muted">
-              Concept work demonstrating CatchZone&apos;s range across
-              industries — private, internal business systems rather than
-              public products or real client engagements.
-            </p>
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {sortedShowcaseProjects.map((project, i) => (
-                <ShowcaseCard
-                  key={project.slug}
-                  project={project}
-                  delay={i * 0.05}
-                  featured={project.featured}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* C. In Development */}
       {inDevelopment.length > 0 && (
-        <section className="pb-16 pt-16 md:pb-20 md:pt-20">
+        <section className="pb-16 md:pb-20">
           <div className="shell">
             <h2 className="font-display text-xl font-bold text-ink">
               In Development
@@ -136,8 +153,7 @@ export default function WorkPage() {
         </section>
       )}
 
-      {/* D. Future / Product Lab */}
-      <section className="border-t border-line bg-surface py-16 md:py-20">
+      <section className="border-b border-line bg-surface py-16 md:py-20">
         <div className="shell">
           <h2 className="font-display text-xl font-bold text-ink">
             Future / Product Lab
@@ -176,6 +192,25 @@ export default function WorkPage() {
           </div>
         </div>
       </section>
+
+      {/* 4. Real client / delivered web work — last */}
+      {sortedClientWork.length > 0 && (
+        <section className="py-16 md:py-20">
+          <div className="shell space-y-20">
+            <div>
+              <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
+                Client Work
+              </p>
+              <h2 className="mt-3 font-display text-xl font-bold text-ink md:text-2xl">
+                Real websites, built for real clients.
+              </h2>
+            </div>
+            {sortedClientWork.map((project) => (
+              <ClientWorkCard key={project.slug} project={project} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

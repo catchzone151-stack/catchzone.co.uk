@@ -19,7 +19,7 @@ export async function generateMetadata({
   const project = showcaseProjects.find((p) => p.slug === slug);
   if (!project) return {};
   return {
-    title: `${project.name} — Concept Showcase`,
+    title: project.name,
     description: project.tagline,
     alternates: { canonical: `/work/concept/${project.slug}` },
   };
@@ -64,9 +64,6 @@ export default async function ConceptShowcasePage({
                 {project.tagline}
               </p>
             </div>
-            <span className="mono shrink-0 rounded-full border border-line px-4 py-2 text-xs uppercase tracking-wider text-ink-faint">
-              Concept Showcase · Private System
-            </span>
           </div>
         </div>
       </section>

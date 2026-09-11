@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { ShowcaseProject } from "@/data/showcase";
+import { DeviceFrame } from "@/components/showcase/DeviceFrame";
 import { Reveal } from "@/components/ui/Reveal";
 
 export function ShowcaseCard({
@@ -13,6 +13,11 @@ export function ShowcaseCard({
   featured?: boolean;
 }) {
   const cover = project.images[0]!;
+  const accent = {
+    chassis: [project.accent.primary, "#050506"] as [string, string],
+    ring: project.accent.ring,
+    glow: project.accent.glow,
+  };
 
   return (
     <Reveal
@@ -24,47 +29,39 @@ export function ShowcaseCard({
         className={`flex h-full ${featured ? "flex-col md:flex-row" : "flex-col"}`}
       >
         <div
-          className={`relative overflow-hidden bg-surface-raised ${featured ? "aspect-[16/9] md:aspect-auto md:w-[60%]" : "aspect-[4/3]"}`}
+          className={`relative flex items-center justify-center overflow-hidden bg-surface-raised p-6 ${featured ? "md:w-[58%] md:p-10" : "aspect-[4/3]"}`}
         >
-          <div
-            className="pointer-events-none absolute inset-0 z-10"
-            style={{
-              background: `radial-gradient(60% 60% at 50% 0%, ${project.accent.glow}, transparent 70%)`,
-            }}
-            aria-hidden="true"
-          />
-          <Image
+          <DeviceFrame
+            kind={project.cardFrame}
             src={cover.src}
             alt={cover.alt}
-            fill
-            sizes={featured ? "(min-width: 768px) 60vw, 100vw" : "(min-width: 1024px) 33vw, 100vw"}
-            className="object-cover object-top transition-transform duration-500 ease-cinematic group-hover:scale-105"
+            accent={accent}
+            compact
+            className={featured ? "max-w-[520px]" : ""}
+            sizes={featured ? "(min-width: 768px) 500px, 100vw" : "(min-width: 1024px) 33vw, 100vw"}
           />
-          {featured && (
-            <span
-              className="mono absolute left-4 top-4 z-10 rounded-full px-3 py-1 text-[10px] uppercase tracking-wider text-white"
-              style={{ background: project.accent.accent }}
-            >
-              Showpiece
-            </span>
-          )}
         </div>
         <div className={`flex flex-1 flex-col p-6 ${featured ? "justify-center md:p-10" : ""}`}>
           <p className="mono text-[11px] uppercase tracking-wider text-ink-faint">
             {project.category}
           </p>
-          <h3 className={`mt-2 font-display font-bold text-ink ${featured ? "text-2xl md:text-3xl" : "text-lg"}`}>
+          <h3
+            className={`mt-2 font-display font-bold text-ink ${featured ? "text-2xl md:text-3xl" : "text-lg"}`}
+          >
             {project.name}
           </h3>
-          <p className={`mt-2 flex-1 text-sm leading-relaxed text-ink-muted ${featured ? "max-w-md" : ""}`}>
+          <p
+            className={`mt-2 flex-1 text-sm leading-relaxed text-ink-muted ${featured ? "max-w-md" : ""}`}
+          >
             {project.tagline}
           </p>
-          <p
-            className="mt-4 text-xs font-medium"
+          <span
+            className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold"
             style={{ color: project.accent.accent }}
           >
-            Concept Showcase
-          </p>
+            View project
+            <span aria-hidden="true">→</span>
+          </span>
         </div>
       </Link>
     </Reveal>

@@ -31,21 +31,15 @@ export function Nav() {
             : "border-b border-transparent bg-transparent"
         }`}
       >
-        <Link
-          href="/"
-          className="flex items-center gap-2"
-          aria-label="CatchZone home"
-        >
+        <Link href="/" className="flex items-center" aria-label="CatchZone home">
           <Image
-            src="/assets/images/CatchZone/CatchZone Logo.png"
-            alt="CatchZone"
-            width={36}
-            height={36}
+            src="/assets/images/CatchZone/CatchZone Logo Full.png"
+            alt="CatchZone — Built for what's next"
+            width={2000}
+            height={667}
             priority
+            className="h-8 w-auto md:h-9"
           />
-          <span className="font-display text-lg tracking-tight text-ink">
-            CatchZone
-          </span>
         </Link>
 
         <nav

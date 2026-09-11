@@ -4,15 +4,15 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ScreenCascade } from "@/components/work/ScreenCascade";
 import { BannerShowcase } from "@/components/work/BannerShowcase";
 import { BrandDeviceArt } from "@/components/work/BrandDeviceArt";
-import { getIslamQuestHeroShots } from "@/lib/work/islamquestShots";
+import { IslamQuestPhones } from "@/components/work/IslamQuestPhones";
 import { StoreBadges } from "@/components/work/StoreBadges";
 
 export function FeaturedProjectCard({ project }: { project: Project }) {
   const shots = project.screenshots ?? [];
-  const cascadeShots =
-    project.slug === "islamquest" && shots.length >= 5
-      ? getIslamQuestHeroShots(shots)
-      : shots.filter((_, i) => i % 2 === 0).slice(0, 4);
+  const isIslamQuest = project.slug === "islamquest";
+  const cascadeShots = isIslamQuest
+    ? []
+    : shots.filter((_, i) => i % 2 === 0).slice(0, 4);
 
   return (
     <Reveal className="relative grid gap-16 md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-8">
@@ -52,7 +52,9 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
         </div>
       </div>
 
-      {cascadeShots.length >= 2 ? (
+      {isIslamQuest && project.accent ? (
+        <IslamQuestPhones accent={project.accent} />
+      ) : cascadeShots.length >= 2 ? (
         <ScreenCascade
           images={cascadeShots}
           alt={project.title}
