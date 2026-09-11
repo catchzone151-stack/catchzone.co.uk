@@ -1,10 +1,15 @@
 modules = ["nodejs-20"]
 
-run = "npx serve . -l 3000"
+run = "npm run dev"
 
 [[ports]]
 localPort = 3000
 externalPort = 80
+
+[deployment]
+deploymentTarget = "autoscale"
+build = ["npm", "run", "build"]
+run = ["npm", "run", "start"]
 
 [agent]
 expertMode = true
