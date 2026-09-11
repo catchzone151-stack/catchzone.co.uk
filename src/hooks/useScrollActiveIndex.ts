@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
  * pinned visual from scroll position, without any scroll-jacking.
  */
 export function useScrollActiveIndex(
-  refs: React.RefObject<HTMLElement>[],
+  refs: React.RefObject<HTMLElement | null>[],
 ): number {
   const [active, setActive] = useState(0);
 

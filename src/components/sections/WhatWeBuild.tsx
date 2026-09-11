@@ -33,7 +33,7 @@ function ServicePanel({
   service: Service;
   index: number;
   active: boolean;
-  panelRef: React.RefObject<HTMLDivElement>;
+  panelRef: React.RefObject<HTMLDivElement | null>;
 }) {
   return (
     <div
@@ -82,7 +82,7 @@ function ServicePanel({
 
 export function WhatWeBuild() {
   const refs = useMemo(
-    () => services.map(() => ({ current: null }) as React.RefObject<HTMLDivElement>),
+    () => services.map(() => ({ current: null }) as React.RefObject<HTMLDivElement | null>),
     [],
   );
   const active = useScrollActiveIndex(refs);

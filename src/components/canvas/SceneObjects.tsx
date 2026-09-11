@@ -244,14 +244,17 @@ function DataNodeCluster({
           />
         </mesh>
       ))}
-      {links.map(([a, b], idx) => (
+      {links.map(([a, b], idx) => {
+        const linePositions = new Float32Array([...nodes[a]!, ...nodes[b]!]);
+        return (
         <line key={idx}>
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"
               count={2}
-              array={new Float32Array([...nodes[a]!, ...nodes[b]!])}
+              array={linePositions}
               itemSize={3}
+              args={[linePositions, 3]}
             />
           </bufferGeometry>
           <lineBasicMaterial
@@ -263,7 +266,8 @@ function DataNodeCluster({
             opacity={0}
           />
         </line>
-      ))}
+        );
+      })}
     </group>
   );
 }
@@ -457,7 +461,13 @@ export function ConnectionBeam({ phase }: DeviceProps) {
   return (
     <line>
       <bufferGeometry ref={geometryRef}>
-        <bufferAttribute attach="attributes-position" count={2} array={initialPositions} itemSize={3} />
+        <bufferAttribute
+          attach="attributes-position"
+          count={2}
+          array={initialPositions}
+          itemSize={3}
+          args={[initialPositions, 3]}
+        />
       </bufferGeometry>
       <lineBasicMaterial ref={materialRef} color="#5eead4" transparent opacity={0} />
     </line>
@@ -517,7 +527,13 @@ export function ParticleField({ count }: { count: number }) {
   return (
     <points ref={points}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+        <bufferAttribute
+          attach="attributes-position"
+          count={count}
+          array={positions}
+          itemSize={3}
+          args={[positions, 3]}
+        />
       </bufferGeometry>
       <pointsMaterial size={0.018} color="#828b9a" transparent opacity={0.55} sizeAttenuation />
     </points>
@@ -560,7 +576,13 @@ export function NearParticleField({ count = 18 }: { count?: number }) {
   return (
     <points ref={points}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+        <bufferAttribute
+          attach="attributes-position"
+          count={count}
+          array={positions}
+          itemSize={3}
+          args={[positions, 3]}
+        />
       </bufferGeometry>
       <pointsMaterial size={0.05} color="#5eead4" transparent opacity={0.35} sizeAttenuation />
     </points>
