@@ -7,7 +7,9 @@ Before making redesign changes, read `docs/CATCHZONE_MASTER_BUILD.md` completely
 
 When the final showcase asset pack and CatchZone logo are supplied with a Claude Code task, also read `docs/CATCHZONE_SHOWCASE_DROP.md` completely before implementing or changing the showcase/portfolio work.
 
-For the current Work/showcase, branding, Product Lab and IslamQuest visual refinement pass, also read `docs/CATCHZONE_REFINEMENT_BRIEF.md` completely. It is the **latest authoritative refinement addendum** for the current branch. Where an older refinement/showcase statement conflicts with it, `docs/CATCHZONE_REFINEMENT_BRIEF.md` wins.
+For the current Work/showcase, branding, Product Lab and IslamQuest visual refinement pass, also read `docs/CATCHZONE_REFINEMENT_BRIEF.md` completely.
+
+For the latest surgical composition corrections, also read `docs/CATCHZONE_FINAL_TWEAKS.md` completely. It is the newest authority for the specific homepage IslamQuest placement and `/work` opening/layout fixes. Where it conflicts with an older refinement note, `docs/CATCHZONE_FINAL_TWEAKS.md` wins.
 
 ## Working rules
 - Inspect the existing repository and assets before changing architecture.
@@ -23,7 +25,8 @@ For the current Work/showcase, branding, Product Lab and IslamQuest visual refin
 ## Start sequence
 1. Read `docs/CATCHZONE_MASTER_BUILD.md`.
 2. If the showcase asset drop is supplied, read `docs/CATCHZONE_SHOWCASE_DROP.md`.
-3. Read `docs/CATCHZONE_REFINEMENT_BRIEF.md` and treat it as the latest refinement authority.
-4. Inspect the repository thoroughly.
-5. Produce a concise implementation plan.
-6. Continue immediately into the build unless a genuinely destructive decision requires clarification.
+3. Read `docs/CATCHZONE_REFINEMENT_BRIEF.md`.
+4. Read `docs/CATCHZONE_FINAL_TWEAKS.md` and treat it as the latest authority for this final composition pass.
+5. Inspect the repository thoroughly.
+6. Produce a concise implementation plan.
+7. Continue immediately into the build unless a genuinely destructive decision requires clarification.
