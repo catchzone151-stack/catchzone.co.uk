@@ -92,7 +92,7 @@ const IMG = (
 export const showcaseProjects: ShowcaseProject[] = [
   {
     slug: "brookmere-academy",
-    order: 1,
+    order: 2,
     name: "Brookmere Academy",
     category: "Education Platform",
     tagline: "A connected school platform for parents, students and staff.",
@@ -180,7 +180,7 @@ export const showcaseProjects: ShowcaseProject[] = [
   },
   {
     slug: "westmarch-training-centre",
-    order: 2,
+    order: 3,
     name: "Westmarch Training Centre",
     category: "Training Platform",
     tagline:
@@ -267,7 +267,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         heading: "Structured modules, clear progress",
         body: "A structured course view with modules, progress, assignments and resources — mirrored in the mobile learner app.",
         images: [2, 4],
-        frame: "tablet",
+        frame: "laptop",
       },
       {
         variant: "split",
@@ -286,7 +286,7 @@ export const showcaseProjects: ShowcaseProject[] = [
   },
   {
     slug: "the-alder-kitchen",
-    order: 3,
+    order: 4,
     name: "The Alder Kitchen",
     category: "Restaurant Operations",
     tagline:
@@ -307,7 +307,7 @@ export const showcaseProjects: ShowcaseProject[] = [
       glow: "rgba(122,28,45,0.18)",
       ring: "rgba(184,134,63,0.35)",
     },
-    cardFrame: "tablet",
+    cardFrame: "desktop",
     images: [
       IMG(
         "the-alder-kitchen",
@@ -340,7 +340,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         heading: "Live service, from the pass to the pass-through",
         body: "A bespoke internal platform giving the restaurant team a live view of service, table activity and stock from one connected system.",
         images: [0],
-        frame: "tablet",
+        frame: "desktop",
       },
       {
         variant: "wide",
@@ -367,7 +367,7 @@ export const showcaseProjects: ShowcaseProject[] = [
   },
   {
     slug: "alderwick-house-hotel",
-    order: 4,
+    order: 5,
     name: "Alderwick House Hotel",
     category: "Hospitality Operations",
     tagline:
@@ -429,7 +429,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         heading: "Room readiness, in real time",
         body: "A live room-status board used by housekeeping and management to see clean, dirty, in-progress and out-of-service rooms at a glance.",
         images: [1],
-        frame: "tablet",
+        frame: "desktop",
       },
       {
         variant: "split",
@@ -448,7 +448,7 @@ export const showcaseProjects: ShowcaseProject[] = [
   },
   {
     slug: "bennett-shaw-recruitment",
-    order: 5,
+    order: 6,
     name: "Bennett Shaw Recruitment",
     category: "Recruitment Operations",
     tagline:
@@ -520,7 +520,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         body: "Availability, salary expectations, right-to-work, tags and notes in a single candidate record.",
         images: [2],
         imageSide: "left",
-        frame: "tablet",
+        frame: "laptop",
       },
       {
         variant: "closing",
@@ -530,7 +530,7 @@ export const showcaseProjects: ShowcaseProject[] = [
   },
   {
     slug: "pennine-freight-services",
-    order: 6,
+    order: 7,
     name: "Pennine Freight Services",
     category: "Logistics Operations",
     tagline:
@@ -593,7 +593,7 @@ export const showcaseProjects: ShowcaseProject[] = [
         body: "A compact jobs list for dispatch staff showing route, driver, status and ETA across active work.",
         images: [1],
         imageSide: "right",
-        frame: "tablet",
+        frame: "laptop",
       },
       {
         variant: "wide",
@@ -611,7 +611,7 @@ export const showcaseProjects: ShowcaseProject[] = [
   },
   {
     slug: "foundry-lane-events",
-    order: 7,
+    order: 1,
     name: "Foundry Lane Events",
     category: "Event Operations",
     tagline: "A live event operations system built for the people behind the experience.",

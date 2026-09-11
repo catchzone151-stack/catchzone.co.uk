@@ -8,11 +8,11 @@ export function Footer() {
       <div className="shell grid gap-10 py-16 md:grid-cols-[1.2fr_1fr_1fr]">
         <div>
           <Image
-            src="/assets/images/CatchZone/CatchZone Logo Full.png"
+            src="/brand/catchzone-logo-full.png"
             alt="CatchZone — Built for what's next"
             width={2000}
             height={667}
-            className="h-auto w-[220px]"
+            className="h-auto w-[240px]"
           />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-ink-muted">
             Apps. Web platforms. Business systems. Connected digital

@@ -45,57 +45,76 @@ export default function WorkPage() {
             Products taken from idea to working software.
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted">
-            Sophisticated business systems, CatchZone&apos;s own live
-            products, and real client work — each labelled clearly.
+            Business platforms, connected systems, automation, mobile
+            products and client-facing digital experiences — designed and
+            engineered end to end.
           </p>
         </div>
       </section>
 
-      {/* 1. Foundry Lane Events — opening feature. Elevated purely through
-          scale/composition/motion, never a "Showpiece" label. */}
+      {/* 1. Client Systems — Foundry Lane Events opening feature. Elevated
+          purely through scale/composition/motion, never a "Showpiece" label. */}
       {foundryLane && foundryAccent && foundryCover && (
-        <section className="border-b border-line pb-20 pt-4 md:pb-28 md:pt-8">
+        <section className="border-b border-line pb-20 pt-16 md:pb-28 md:pt-20">
           <div className="shell">
-            <p
-              className="mono text-xs uppercase tracking-[0.25em]"
-              style={{ color: foundryLane.accent.accent }}
-            >
-              {foundryLane.category}
+            <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
+              Client Systems
             </p>
-            <h2 className="mt-4 max-w-3xl font-display text-3xl font-bold text-ink md:text-5xl">
-              {foundryLane.tagline}
+            <h2 className="mt-4 max-w-2xl font-display text-2xl font-bold text-ink md:text-3xl">
+              Platforms, dashboards and connected systems built for clients.
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted">
-              {foundryLane.name}
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-muted md:text-base">
+              Operational software, internal platforms and business
+              automation designed around how each client actually works.
             </p>
-            <div className="mt-8">
-              <Link
-                href={`/work/concept/${foundryLane.slug}`}
-                className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-void transition-colors hover:bg-accent-cyan"
+
+            <div className="mt-14 md:mt-16">
+              <p
+                className="mono text-xs uppercase tracking-[0.25em]"
+                style={{ color: foundryLane.accent.accent }}
               >
-                View System
-              </Link>
+                {foundryLane.category}
+              </p>
+              <h3 className="mt-4 max-w-3xl font-display text-3xl font-bold text-ink md:text-5xl">
+                {foundryLane.tagline}
+              </h3>
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted">
+                {foundryLane.name}
+              </p>
+              <div className="mt-8">
+                <Link
+                  href={`/work/concept/${foundryLane.slug}`}
+                  className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-void transition-colors hover:bg-accent-cyan"
+                >
+                  View System
+                </Link>
+              </div>
+              <DeviceFrame
+                kind={foundryLane.cardFrame}
+                src={foundryCover.src}
+                alt={foundryCover.alt}
+                accent={foundryAccent}
+                className="mx-auto mt-16 max-w-[1040px]"
+                sizes="(min-width: 1024px) 1000px, 100vw"
+                priority
+              />
             </div>
-            <DeviceFrame
-              kind={foundryLane.cardFrame}
-              src={foundryCover.src}
-              alt={foundryCover.alt}
-              accent={foundryAccent}
-              className="mx-auto mt-16 max-w-[1040px]"
-              sizes="(min-width: 1024px) 1000px, 100vw"
-              priority
-            />
           </div>
         </section>
       )}
 
-      {/* 2. The other six business systems */}
+      {/* 2. The other six client systems */}
       {otherSystems.length > 0 && (
         <section className="border-b border-line py-16 md:py-20">
           <div className="shell">
             <h2 className="font-display text-xl font-bold text-ink md:text-2xl">
-              Six more businesses. Six connected systems.
+              More client systems, built around real operations.
             </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-muted">
+              Training, hospitality, recruitment, logistics and operational
+              workflows turned into connected software systems — a sample of
+              what CatchZone builds, not a limit on it.
+            </p>
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {otherSystems.map((project, i) => (
                 <ShowcaseCard key={project.slug} project={project} delay={i * 0.05} />
@@ -106,12 +125,12 @@ export default function WorkPage() {
       )}
 
       {/* 3. CatchZone-owned apps/products */}
-      <section className="border-b border-line py-16 md:py-20">
+      <section className="border-b border-line pb-8 pt-20 md:pt-24">
         <div className="shell">
           <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
             CatchZone Products
           </p>
-          <h2 className="mt-3 font-display text-xl font-bold text-ink md:text-2xl">
+          <h2 className="mt-4 max-w-2xl font-display text-2xl font-bold text-ink md:text-3xl">
             Real apps, designed, built and operated by CatchZone.
           </h2>
         </div>
@@ -176,7 +195,7 @@ export default function WorkPage() {
                 delay={i * 0.04}
                 className="rounded-xl border border-line bg-void p-5"
               >
-                <Link href={category.href} className="block">
+                <Link href={`/work/product-lab/${category.slug}`} className="block">
                   <h3 className="text-sm font-semibold text-ink">
                     {category.name}
                   </h3>
@@ -199,11 +218,16 @@ export default function WorkPage() {
           <div className="shell space-y-20">
             <div>
               <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
-                Client Work
+                Client Websites
               </p>
               <h2 className="mt-3 font-display text-xl font-bold text-ink md:text-2xl">
-                Real websites, built for real clients.
+                Websites and digital experiences built for clients.
               </h2>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-muted">
+                Customer-facing websites and web experiences designed and
+                engineered with the same attention to clarity, performance
+                and presentation.
+              </p>
             </div>
             {sortedClientWork.map((project) => (
               <ClientWorkCard key={project.slug} project={project} />

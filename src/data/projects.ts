@@ -207,54 +207,57 @@ export const featuredProjects = projects.filter((p) => p.featured);
 export const featuredProject = featuredProjects[0] ?? projects[0]!;
 
 export interface RoadmapCategory {
+  slug: string;
   name: string;
   description: string;
-  href: string;
 }
 
 /**
  * Real placeholder categories that already exist in production, honestly
- * labelled as roadmap items rather than finished work.
+ * labelled as roadmap items rather than finished work. Each renders through
+ * `/work/product-lab/[slug]` — a lightweight page inside the current
+ * redesign shell — rather than linking to the legacy static `/apps/*`
+ * pages, which still carry the old CatchZone branding.
  */
 export const roadmapCategories: RoadmapCategory[] = [
   {
+    slug: "construction-trades",
     name: "Construction & Trades",
     description: "Exam prep and business tools for construction, safety and trades — including TradesFlow, CSCS/CITB HS&E and CSCS MAP.",
-    href: "/apps/construction-trades/",
   },
   {
+    slug: "security-licensing",
     name: "Security Licensing",
     description: "Licensing and exam prep for private security roles, including SIA Door Supervisor.",
-    href: "/apps/security-licensing/",
   },
   {
+    slug: "global-certifications",
     name: "Global Certifications",
     description: "Career-focused prep for globally recognised certifications.",
-    href: "/apps/global-certifications/",
   },
   {
+    slug: "india-exam-prep",
     name: "India Exam Prep",
     description: "Entrance and public exam prep for Indian learners.",
-    href: "/apps/india-exam-prep/",
   },
   {
+    slug: "philippines-exam-prep",
     name: "Philippines Exam Prep",
     description: "Professional and civil service prep for the Philippines.",
-    href: "/apps/philippines-exam-prep/",
   },
   {
+    slug: "west-africa-exam-prep",
     name: "West Africa Exam Prep",
     description: "Study tools for major school and public exams in West Africa.",
-    href: "/apps/west-africa-exam-prep/",
   },
   {
+    slug: "brazil-exam-prep",
     name: "Brazil Exam Prep",
     description: "Exam prep for major Brazilian academic and professional paths.",
-    href: "/apps/brazil-exam-prep/",
   },
   {
+    slug: "middle-east-exam-prep",
     name: "Middle East Exam Prep",
     description: "Language and licensing prep tailored to Middle East audiences.",
-    href: "/apps/middle-east-exam-prep/",
   },
 ];

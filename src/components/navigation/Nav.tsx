@@ -33,12 +33,20 @@ export function Nav() {
       >
         <Link href="/" className="flex items-center" aria-label="CatchZone home">
           <Image
-            src="/assets/images/CatchZone/CatchZone Logo Full.png"
+            src="/brand/catchzone-logo-full.png"
             alt="CatchZone — Built for what's next"
             width={2000}
             height={667}
             priority
-            className="h-8 w-auto md:h-9"
+            className="hidden h-11 w-auto sm:block md:h-12 lg:h-14"
+          />
+          <Image
+            src="/brand/catchzone-logo-mobile.png"
+            alt="CatchZone"
+            width={2000}
+            height={667}
+            priority
+            className="h-8 w-auto sm:hidden"
           />
         </Link>
 
