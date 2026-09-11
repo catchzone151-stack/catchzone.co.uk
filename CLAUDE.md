@@ -5,6 +5,8 @@ This repository is undergoing a major redesign and commercial repositioning.
 ## Authoritative build brief
 Before making redesign changes, read `docs/CATCHZONE_MASTER_BUILD.md` completely and treat it as the authoritative creative, commercial, UX, motion, accessibility, performance and implementation specification.
 
+When the final showcase asset pack and CatchZone logo are supplied with a Claude Code task, also read `docs/CATCHZONE_SHOWCASE_DROP.md` completely before implementing or changing the showcase/portfolio work.
+
 ## Working rules
 - Inspect the existing repository and assets before changing architecture.
 - Preserve real CatchZone content/assets where useful; do not invent testimonials, client logos, awards, metrics, users, revenue, downloads or other unverifiable claims.
@@ -18,6 +20,7 @@ Before making redesign changes, read `docs/CATCHZONE_MASTER_BUILD.md` completely
 
 ## Start sequence
 1. Read `docs/CATCHZONE_MASTER_BUILD.md`.
-2. Inspect the repository thoroughly.
-3. Produce a concise implementation plan.
-4. Continue immediately into the build unless a genuinely destructive decision requires clarification.
+2. If the showcase asset drop is supplied, read `docs/CATCHZONE_SHOWCASE_DROP.md`.
+3. Inspect the repository thoroughly.
+4. Produce a concise implementation plan.
+5. Continue immediately into the build unless a genuinely destructive decision requires clarification.
