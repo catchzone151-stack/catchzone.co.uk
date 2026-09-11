@@ -36,36 +36,23 @@ export default function WorkPage() {
 
   return (
     <div className="pt-32">
-      <section className="border-b border-line pb-16">
-        <div className="shell">
-          <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
-            Work
-          </p>
-          <h1 className="mt-4 max-w-2xl font-display text-4xl font-bold text-ink md:text-5xl">
-            Products taken from idea to working software.
-          </h1>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted">
-            Business platforms, connected systems, automation, mobile
-            products and client-facing digital experiences — designed and
-            engineered end to end.
-          </p>
-        </div>
-      </section>
-
-      {/* 1. Client Systems — Foundry Lane Events opening feature. Elevated
-          purely through scale/composition/motion, never a "Showpiece" label. */}
+      {/* 1. Client Systems — the opening content section. Foundry Lane
+          Events follows immediately so a visitor sees real work in the
+          first viewport, never a standalone text-only intro hero. */}
       {foundryLane && foundryAccent && foundryCover && (
-        <section className="border-b border-line pb-20 pt-16 md:pb-28 md:pt-20">
+        <section className="border-b border-line pb-20 pt-4 md:pb-28 md:pt-8">
           <div className="shell">
             <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
               Client Systems
             </p>
-            <h2 className="mt-4 max-w-2xl font-display text-2xl font-bold text-ink md:text-3xl">
+            <h1 className="mt-4 max-w-2xl font-display text-2xl font-bold text-ink md:text-3xl">
               Platforms, dashboards and connected systems built for clients.
-            </h2>
+            </h1>
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-muted md:text-base">
               Operational software, internal platforms and business
-              automation designed around how each client actually works.
+              automation built for clients around how their businesses
+              actually work — from live event operations and education to
+              training, hospitality, recruitment and logistics.
             </p>
 
             <div className="mt-14 md:mt-16">
@@ -75,9 +62,9 @@ export default function WorkPage() {
               >
                 {foundryLane.category}
               </p>
-              <h3 className="mt-4 max-w-3xl font-display text-3xl font-bold text-ink md:text-5xl">
+              <h2 className="mt-4 max-w-3xl font-display text-3xl font-bold text-ink md:text-5xl">
                 {foundryLane.tagline}
-              </h3>
+              </h2>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted">
                 {foundryLane.name}
               </p>

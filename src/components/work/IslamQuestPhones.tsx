@@ -45,7 +45,7 @@ function buildPhones(reduced: boolean, compact: boolean): PhoneSpec[] {
         role: "left",
         src: LEFT_SRC,
         alt: "IslamQuest Boss Level challenge screen",
-        layoutClassName: "left-[30%] top-[62%] w-[34%] -translate-x-1/2 -translate-y-1/2",
+        layoutClassName: "left-[30%] top-[52%] w-[34%] -translate-x-1/2 -translate-y-1/2",
         from: reduced
           ? { x: "0%", y: "0%", scale: 0.72, rotateY: -14, rotateZ: -4 }
           : { x: "-36%", y: "-10%", scale: 0.5, rotateY: -34, rotateZ: -10 },
@@ -71,7 +71,7 @@ function buildPhones(reduced: boolean, compact: boolean): PhoneSpec[] {
         role: "centre",
         src: CENTRE_SRC,
         alt: "IslamQuest home screen — Learn Islam the fun and authentic way",
-        layoutClassName: "left-1/2 top-1/2 w-[48%] -translate-x-1/2 -translate-y-1/2",
+        layoutClassName: "left-1/2 top-[28%] w-[48%] -translate-x-1/2 -translate-y-1/2",
         from: reduced
           ? { x: "0%", y: "0%", scale: 1, rotateY: 0, rotateZ: 0 }
           : { x: "0%", y: "18%", scale: 0.76, rotateY: 0, rotateZ: 0, rotateX: 10 },
@@ -88,7 +88,7 @@ function buildPhones(reduced: boolean, compact: boolean): PhoneSpec[] {
       role: "left",
       src: LEFT_SRC,
       alt: "IslamQuest Boss Level challenge screen",
-      layoutClassName: "left-[31%] top-[64%] w-[32%] -translate-x-1/2 -translate-y-1/2 md:w-[30%]",
+      layoutClassName: "left-[26%] top-[56%] w-[32%] -translate-x-1/2 -translate-y-1/2 md:w-[30%]",
       from: reduced
         ? { x: "0%", y: "0%", scale: 0.86, rotateY: -20, rotateZ: -5 }
         : { x: "-58%", y: "-16%", scale: 0.52, rotateY: -52, rotateZ: -14 },
@@ -101,7 +101,7 @@ function buildPhones(reduced: boolean, compact: boolean): PhoneSpec[] {
       role: "right",
       src: RIGHT_SRC,
       alt: "IslamQuest leaderboard screen",
-      layoutClassName: "left-[78%] top-[38%] w-[30%] -translate-x-1/2 -translate-y-1/2 md:w-[28%]",
+      layoutClassName: "left-[70%] top-[32%] w-[30%] -translate-x-1/2 -translate-y-1/2 md:w-[28%]",
       from: reduced
         ? { x: "0%", y: "0%", scale: 0.8, rotateY: 24, rotateZ: 5, rotateX: -6 }
         : { x: "58%", y: "-20%", scale: 0.46, rotateY: 54, rotateZ: 13, rotateX: -12 },
@@ -114,7 +114,7 @@ function buildPhones(reduced: boolean, compact: boolean): PhoneSpec[] {
       role: "centre",
       src: CENTRE_SRC,
       alt: "IslamQuest home screen — Learn Islam the fun and authentic way",
-      layoutClassName: "left-1/2 top-1/2 w-[40%] -translate-x-1/2 -translate-y-1/2 md:w-[37%]",
+      layoutClassName: "left-[46%] top-[44%] w-[40%] -translate-x-1/2 -translate-y-1/2 md:w-[37%]",
       from: reduced
         ? { x: "0%", y: "0%", scale: 1, rotateY: 0, rotateZ: 0 }
         : { x: "0%", y: "26%", scale: 0.7, rotateY: 0, rotateZ: 0, rotateX: 13 },
@@ -297,7 +297,7 @@ export function IslamQuestPhones({ accent, className }: IslamQuestPhonesProps) {
   return (
     <div
       ref={containerRef}
-      className={`relative mx-auto aspect-[4/4.4] w-full max-w-[520px] sm:aspect-[5/4] md:aspect-[4/3.1] ${className ?? ""}`}
+      className={`relative mx-auto aspect-[4/4.4] w-full max-w-[520px] sm:aspect-[4/3.7] md:aspect-[4/3.5] ${className ?? ""}`}
       style={{ perspective: "2200px" }}
     >
       <div

@@ -15,7 +15,7 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
     : shots.filter((_, i) => i % 2 === 0).slice(0, 4);
 
   return (
-    <Reveal className="relative grid gap-16 md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-8">
+    <Reveal className="relative grid gap-16 md:grid-cols-[0.9fr_1.1fr] md:items-start md:gap-8">
       <div className="relative z-10 flex flex-col justify-center">
         <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
           Featured Build
