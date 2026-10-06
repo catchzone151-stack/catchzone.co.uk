@@ -1,4 +1,4 @@
-export type CoreState = "mobile" | "web" | "systems";
+export type CoreState = "mobile" | "web" | "systems" | "ecosystem";
 
 export interface PieceTransform {
   pos: [number, number, number];
@@ -63,5 +63,19 @@ export const coreTargets: Record<CoreState, CoreTarget> = {
     system: { pos: [-0.35, -0.55, 0.15], rot: [0.4, 0.2, 0.1], scale: 1.1, opacity: 1 },
     automation: { pos: [1.9, -0.5, -0.4], rot: [0, 0, 0.5], scale: 0.85, opacity: 0.95 },
     connectorOpacity: 0.9,
+  },
+  // All five pieces gathered around the shared centre with every connector
+  // lit — the three disciplines joined into one system. Used as the
+  // homepage hand-off from "What We Build" into "Complete Digital Ecosystems".
+  ecosystem: {
+    camera: [0, 0.05, 5.4],
+    center: { scale: 1.45, opacity: 0.95 },
+    phone: { pos: [-1.35, 0.5, 0], rot: [0.05, 0.3, 0], scale: 0.95, opacity: 1 },
+    web: { pos: [1.2, 0.62, -0.2], rot: [0, -0.2, 0], scale: 0.78, opacity: 1 },
+    webSecondary: { pos: [1.55, -0.3, -0.6], rot: [0, -0.24, 0], scale: 0.55, opacity: 0.7 },
+    data: { pos: [-1.15, -0.78, -0.2], rot: [0, 0.3, 0], scale: 0.72, opacity: 1 },
+    system: { pos: [0, 0, 0.05], rot: [0.35, 0.15, 0.1], scale: 1.05, opacity: 0.95 },
+    automation: { pos: [1.05, -0.95, 0], rot: [0, 0, 0.4], scale: 0.62, opacity: 0.95 },
+    connectorOpacity: 1,
   },
 };

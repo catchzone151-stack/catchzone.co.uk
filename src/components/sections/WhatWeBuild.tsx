@@ -1,17 +1,21 @@
 "use client";
 
-import { useMemo } from "react";
+import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { motion } from "motion/react";
+import {
+  motion,
+  useInView,
+  useMotionValueEvent,
+  useScroll,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from "motion/react";
 import { services, type Service } from "@/data/services";
 import type { CoreState } from "@/lib/three/coreTargets";
-import { useScrollActiveIndex } from "@/hooks/useScrollActiveIndex";
 import { usePerformanceTier } from "@/lib/performance/usePerformanceTier";
 import { useDocumentVisible } from "@/hooks/useDocumentVisible";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { Reveal } from "@/components/ui/Reveal";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 
 const ServicesCanvas = dynamic(() => import("@/components/canvas/ServicesCanvas"), {
@@ -24,142 +28,161 @@ const SERVICE_CORE_STATE: Record<Service["slug"], CoreState> = {
   systems: "systems",
 };
 
-function ServicePanel({
+/**
+ * Scroll progress → capability position (0, 1, 2). Each capability holds
+ * long enough to read before the next slides in; the final beat converges
+ * the 3D pieces into one system as the section hands off to 07.
+ */
+const POSITION_KEYS = { input: [0, 0.2, 0.38, 0.56, 0.74, 1], output: [0, 0, 1, 1, 2, 2] };
+const CONVERGE_FROM = 0.9;
+
+function CapabilitySlide({
   service,
   index,
-  active,
-  panelRef,
+  position,
 }: {
   service: Service;
   index: number;
-  active: boolean;
-  panelRef: React.RefObject<HTMLDivElement | null>;
+  position: MotionValue<number>;
 }) {
-  return (
-    <div
-      ref={panelRef}
-      className="flex min-h-[58vh] flex-col justify-center border-b border-line py-12 last:border-b-0 lg:min-h-[78vh] lg:py-0"
-    >
-      <motion.span
-        className="mono text-5xl font-semibold sm:text-6xl lg:text-7xl"
-        animate={{ color: active ? "#5eead4" : "#565f6e" }}
-        transition={{ duration: 0.5 }}
-      >
-        {service.index}
-      </motion.span>
+  // offset < 0: already passed (exits left); offset > 0: still to come
+  // (enters from the right). Each slide is fully gone before the next
+  // arrives, so the two never overlap mid-transition.
+  const x = useTransform(position, (p) => `${(index - p) * 30}%`);
+  const opacity = useTransform(position, (p) => {
+    const t = Math.max(0, 1 - Math.abs(index - p) * 2.4);
+    return t * t * (3 - 2 * t);
+  });
+  const visibility = useTransform(opacity, (o) => (o < 0.02 ? "hidden" : "visible"));
 
-      <h3 className="mt-4 font-display text-2xl font-bold text-ink sm:text-3xl lg:mt-6 lg:text-4xl">
+  return (
+    <motion.div className="absolute inset-x-0 top-0" style={{ x, opacity, visibility }}>
+      <h3 className="font-display text-2xl font-bold leading-tight text-ink sm:text-3xl lg:text-4xl">
         {service.name}
       </h3>
       <p className="mt-4 max-w-md text-sm leading-relaxed text-ink-muted lg:text-base">
         {service.description}
       </p>
-
       <ul className="mt-6 flex flex-wrap gap-2">
-        {service.outputs.slice(0, 4).map((output) => (
-          <li key={output} className="rounded-full border border-line px-3 py-1.5 text-xs text-ink-muted">
+        {service.outputs.slice(0, 4).map((output, i) => (
+          <li
+            key={output}
+            className={`rounded-full border border-line px-3 py-1.5 text-xs text-ink-muted ${i > 2 ? "hidden sm:block" : ""}`}
+          >
             {output}
           </li>
         ))}
       </ul>
-
       <Link
         href={`/services/${service.slug}`}
-        className="mt-7 inline-flex w-fit items-center gap-2 text-sm font-semibold text-accent-cyan"
+        className="mt-6 inline-flex w-fit items-center gap-2 text-sm font-semibold text-accent-cyan"
       >
         Learn more
         <span aria-hidden="true">→</span>
       </Link>
+    </motion.div>
+  );
+}
 
-      {index === 0 && (
-        <p className="mono mt-10 text-xs uppercase tracking-wider text-ink-faint lg:hidden">
-          Scroll for web platforms &amp; business systems
-        </p>
-      )}
+/** Small internal progress — deliberately quieter than the page's section numbers. */
+function CapabilityProgress({ position, active }: { position: MotionValue<number>; active: number }) {
+  return (
+    <div className="flex items-center gap-4" aria-hidden="true">
+      <span className="mono text-xs tracking-[0.2em] text-ink-muted">
+        <span className="text-accent-cyan">0{active + 1}</span> / 0{services.length}
+      </span>
+      <div className="flex gap-1.5">
+        {services.map((s, i) => (
+          <ProgressSegment key={s.slug} index={i} position={position} />
+        ))}
+      </div>
     </div>
   );
 }
 
-export function WhatWeBuild() {
-  const refs = useMemo(
-    () => services.map(() => ({ current: null }) as React.RefObject<HTMLDivElement | null>),
-    [],
+function ProgressSegment({ index, position }: { index: number; position: MotionValue<number> }) {
+  // Fills as the visitor arrives at this capability.
+  const fill = useTransform(position, (p) => Math.min(1, Math.max(0, p - index + 1)));
+  return (
+    <span className="relative block h-px w-8 bg-white/10 sm:w-10">
+      <motion.span className="absolute inset-0 origin-left bg-accent-cyan/80" style={{ scaleX: fill }} />
+    </span>
   );
-  const active = useScrollActiveIndex(refs);
+}
+
+/**
+ * 06 — What We Build. One pinned sequence: the three capabilities slide
+ * across in turn while the convergence core reconfigures for each, then
+ * gathers into one connected system before handing off to 07.
+ */
+export function WhatWeBuild() {
+  const containerRef = useRef<HTMLElement>(null);
   const tier = usePerformanceTier();
   const documentVisible = useDocumentVisible();
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const inView = useInView(containerRef, { margin: "120px 0px 120px 0px" });
   const showCanvas = tier !== "safe";
-  const coreState = SERVICE_CORE_STATE[services[active]!.slug];
-  const frameloop = documentVisible ? "always" : "never";
+
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.5, restDelta: 0.0002 });
+  const position = useTransform(progress, POSITION_KEYS.input, POSITION_KEYS.output);
+  // A gentle lateral lean of the visual while a transition is under way.
+  const canvasX = useTransform(position, (p) => `${-Math.sin((p % 1) * Math.PI) * 4}%`);
+
+  const [active, setActive] = useState(0);
+  const [converged, setConverged] = useState(false);
+  useMotionValueEvent(position, "change", (p) => {
+    const next = Math.min(services.length - 1, Math.round(p));
+    setActive((prev) => (prev === next ? prev : next));
+  });
+  useMotionValueEvent(progress, "change", (v) => {
+    const next = v >= CONVERGE_FROM;
+    setConverged((prev) => (prev === next ? prev : next));
+  });
+
+  const coreState: CoreState = converged ? "ecosystem" : SERVICE_CORE_STATE[services[active]!.slug];
 
   return (
-    <section id="what-we-build" className="relative border-t border-line bg-void">
-      <AtmosphereLayer tone="cyan" />
-      <div className="shell relative z-10 pt-24 md:pt-28">
-        <SectionHeading
-          index="06"
-          eyebrow="What We Build"
-          title="Three disciplines. One connected build."
-          description="Every engagement draws on the same connected build approach and architecture. Scroll to see each capability take shape."
-        />
-      </div>
+    <section
+      ref={containerRef}
+      id="what-we-build"
+      aria-label="What We Build"
+      className="relative h-[210vh] border-t border-line bg-void lg:h-[240vh]"
+    >
+      <div className="sticky top-0 flex h-[100svh] flex-col overflow-hidden">
+        <AtmosphereLayer tone="cyan" />
 
-      {/* Mobile/tablet: one compact canvas sitting above the scrolling
-          panels — always visible, never gated behind a desktop-only
-          breakpoint, so every state (01/02/03) carries a real visual. Only
-          one ServicesCanvas is ever mounted at a time (desktop vs. mobile
-          layout), avoiding two simultaneous WebGL contexts. */}
-      {showCanvas && !isDesktop && (
-        <div className="relative mx-auto mt-10 h-[48vh] w-full max-w-xl">
-          <ServicesCanvas state={coreState} frameloop={frameloop} />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-void via-transparent to-void" />
-        </div>
-      )}
-
-      <div className="shell relative z-10 mt-8 grid gap-x-16 md:mt-10 md:grid-cols-2">
-        {showCanvas && isDesktop && (
-          <div className="relative sticky top-0 h-screen">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <ServicesCanvas state={coreState} frameloop={frameloop} />
-            </div>
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-void via-transparent to-void" />
+        <div className="shell relative z-10 pt-24 md:pt-28">
+          <div className="flex items-center gap-3">
+            <span className="mono text-xs text-accent-cyan">06</span>
+            <span className="mono text-xs uppercase tracking-[0.2em] text-ink-faint">What We Build</span>
           </div>
-        )}
-
-        <div>
-          {services.map((service, index) => (
-            <ServicePanel
-              key={service.slug}
-              service={service}
-              index={index}
-              active={active === index}
-              panelRef={refs[index]!}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="shell relative z-10 pb-20 pt-4 md:pb-24">
-        <Reveal className="max-w-2xl border-t border-accent-iris/25 pt-8">
-          <span className="mono text-xs uppercase tracking-wider text-accent-iris">
-            04 · Flagship Service
-          </span>
-          <h3 className="mt-3 font-display text-xl font-bold text-ink md:text-2xl">
-            Complete Digital Ecosystems
-          </h3>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-muted">
-            When a business needs everything connected, we design and build
-            it as one system.
+          <h2 className="mt-3 max-w-2xl font-display text-3xl font-bold leading-tight text-ink sm:text-4xl md:mt-4 md:text-5xl">
+            Three disciplines. One connected build.
+          </h2>
+          <p className="mt-4 hidden max-w-2xl text-base leading-relaxed text-ink-muted lg:block">
+            Every engagement draws on the same connected build approach and architecture.
           </p>
-          <Link
-            href="#ecosystem"
-            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-accent-iris"
-          >
-            See the ecosystem model
-            <span aria-hidden="true">→</span>
-          </Link>
-        </Reveal>
+        </div>
+
+        <div className="shell relative z-10 grid min-h-0 flex-1 grid-rows-[minmax(0,0.8fr)_auto] gap-x-16 pb-8 md:pb-12 lg:grid-cols-2 lg:grid-rows-1">
+          <motion.div className="relative min-h-0" style={{ x: canvasX }}>
+            {showCanvas && (
+              <div className="absolute inset-0">
+                <ServicesCanvas state={coreState} frameloop={inView && documentVisible ? "always" : "never"} />
+              </div>
+            )}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-void via-transparent to-void/70" />
+          </motion.div>
+
+          <div className="relative flex flex-col justify-center pt-2 lg:pt-0">
+            <CapabilityProgress position={position} active={active} />
+            <div className="relative mt-6 h-[17.5rem] overflow-hidden sm:h-[15rem] lg:h-[19rem]">
+              {services.map((service, index) => (
+                <CapabilitySlide key={service.slug} service={service} index={index} position={position} />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

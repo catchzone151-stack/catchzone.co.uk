@@ -256,3 +256,15 @@ The homepage opens with one pinned, scroll-driven scene
 - **Hand-off.** The Featured Build section ("Taken from idea to working
   software.") now follows the journey directly so SHIP settles into
   CatchZone's work.
+
+### 06 / 07 compression
+
+- **06 What We Build** is one pinned, scroll-driven sequence
+  (`src/components/sections/WhatWeBuild.tsx`): the three capabilities hand
+  over laterally while the existing `ServicesCanvas` core reconfigures for
+  each, then converges into the new `ecosystem` core state
+  (`src/lib/three/coreTargets.ts`) before releasing into 07. Internal
+  progress reads `01 / 03` so it never competes with the page numbering.
+- **07 Complete Digital Ecosystems** is a single compact row; the compact
+  `EcosystemDiagram` is used at every size (no mobile accordion) and the
+  three capabilities fly into its hub on first view (`converge` prop).

@@ -101,7 +101,21 @@ function NodeGlyph({ id }: { id: string }) {
   }
 }
 
-export function EcosystemDiagram({ compact = false }: { compact?: boolean }) {
+/** Where each converging capability starts, as % of the diagram square. */
+const CONVERGE_FROM = [
+  { left: "14%", top: "12%" },
+  { left: "4%", top: "50%" },
+  { left: "14%", top: "88%" },
+];
+
+export function EcosystemDiagram({
+  compact = false,
+  converge = [],
+}: {
+  compact?: boolean;
+  /** Labels that fly into the hub on first view — the capabilities joining up. */
+  converge?: string[];
+}) {
   const [activeId, setActiveId] = useState<string>(nodes[0]!.id);
   const active = nodes.find((n) => n.id === activeId) ?? nodes[0]!;
   const headingId = useId();
@@ -114,10 +128,10 @@ export function EcosystemDiagram({ compact = false }: { compact?: boolean }) {
 
   return (
     <div>
-      {/* Desktop / tablet: dimensional radial system diagram */}
-      <div className="hidden md:block">
+      {/* Desktop / tablet (and every size in compact mode): dimensional radial system diagram */}
+      <div className={compact ? "block" : "hidden md:block"}>
         <div
-          className={`relative mx-auto aspect-square w-full ${compact ? "max-w-sm" : "max-w-2xl lg:max-w-4xl"}`}
+          className={`relative mx-auto aspect-square w-full ${compact ? "max-w-[17rem] sm:max-w-sm" : "max-w-2xl lg:max-w-4xl"}`}
         >
           {/* atmospheric depth backdrop — reframes toward the active node */}
           <div
@@ -200,6 +214,29 @@ export function EcosystemDiagram({ compact = false }: { compact?: boolean }) {
             )}
           </motion.div>
 
+          {!reducedMotion &&
+            converge.map((label, i) => {
+              const from = CONVERGE_FROM[i % CONVERGE_FROM.length]!;
+              return (
+                <motion.span
+                  key={label}
+                  className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border border-accent-cyan/50 bg-void/90 px-3 py-1.5 text-[11px] font-semibold text-accent-cyan"
+                  style={{ left: from.left, top: from.top, opacity: 0 }}
+                  initial={{ opacity: 0, left: from.left, top: from.top }}
+                  whileInView={{
+                    opacity: [0, 1, 1, 0],
+                    left: [from.left, from.left, "50%", "50%"],
+                    top: [from.top, from.top, "50%", "50%"],
+                  }}
+                  viewport={{ once: true, amount: 0.6 }}
+                  transition={{ duration: 2, delay: 0.25 + i * 0.18, times: [0, 0.2, 0.82, 1], ease: [0.65, 0, 0.35, 1] }}
+                  aria-hidden="true"
+                >
+                  {label}
+                </motion.span>
+              );
+            })}
+
           {nodes.map((node) => {
             const pos = nodePosition(node.angle);
             const isActive = node.id === activeId;
@@ -232,8 +269,8 @@ export function EcosystemDiagram({ compact = false }: { compact?: boolean }) {
         </div>
       </div>
 
-      {/* Mobile: tap-through list, same data and state */}
-      <div className="space-y-2 md:hidden">
+      {/* Mobile: tap-through list, same data and state (compact mode uses the radial diagram instead) */}
+      <div className={compact ? "hidden" : "space-y-2 md:hidden"}>
         {nodes.map((node) => {
           const isActive = node.id === activeId;
           return (
@@ -269,7 +306,7 @@ export function EcosystemDiagram({ compact = false }: { compact?: boolean }) {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className={`mx-auto hidden text-center md:block ${compact ? "mt-4 max-w-xs" : "mt-10 max-w-lg"}`}
+        className={`mx-auto text-center ${compact ? "mt-4 block max-w-xs" : "mt-10 hidden max-w-lg md:block"}`}
       >
         <p className="mono text-xs uppercase tracking-[0.25em]" style={{ color: active.accent }}>
           {active.label}
