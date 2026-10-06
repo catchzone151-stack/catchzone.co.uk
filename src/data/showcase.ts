@@ -1,12 +1,12 @@
 import type { DeviceKind } from "@/components/showcase/DeviceFrame";
 
 /**
- * The CatchZone concept showcase — seven fictional private/internal
- * business systems supplied as a final approved asset pack
- * (docs/CATCHZONE_SHOWCASE_DROP.md) to demonstrate CatchZone's range across
- * different industries. These are concept work, not real clients — keep
- * clearly distinct from `projects.ts` (CatchZone's own real products) and
- * `clientWork.ts` (real client engagements like Blossom/FDE).
+ * The CatchZone showcase — seven business systems supplied as a final
+ * approved asset pack (docs/CATCHZONE_SHOWCASE_DROP.md) to demonstrate
+ * CatchZone's range across different industries. Served at /work/[slug]
+ * alongside `projects.ts` (CatchZone's own products); keep distinct from
+ * `clientWork.ts` (client websites like Blossom/FDE). Do not add client
+ * names, testimonials, results or other unverifiable claims to these.
  *
  * Every image, copy line and feature below is sourced directly from the
  * supplied CLAUDE-HANDOFF.md files — nothing here is invented. Device
@@ -97,7 +97,7 @@ export const showcaseProjects: ShowcaseProject[] = [
     category: "Education Platform",
     tagline: "A connected school platform for parents, students and staff.",
     overview:
-      "Brookmere Academy is a concept education platform created to demonstrate CatchZone's approach to multi-user digital products. The experience connects parents, students and staff through one consistent system while giving each role the tools and information they need.",
+      "Brookmere Academy is an education platform created to demonstrate CatchZone's approach to multi-user digital products. The experience connects parents, students and staff through one consistent system while giving each role the tools and information they need.",
     features: [
       "Parent overview across multiple children",
       "Attendance and behaviour visibility",
@@ -186,7 +186,7 @@ export const showcaseProjects: ShowcaseProject[] = [
     tagline:
       "A custom learning system connecting courses, practical sessions, assessments and certification for learners and training staff.",
     overview:
-      "Westmarch Training Centre is a CatchZone concept platform exploring how a modern training provider could manage the full learning journey digitally. The product combines learner-facing course delivery with trainer assessment workflows and mobile access in one consistent system.",
+      "Westmarch Training Centre is a CatchZone platform exploring how a modern training provider could manage the full learning journey digitally. The product combines learner-facing course delivery with trainer assessment workflows and mobile access in one consistent system.",
     features: [
       "Learner dashboard and current-course progress",
       "Course catalogue and discovery",

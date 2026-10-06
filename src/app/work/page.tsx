@@ -69,7 +69,7 @@ export default function WorkPage() {
               </p>
               <div className="mt-8">
                 <Link
-                  href={`/work/concept/${foundryLane.slug}`}
+                  href={`/work/${foundryLane.slug}`}
                   className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-void transition-colors hover:bg-accent-cyan"
                 >
                   View System

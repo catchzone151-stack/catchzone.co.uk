@@ -29,7 +29,7 @@ export function ShowcaseCard({
       delay={delay}
       className="group overflow-hidden rounded-2xl border border-line bg-surface transition-colors hover:border-ink/25"
     >
-      <Link href={`/work/concept/${project.slug}`} className="flex h-full flex-col">
+      <Link href={`/work/${project.slug}`} className="flex h-full flex-col">
         <div className="relative flex items-center justify-center overflow-hidden bg-surface-raised px-4 pb-3 pt-7 sm:px-5">
           <DeviceFrame
             kind={project.cardFrame}

@@ -1,40 +1,15 @@
-import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { showcaseProjects, sortedShowcaseProjects } from "@/data/showcase";
+import { sortedShowcaseProjects, type ShowcaseProject } from "@/data/showcase";
 import { ShowcaseSectionBlock } from "@/components/showcase/ShowcaseSectionBlock";
 import { Reveal } from "@/components/ui/Reveal";
 import { MagneticLink } from "@/components/ui/MagneticLink";
 
-export function generateStaticParams() {
-  return showcaseProjects.map((project) => ({ slug: project.slug }));
-}
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-  const project = showcaseProjects.find((p) => p.slug === slug);
-  if (!project) return {};
-  return {
-    title: project.name,
-    description: project.tagline,
-    alternates: { canonical: `/work/concept/${project.slug}` },
-  };
-}
-
-export default async function ConceptShowcasePage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const project = showcaseProjects.find((p) => p.slug === slug);
-  if (!project) notFound();
-
-  const orderIndex = sortedShowcaseProjects.findIndex((p) => p.slug === slug);
+/**
+ * Detail page for one of the seven showcase systems, rendered by
+ * src/app/work/[slug]/page.tsx when the slug belongs to `showcaseProjects`.
+ */
+export function ShowcaseProjectPage({ project }: { project: ShowcaseProject }) {
+  const orderIndex = sortedShowcaseProjects.findIndex((p) => p.slug === project.slug);
   const next = sortedShowcaseProjects[(orderIndex + 1) % sortedShowcaseProjects.length]!;
 
   return (
@@ -108,7 +83,7 @@ export default async function ConceptShowcasePage({
               Start a Project
             </MagneticLink>
             <Link
-              href={`/work/concept/${next.slug}`}
+              href={`/work/${next.slug}`}
               className="rounded-full border border-line px-7 py-3.5 text-sm font-semibold text-ink transition-colors hover:border-ink/40"
             >
               Next: {next.name} →

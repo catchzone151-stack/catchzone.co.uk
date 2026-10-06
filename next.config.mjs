@@ -31,6 +31,10 @@ const nextConfig = {
       { source: "/apps/lumi/", destination: "/work/lumi", permanent: true },
       { source: "/apps/cscs-citb-hse", destination: "/work/cscs", permanent: true },
       { source: "/apps/cscs-citb-hse/", destination: "/work/cscs", permanent: true },
+      // The seven showcase systems moved from /work/concept/:slug to
+      // /work/:slug. Keep old links working.
+      { source: "/work/concept", destination: "/work", permanent: true },
+      { source: "/work/concept/:slug", destination: "/work/:slug", permanent: true },
     ];
   },
   async headers() {

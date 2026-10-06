@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
+import { showcaseProjects } from "@/data/showcase";
 
 const siteUrl = "https://catchzone.co.uk";
 
@@ -21,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
   }));
 
-  const projectEntries = projects.map((project) => ({
+  const projectEntries = [...projects, ...showcaseProjects].map((project) => ({
     url: `${siteUrl}/work/${project.slug}`,
     lastModified: new Date(),
   }));

@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { projects, STATUS_LABEL, type ProjectStatus } from "@/data/projects";
+import { showcaseProjects } from "@/data/showcase";
+import { ShowcaseProjectPage } from "@/components/showcase/ShowcaseProjectPage";
 import { Reveal } from "@/components/ui/Reveal";
 import { MagneticLink } from "@/components/ui/MagneticLink";
 import { ScreenCascade } from "@/components/work/ScreenCascade";
@@ -17,8 +19,11 @@ const STATUS_BADGE_STYLE: Record<ProjectStatus, string> = {
   "product-lab": "border-ink/20 text-ink-faint",
 };
 
+// CatchZone products (`projects`) and the seven showcase systems
+// (`showcaseProjects`) share the /work/[slug] namespace; slugs are unique
+// across both lists.
 export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }));
+  return [...projects, ...showcaseProjects].map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({
@@ -27,6 +32,14 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const showcase = showcaseProjects.find((p) => p.slug === slug);
+  if (showcase) {
+    return {
+      title: showcase.name,
+      description: showcase.tagline,
+      alternates: { canonical: `/work/${showcase.slug}` },
+    };
+  }
   const project = projects.find((p) => p.slug === slug);
   if (!project) return {};
   return {
@@ -42,6 +55,9 @@ export default async function ProjectPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const showcase = showcaseProjects.find((p) => p.slug === slug);
+  if (showcase) return <ShowcaseProjectPage project={showcase} />;
+
   const project = projects.find((p) => p.slug === slug);
   if (!project) notFound();
 
