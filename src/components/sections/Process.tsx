@@ -105,7 +105,7 @@ export function Process() {
       <AtmosphereLayer tone="iris" />
       <div className="shell relative z-10">
         <SectionHeading
-          index="06"
+          index="08"
           eyebrow="Process & Value"
           title="One build. Four stages. Built to last."
           description="Design and engineering move together, not handed between disconnected teams — each stage rises directly out of the one before it."

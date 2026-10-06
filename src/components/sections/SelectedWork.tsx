@@ -11,9 +11,14 @@ export function SelectedWork() {
   return (
     <section
       id="work"
-      className="relative overflow-hidden border-t border-line bg-void py-24 md:py-32"
+      className="relative overflow-hidden bg-void pb-24 pt-10 md:pb-32 md:pt-16"
     >
       <AtmosphereLayer tone="cyan" />
+      {/* feathers the hand-off from the journey's final scene */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-void via-void/70 to-transparent"
+        aria-hidden="true"
+      />
       <div className="shell relative z-10">
         <SectionHeading
           index="05"

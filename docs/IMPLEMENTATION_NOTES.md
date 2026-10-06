@@ -225,3 +225,34 @@ Next 15 is broadly unsafe.
   independently root-caused and fixed. Do not attempt it again without
   re-testing every WebGL route in a real browser (not just `tsc`/`next
   build`, which both passed cleanly despite the runtime break).
+
+## Homepage cinematic journey (IDEA → DESIGN → BUILD → SHIP)
+
+The homepage opens with one pinned, scroll-driven scene
+(`src/components/sections/CinematicJourney.tsx`) that replaced the old
+`Hero` / `SceneCanvas` / `SceneObjects` / `phaseTargets` hero and the
+`SketchToBuild` section.
+
+- **One timeline.** Motion's `useScroll` + `useSpring` produce a single
+  smoothed progress value shared by the DOM captions and the R3F scene.
+  Everything in the scene is a pure function of that value
+  (`src/lib/three/journeyTimeline.ts`), so scrubbing backwards replays the
+  build in reverse. GSAP is installed but deliberately not used, to avoid a
+  second animation system.
+- **Real work, not fake UI.** The screens are Brookmere Academy's
+  showcase screenshots, cropped and re-encoded as WebP in
+  `public/assets/images/journey/` (~120 KB total). The IDEA wireframes are
+  drawn procedurally to trace those exact layouts
+  (`src/lib/three/journeyScreens.ts`), and a single shader wipes each
+  wireframe into its real interface during DESIGN.
+- **DOM vs WebGL.** Every heading, caption and link is semantic DOM and is
+  server-rendered; the canvas is `aria-hidden` and lazy-loaded, so three.js
+  stays out of the homepage's first-load bundle. Keep `journeyBeats.ts`
+  free of three.js imports for that reason.
+- **Budget.** One WebGL context; the frame loop runs only while the section
+  is on screen and the tab is visible. The reflective floor is used on the
+  `high` tier only. `safe` tier (reduced motion, no WebGL, low-power
+  devices) renders a static hero plus a four-stage summary instead.
+- **Hand-off.** The Featured Build section ("Taken from idea to working
+  software.") now follows the journey directly so SHIP settles into
+  CatchZone's work.

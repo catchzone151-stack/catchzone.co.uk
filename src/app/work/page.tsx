@@ -36,22 +36,21 @@ export default function WorkPage() {
 
   return (
     <div className="pt-32">
-      {/* 1. Client Systems — the opening content section. Foundry Lane
+      {/* 1. Product Systems — the opening content section. Foundry Lane
           Events follows immediately so a visitor sees real work in the
           first viewport, never a standalone text-only intro hero. */}
       {foundryLane && foundryAccent && foundryCover && (
         <section className="border-b border-line pb-20 pt-4 md:pb-28 md:pt-8">
           <div className="shell">
             <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
-              Client Systems
+              Product Systems
             </p>
             <h1 className="mt-4 max-w-2xl font-display text-2xl font-bold text-ink md:text-3xl">
-              Platforms, dashboards and connected systems built for clients.
+              Platforms, dashboards and connected software designed around real-world workflows.
             </h1>
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-muted md:text-base">
-              Seven client systems across events, education, training,
-              hospitality, recruitment and logistics — built around each
-              client&apos;s real workflow.
+              Seven systems across events, education, training, hospitality,
+              recruitment and logistics.
             </p>
 
             <div className="mt-14 md:mt-16">
@@ -89,12 +88,12 @@ export default function WorkPage() {
         </section>
       )}
 
-      {/* 2. The other six client systems */}
+      {/* 2. The other six product systems */}
       {otherSystems.length > 0 && (
         <section className="border-b border-line py-16 md:py-20">
           <div className="shell">
             <h2 className="font-display text-xl font-bold text-ink md:text-2xl">
-              More client systems, built around real operations.
+              More product systems, shaped around day-to-day operations.
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-muted">
               Training, hospitality, recruitment, logistics and operational

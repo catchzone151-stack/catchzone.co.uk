@@ -23,7 +23,7 @@ export function Ecosystem() {
       <AtmosphereLayer tone="iris" />
       <div className="shell relative z-10">
         <SectionHeading
-          index={flagshipService.index}
+          index="07"
           eyebrow="Flagship Service"
           title="Complete Digital Ecosystems"
         />

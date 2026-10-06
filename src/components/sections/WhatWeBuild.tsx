@@ -98,7 +98,7 @@ export function WhatWeBuild() {
       <AtmosphereLayer tone="cyan" />
       <div className="shell relative z-10 pt-24 md:pt-28">
         <SectionHeading
-          index="01"
+          index="06"
           eyebrow="What We Build"
           title="Three disciplines. One connected build."
           description="Every engagement draws on the same connected build approach and architecture. Scroll to see each capability take shape."

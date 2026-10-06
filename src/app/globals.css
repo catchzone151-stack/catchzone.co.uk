@@ -275,3 +275,28 @@ canvas {
     animation: noise-shift 1.4s steps(2) infinite;
   }
 }
+
+@keyframes scroll-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-cue {
+    animation: scroll-cue 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+}

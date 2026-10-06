@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { Hero } from "@/components/sections/Hero";
+import { CinematicJourney } from "@/components/sections/CinematicJourney";
 import { WhatWeBuild } from "@/components/sections/WhatWeBuild";
-import { SketchToBuild } from "@/components/sections/SketchToBuild";
 import { SelectedWork } from "@/components/sections/SelectedWork";
 import { Ecosystem } from "@/components/sections/Ecosystem";
 import { Process } from "@/components/sections/Process";
@@ -14,10 +13,11 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <Hero />
-      <WhatWeBuild />
-      <SketchToBuild />
+      {/* IDEA → DESIGN → BUILD → SHIP hands straight off to the work it
+          produces, so the featured build follows the journey directly. */}
+      <CinematicJourney />
       <SelectedWork />
+      <WhatWeBuild />
       <Ecosystem />
       <Process />
       <ProjectCTA />

@@ -4,7 +4,7 @@ import { DeviceFrame } from "@/components/showcase/DeviceFrame";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * Work-landing thumbnail for the six supporting client systems. The device
+ * Work-landing thumbnail for the six supporting product systems. The device
  * is the visual focus — large and readable, filling most of the tile width
  * — with a compact information panel underneath. Per
  * docs/CATCHZONE_REFINEMENT_BRIEF.md section 8: no tiny screen floating in
