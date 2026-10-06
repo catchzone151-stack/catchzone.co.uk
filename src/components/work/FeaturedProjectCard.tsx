@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ScreenCascade } from "@/components/work/ScreenCascade";
 import { BannerShowcase } from "@/components/work/BannerShowcase";
 import { BrandDeviceArt } from "@/components/work/BrandDeviceArt";
-import { IslamQuestTeaser } from "@/components/work/IslamQuestShowcase";
+import { IslamQuestTrailer } from "@/components/work/IslamQuestTrailer";
 import { StoreBadges } from "@/components/work/StoreBadges";
 
 function FeaturedCopy({ project }: { project: Project }) {
@@ -48,9 +48,9 @@ function FeaturedCopy({ project }: { project: Project }) {
 }
 
 export function FeaturedProjectCard({ project }: { project: Project }) {
-  // IslamQuest gets the scroll-driven product showcase (homepage + /work).
+  // IslamQuest gets the cinematic product trailer (homepage + /work).
   if (project.slug === "islamquest") {
-    return <IslamQuestTeaser copy={<FeaturedCopy project={project} />} />;
+    return <IslamQuestTrailer copy={<FeaturedCopy project={project} />} />;
   }
 
   const shots = project.screenshots ?? [];

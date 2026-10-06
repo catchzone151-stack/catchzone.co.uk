@@ -184,72 +184,6 @@ function DepthEcho({ screen, index, position }: { screen: IslamQuestScreen; inde
 }
 
 /* ------------------------------------------------------------------ */
-/* Orbit                                                                */
-/* ------------------------------------------------------------------ */
-
-const ORBIT = { cx: 50, cy: 54, rx: 47, ry: 12.5, rotate: -13 };
-const ORBIT_LENGTH = 2 * Math.PI * Math.sqrt((ORBIT.rx ** 2 + ORBIT.ry ** 2) / 2);
-
-/**
- * The CatchZone orbit wrapping the phone, as in the logo: its far half
- * passes behind the device, its near half in front. A bright arc and the
- * orbit's node travel with scroll and flare on each screen change.
- */
-function Orbit({ layer, progress, pulse }: { layer: "back" | "front"; progress: MotionValue<number>; pulse: MotionValue<number> }) {
-  const clipId = useId();
-  const dashOffset = useTransform(progress, (p) => -p * ORBIT_LENGTH * 1.6);
-  const arcOpacity = useTransform(pulse, (v) => 0.55 + v * 0.45);
-  const nodeX = useTransform(progress, (p) => ORBIT.cx + ORBIT.rx * Math.cos(-0.6 + p * Math.PI * 3.2));
-  const nodeY = useTransform(progress, (p) => ORBIT.cy + ORBIT.ry * Math.sin(-0.6 + p * Math.PI * 3.2));
-  const nodeR = useTransform(pulse, (v) => 0.7 + v * 0.5);
-
-  return (
-    <svg
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-      className={`pointer-events-none absolute inset-[-8%_-14%] ${layer === "front" ? "z-30" : "z-0"}`}
-      aria-hidden="true"
-    >
-      {layer === "front" && (
-        <defs>
-          <clipPath id={clipId}>
-            <rect x="0" y={ORBIT.cy} width="100" height={100 - ORBIT.cy} />
-          </clipPath>
-        </defs>
-      )}
-      <g clipPath={layer === "front" ? `url(#${clipId})` : undefined}>
-        <g transform={`rotate(${ORBIT.rotate} ${ORBIT.cx} ${ORBIT.cy})`}>
-          <ellipse
-            cx={ORBIT.cx}
-            cy={ORBIT.cy}
-            rx={ORBIT.rx}
-            ry={ORBIT.ry}
-            fill="none"
-            stroke={`rgba(${MINT},${layer === "front" ? 0.38 : 0.2})`}
-            strokeWidth="1"
-            vectorEffect="non-scaling-stroke"
-          />
-          <motion.ellipse
-            cx={ORBIT.cx}
-            cy={ORBIT.cy}
-            rx={ORBIT.rx}
-            ry={ORBIT.ry}
-            fill="none"
-            stroke={`rgb(${MINT})`}
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-            strokeDasharray={`${ORBIT_LENGTH * 0.14} ${ORBIT_LENGTH}`}
-            style={{ strokeDashoffset: dashOffset, opacity: arcOpacity }}
-          />
-          <motion.circle cx={nodeX} cy={nodeY} r={nodeR} fill="#e9fffb" />
-        </g>
-      </g>
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /* Stage                                                                */
 /* ------------------------------------------------------------------ */
 
@@ -262,9 +196,9 @@ interface StageProps {
 }
 
 /**
- * The shared IslamQuest product stage: a dark graphite device with a thin
- * mint rim light, the CatchZone orbit, a light sweep across the glass on
- * every screen change and a soft floor glow.
+ * The case-study product stage: a dark graphite device with a thin mint
+ * rim light (no halo or ring), a light sweep across the glass on every
+ * screen change and a soft contact shadow.
  */
 export function IslamQuestStage({ position, progress, reveal, size = "teaser", showCaption = true }: StageProps) {
   const reduced = useReducedMotion();
@@ -276,39 +210,25 @@ export function IslamQuestStage({ position, progress, reveal, size = "teaser", s
   const sweepOpacity = useTransform(pulse, (v) => (reduced ? 0 : v * 0.55));
   const rim = useTransform([reveal, pulse] as MotionValue<number>[], ([r = 0, v = 0]: number[]) => {
     const a = 0.16 + r * 0.14 + v * 0.3;
-    const g = 0.08 + r * 0.1 + v * 0.18;
-    return `inset 0 0 0 1px rgba(255,255,255,0.07), inset 0 1px 0 rgba(255,255,255,0.12), 0 0 0 1px rgba(${MINT},${a.toFixed(3)}), 0 0 ${Math.round(40 + v * 30)}px rgba(${MINT},${g.toFixed(3)}), 0 40px 80px -36px rgba(0,0,0,0.95)`;
+    return `inset 0 0 0 1px rgba(255,255,255,0.07), inset 0 1px 0 rgba(255,255,255,0.12), 0 0 0 1px rgba(${MINT},${a.toFixed(3)}), 0 40px 80px -36px rgba(0,0,0,0.95)`;
   });
   const stageScale = useTransform([reveal, progress] as MotionValue<number>[], ([r = 0, p = 0]: number[]) =>
     reduced ? 1 : 0.9 + r * 0.1 + p * 0.04,
   );
   const stageY = useTransform(reveal, (r) => (reduced ? 0 : (1 - r) * 40));
   const stageOpacity = useTransform(reveal, (r) => 0.35 + r * 0.65);
-  const floorOpacity = useTransform([reveal, pulse] as MotionValue<number>[], ([r = 0, v = 0]: number[]) => r * (0.7 + v * 0.3));
 
   const width = size === "expanded" ? "w-[min(17rem,56vw)] md:w-[17.5rem] lg:w-[19rem] [@media(max-height:820px)]:md:w-[16rem]" : "w-[min(16.5rem,62vw)] md:w-[17rem] lg:w-[18.5rem]";
 
   return (
     <div className="relative flex flex-col items-center">
       <motion.div className={`relative ${width}`} style={{ scale: stageScale, y: stageY, opacity: stageOpacity }}>
-        {/* ambient + floor light */}
-        <div
-          className="pointer-events-none absolute inset-[-30%_-60%]"
-          style={{ background: `radial-gradient(42% 36% at 50% 46%, rgba(${MINT},0.10), transparent 70%)` }}
-          aria-hidden="true"
-        />
-        <motion.div
-          className="pointer-events-none absolute -bottom-[7%] left-1/2 h-[9%] w-[120%] -translate-x-1/2 rounded-[50%]"
-          style={{ opacity: floorOpacity, background: `radial-gradient(50% 50% at 50% 50%, rgba(${MINT},0.22), rgba(${MINT},0.04) 55%, transparent 75%)` }}
-          aria-hidden="true"
-        />
+        {/* contact shadow (no halo, no circular glow) */}
         <div
           className="pointer-events-none absolute -bottom-[4%] left-1/2 h-[6%] w-[80%] -translate-x-1/2 rounded-[50%] blur-md"
           style={{ background: "radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,0.7), transparent 75%)" }}
           aria-hidden="true"
         />
-
-        {!reduced && <Orbit layer="back" progress={progress} pulse={pulse} />}
 
         <div className="absolute inset-0 z-[5]" style={{ perspective: 1200 }}>
           {!reduced &&
@@ -337,7 +257,6 @@ export function IslamQuestStage({ position, progress, reveal, size = "teaser", s
           </Chassis>
         </div>
 
-        {!reduced && <Orbit layer="front" progress={progress} pulse={pulse} />}
       </motion.div>
 
       {showCaption && (
@@ -350,101 +269,6 @@ export function IslamQuestStage({ position, progress, reveal, size = "teaser", s
           </span>
         </div>
       )}
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Teaser: homepage + /work Featured Build                              */
-/* ------------------------------------------------------------------ */
-
-/**
- * Feature index shown under the Featured Build copy on wide screens. It
- * scrolls normally with the page while the phone stays in view beside it,
- * and the active entry tracks the screen on the device.
- */
-function FeatureIndex({ active, onSelect }: { active: number; onSelect: (i: number) => void }) {
-  return (
-    <ol className="mt-12 hidden space-y-1 border-l border-line md:block">
-      {ISLAMQUEST_SCREENS.map((screen, i) => {
-        const isActive = i === active;
-        return (
-          <li key={screen.src}>
-            <button
-              type="button"
-              onClick={() => onSelect(i)}
-              aria-current={isActive ? "step" : undefined}
-              className="group relative flex w-full items-baseline gap-4 py-2.5 pl-6 text-left"
-            >
-              <span
-                className={`absolute -left-px top-0 h-full w-px transition-colors duration-300 ${isActive ? "bg-accent-cyan" : "bg-transparent"}`}
-                aria-hidden="true"
-              />
-              <span className={`mono text-[11px] tracking-[0.2em] transition-colors duration-300 ${isActive ? "text-accent-cyan" : "text-ink-faint"}`}>
-                {pad(i + 1)}
-              </span>
-              <span>
-                <span className={`block text-sm font-semibold transition-colors duration-300 ${isActive ? "text-ink" : "text-ink-muted group-hover:text-ink"}`}>
-                  {screen.title}
-                </span>
-                <span
-                  className={`block overflow-hidden text-xs text-ink-muted transition-all duration-300 ${isActive ? "mt-1 max-h-6 opacity-100" : "max-h-0 opacity-0"}`}
-                >
-                  {screen.subtitle}
-                </span>
-              </span>
-            </button>
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
-
-const TEASER_SCREENS = positionKeys(0, 1, 1, 0.75);
-
-/**
- * Homepage / /work Featured Build: the copy block scrolls normally while
- * the hero phone (and, on wide screens, the feature index) stay in view
- * for a short stretch, travelling through screens 01 → 08 before the page
- * carries on — no full-section freeze.
- */
-export function IslamQuestTeaser({ copy }: { copy: React.ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const stageCol = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress: arrive } = useScroll({ target: stageCol, offset: ["start end", "start 0.2"] });
-  const { scrollYProgress: travel } = useScroll({ target: stageCol, offset: ["start 0.12", "end 0.92"] });
-  const reveal = useSpring(arrive, { stiffness: 140, damping: 32, mass: 0.5, restDelta: 0.0005 });
-  const progress = useSpring(travel, { stiffness: 140, damping: 32, mass: 0.5, restDelta: 0.0002 });
-  const position = useTransform(progress, TEASER_SCREENS.input, TEASER_SCREENS.output);
-  const active = useActiveScreen(position);
-
-  const select = (i: number) => {
-    const el = stageCol.current;
-    if (!el) return;
-    // middle of screen i's hold window, mapped back onto the travel range
-    const p = (TEASER_SCREENS.input[i * 2]! + TEASER_SCREENS.input[i * 2 + 1]!) / 2;
-    const rect = el.getBoundingClientRect();
-    const vh = window.innerHeight;
-    const startY = window.scrollY + rect.top - vh * 0.12;
-    const endY = window.scrollY + rect.bottom - vh * 0.92;
-    window.scrollTo({ top: startY + p * (endY - startY), behavior: "smooth" });
-  };
-
-  return (
-    <div ref={ref} data-iq-teaser className="relative grid gap-12 md:grid-cols-[0.9fr_1.1fr] md:gap-8">
-      <div className="relative z-10 flex flex-col">
-        {copy}
-        <div className="md:sticky md:top-[calc(50svh-10rem)]">
-          <FeatureIndex active={active} onSelect={select} />
-        </div>
-      </div>
-      <div ref={stageCol} className="relative min-h-[150vh] md:min-h-[175vh]">
-        <div className="sticky top-[max(6.5rem,calc(50svh-20rem))] pb-4">
-          <IslamQuestStage position={position} progress={progress} reveal={reveal} />
-        </div>
-      </div>
     </div>
   );
 }
@@ -515,11 +339,6 @@ export function IslamQuestCinema() {
         ))}
       </ol>
       <div className="sticky top-0 flex h-[100svh] items-center overflow-hidden">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{ background: `radial-gradient(45% 50% at 68% 52%, rgba(${MINT},0.07), transparent 70%)` }}
-          aria-hidden="true"
-        />
         <div className="shell relative grid w-full items-center gap-8 pt-16 md:grid-cols-[0.85fr_1.15fr] md:pt-12">
           <div className="order-2 md:order-1">
             <div className="relative h-[11.5rem] md:h-[15rem]" aria-hidden="true">

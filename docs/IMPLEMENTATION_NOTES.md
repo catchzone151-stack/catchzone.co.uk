@@ -275,11 +275,19 @@ The homepage opens with one pinned, scroll-driven scene
   (01–08). Each is the app screen extracted 1:1 from the approved Play Store
   frame (696×1480, no scaling); the frames' captions are rendered as text
   from `src/data/islamquestShowcase.ts`, which also defines the order.
-- `src/components/work/IslamQuestShowcase.tsx` holds the shared device stage
-  (graphite chassis, mint rim light, CatchZone orbit, depth hand-over between
-  screens) and its three uses: `IslamQuestTeaser` (homepage + /work Featured
-  Build — the phone and feature index stay in view briefly while the copy
-  scrolls, no full freeze), `IslamQuestCinema` (case-study pinned sequence)
-  and `IslamQuestScreenGrid` (All Screens).
+- **Homepage + /work Featured Build** use `IslamQuestTrailer`
+  (`src/components/work/IslamQuestTrailer.tsx`) with the R3F scene in
+  `src/components/canvas/IslamQuestTrailerCanvas.tsx` and its scroll
+  timeline in `src/lib/three/iqTrailerTimeline.ts`. The phone's screen
+  opening is a stencil mask (drei `Mask`/`useMask`): screen planes placed
+  "inside" the phone at impossible depths are only visible through the
+  glass, then cross the glass plane and unmask to float larger than the
+  device, and 08 flies back to lock onto the reformed phone. Beat A (fly-in)
+  plays while the section scrolls into view; the rest scrubs over a short
+  runway (205vh desktop, 160vh phone) with the stage drifting — the copy
+  keeps scrolling, so the page never freezes.
+- **Case study** keeps the detailed DOM sequence (`IslamQuestCinema`) and the
+  All Screens grid in `src/components/work/IslamQuestShowcase.tsx`; no ring
+  or halo, thin rim light only.
 - The legacy `public/apps/islamquest/index.html` still references the old
   `*_SS.png` files, so those are kept.
