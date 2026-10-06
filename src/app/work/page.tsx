@@ -109,8 +109,9 @@ export default function WorkPage() {
         </section>
       )}
 
-      {/* 3. CatchZone-owned apps/products */}
-      <section className="border-b border-line pb-8 pt-20 md:pt-24">
+      {/* 3. CatchZone-owned apps/products — the heading leads straight into
+          the IslamQuest Featured Build (one section, no divider between). */}
+      <section className="overflow-x-clip pb-16 pt-24 md:pb-20 md:pt-32">
         <div className="shell">
           <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
             CatchZone Products
@@ -118,16 +119,13 @@ export default function WorkPage() {
           <h2 className="mt-4 max-w-2xl font-display text-2xl font-bold text-ink md:text-3xl">
             Real apps, designed, built and operated by CatchZone.
           </h2>
+          {heroApp && (
+            <div className="mt-16 md:mt-20">
+              <FeaturedProjectCard project={heroApp} />
+            </div>
+          )}
         </div>
       </section>
-
-      {heroApp && (
-        <section className="overflow-hidden pb-16 md:pb-20">
-          <div className="shell">
-            <FeaturedProjectCard project={heroApp} />
-          </div>
-        </section>
-      )}
 
       {live.length > 0 && (
         <section className="pb-16 md:pb-20">

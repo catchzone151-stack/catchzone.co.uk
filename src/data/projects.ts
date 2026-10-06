@@ -1,3 +1,5 @@
+import { ISLAMQUEST_SCREENS } from "@/data/islamquestShowcase";
+
 export type ProjectStatus = "live" | "in-development" | "product-lab";
 
 /**
@@ -70,16 +72,8 @@ export const projects: Project[] = [
     statusLabel: "Live on Google Play · iOS coming October 2026",
     featured: true,
     heroAsset: "/assets/images/islamquest/IslamQuestBanner.png",
-    screenshots: [
-      "/assets/images/islamquest/1_SS.png",
-      "/assets/images/islamquest/2_SS.png",
-      "/assets/images/islamquest/3_SS.png",
-      "/assets/images/islamquest/4_SS.png",
-      "/assets/images/islamquest/5_SS.png",
-      "/assets/images/islamquest/6_SS.png",
-      "/assets/images/islamquest/7_SS.png",
-      "/assets/images/islamquest/8_SS.png",
-    ],
+    // The eight approved showcase screens, in order (see islamquestShowcase.ts).
+    screenshots: ISLAMQUEST_SCREENS.map((screen) => screen.src),
     platforms: ["Android — Google Play", "iOS — coming October 2026"],
     capabilities: [
       "Cross-platform mobile engineering",

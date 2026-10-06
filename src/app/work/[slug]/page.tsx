@@ -10,7 +10,10 @@ import { MagneticLink } from "@/components/ui/MagneticLink";
 import { ScreenCascade } from "@/components/work/ScreenCascade";
 import { BannerShowcase } from "@/components/work/BannerShowcase";
 import { BrandDeviceArt } from "@/components/work/BrandDeviceArt";
-import { getIslamQuestHeroShots } from "@/lib/work/islamquestShots";
+import {
+  IslamQuestCinema,
+  IslamQuestScreenGrid,
+} from "@/components/work/IslamQuestShowcase";
 import { StoreBadges } from "@/components/work/StoreBadges";
 
 const STATUS_BADGE_STYLE: Record<ProjectStatus, string> = {
@@ -61,11 +64,9 @@ export default async function ProjectPage({
   const project = projects.find((p) => p.slug === slug);
   if (!project) notFound();
 
+  const isIslamQuest = project.slug === "islamquest";
   const allShots = project.screenshots ?? [];
-  const cascadeShots =
-    project.slug === "islamquest" && allShots.length >= 5
-      ? getIslamQuestHeroShots(allShots)
-      : allShots.filter((_, i) => i % 2 === 0).slice(0, 4);
+  const cascadeShots = allShots.filter((_, i) => i % 2 === 0).slice(0, 4);
   const hasDepth = Boolean(project.challenge || project.build);
   const hasSidebar = Boolean(
     project.capabilities.length || project.platforms?.length || project.technicalHighlights?.length,
@@ -113,7 +114,9 @@ export default async function ProjectPage({
         </div>
       </section>
 
-      {cascadeShots.length >= 2 ? (
+      {isIslamQuest ? (
+        <IslamQuestCinema />
+      ) : cascadeShots.length >= 2 ? (
         <section className="overflow-hidden py-16">
           <div className="shell">
             <ScreenCascade
@@ -258,6 +261,11 @@ export default async function ProjectPage({
             <h2 className="font-display text-xl font-bold text-ink">
               All Screens
             </h2>
+            {isIslamQuest ? (
+              <div className="mt-12">
+                <IslamQuestScreenGrid />
+              </div>
+            ) : (
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
               {project.screenshots.map((shot, i) => (
                 <Reveal
@@ -275,6 +283,7 @@ export default async function ProjectPage({
                 </Reveal>
               ))}
             </div>
+            )}
           </div>
         </section>
       )}

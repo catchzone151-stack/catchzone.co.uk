@@ -11,7 +11,7 @@ export function SelectedWork() {
   return (
     <section
       id="work"
-      className="relative overflow-hidden bg-void pb-24 pt-10 md:pb-32 md:pt-16"
+      className="relative overflow-x-clip bg-void pb-24 pt-10 md:pb-32 md:pt-16"
     >
       <AtmosphereLayer tone="cyan" />
       {/* feathers the hand-off from the journey's final scene */}

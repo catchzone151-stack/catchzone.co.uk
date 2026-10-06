@@ -268,3 +268,18 @@ The homepage opens with one pinned, scroll-driven scene
 - **07 Complete Digital Ecosystems** is a single compact row; the compact
   `EcosystemDiagram` is used at every size (no mobile accordion) and the
   three capabilities fly into its hub on first view (`converge` prop).
+
+### IslamQuest showcase
+
+- The eight approved screens live in `public/assets/images/islamquest/showcase/`
+  (01–08). Each is the app screen extracted 1:1 from the approved Play Store
+  frame (696×1480, no scaling); the frames' captions are rendered as text
+  from `src/data/islamquestShowcase.ts`, which also defines the order.
+- `src/components/work/IslamQuestShowcase.tsx` holds the shared device stage
+  (graphite chassis, mint rim light, CatchZone orbit, depth hand-over between
+  screens) and its three uses: `IslamQuestTeaser` (homepage + /work Featured
+  Build — the phone and feature index stay in view briefly while the copy
+  scrolls, no full freeze), `IslamQuestCinema` (case-study pinned sequence)
+  and `IslamQuestScreenGrid` (All Screens).
+- The legacy `public/apps/islamquest/index.html` still references the old
+  `*_SS.png` files, so those are kept.
