@@ -59,7 +59,7 @@ export function BannerShowcase({ src, alt, className, accent }: BannerShowcasePr
         viewport={viewportToken}
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
       >
-        <Image src={src} alt={alt} width={1600} height={900} className="w-full object-cover" priority={false} />
+        <Image src={src} alt={alt} width={1600} height={900} sizes="(min-width: 1440px) 1280px, 92vw" className="w-full object-cover" />
         <div
           className="pointer-events-none absolute inset-0"
           style={{

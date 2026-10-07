@@ -33,6 +33,8 @@ export function IslamQuestTrailer({ copy }: { copy: React.ReactNode }) {
   const tier = usePerformanceTier();
   const documentVisible = useDocumentVisible();
   const inView = useInView(runway, { margin: "200px 0px 200px 0px" });
+  // The WebGL stage is only created once the runway is within a screen of the viewport.
+  const nearView = useInView(runway, { once: true, margin: "100% 0px 100% 0px" });
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -57,7 +59,7 @@ export function IslamQuestTrailer({ copy }: { copy: React.ReactNode }) {
     return (
       <div className="grid items-center gap-12 md:grid-cols-[0.9fr_1.1fr] md:gap-8">
         {copy}
-        <div className="mx-auto w-full max-w-[16rem]">
+        <div ref={runway} className="mx-auto w-full max-w-[16rem]">
           <IslamQuestDevice screen={ISLAMQUEST_SCREENS[0]!} sizes="256px" />
         </div>
       </div>
@@ -72,14 +74,27 @@ export function IslamQuestTrailer({ copy }: { copy: React.ReactNode }) {
         <div className="md:landscape:pointer-events-auto md:landscape:w-[44%]">{copy}</div>
       </div>
 
+      {/* the visual caption scrubs with the scroll; assistive tech gets the whole sequence once */}
+      <ol className="sr-only" aria-label="IslamQuest screens">
+        {ISLAMQUEST_SCREENS.map((s) => (
+          <li key={s.src}>{s.title}</li>
+        ))}
+      </ol>
+
       <div ref={runway} data-iq-runway className="relative mt-6 h-[160vh] md:landscape:mt-0 md:landscape:h-[205vh]">
         <motion.div className="sticky top-0 h-[100svh]" style={{ y: drift }}>
           <div className="absolute inset-y-0 left-1/2 w-screen -translate-x-1/2">
-            {mounted && <TrailerCanvas progress={progress} active={inView && documentVisible} />}
+            {mounted && nearView && (
+              <TrailerCanvas
+                progress={progress}
+                active={inView && documentVisible}
+                quality={tier === "high" ? "high" : "balanced"}
+              />
+            )}
           </div>
           <div
             className="pointer-events-none absolute inset-x-0 bottom-[7svh] flex justify-center md:bottom-[6svh] md:landscape:pl-[34%]"
-            aria-live="polite"
+            aria-hidden="true"
             data-caption={caption + 1}
           >
             {/* swaps immediately (no exit queue) so it never lags a fast scroll */}

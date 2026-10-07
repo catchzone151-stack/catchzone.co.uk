@@ -7,6 +7,7 @@ import { coreTargets, type CoreState } from "@/lib/three/coreTargets";
 import { ConvergenceCore } from "@/components/canvas/ConvergenceCore";
 
 const LERP_SPEED = 2.2;
+const _camTarget = new THREE.Vector3();
 
 function CameraRig({ state }: { state: CoreState }) {
   const { camera } = useThree();
@@ -14,7 +15,7 @@ function CameraRig({ state }: { state: CoreState }) {
   useFrame((_, delta) => {
     const t = 1 - Math.exp(-LERP_SPEED * delta);
     const [x, y, z] = coreTargets[state].camera;
-    camera.position.lerp(new THREE.Vector3(x, y, z), t);
+    camera.position.lerp(_camTarget.set(x, y, z), t);
     camera.lookAt(0, 0, 0);
   });
 
@@ -24,13 +25,15 @@ function CameraRig({ state }: { state: CoreState }) {
 interface ServicesCanvasProps {
   state: CoreState;
   frameloop?: "always" | "demand" | "never";
+  /** `balanced` renders at a lower device-pixel ratio on mid-range devices. */
+  quality?: "high" | "balanced";
 }
 
-export default function ServicesCanvas({ state, frameloop = "always" }: ServicesCanvasProps) {
+export default function ServicesCanvas({ state, frameloop = "always", quality = "high" }: ServicesCanvasProps) {
   return (
     <Canvas
       camera={{ fov: 40, position: [0.32, 0, 4.1] }}
-      dpr={[1, 1.75]}
+      dpr={quality === "high" ? [1, 1.75] : [1, 1.35]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       frameloop={frameloop}
       aria-hidden="true"

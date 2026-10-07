@@ -7,6 +7,7 @@ import {
   startingPointOptions,
   priorityOptions,
   budgetOptions,
+  type ConfigOption,
   type ProjectBrief,
 } from "@/data/project-config";
 
@@ -14,19 +15,25 @@ type SubmitState =
   | { status: "idle" }
   | { status: "submitting" }
   | { status: "success" }
-  | { status: "unconfigured" }
-  | { status: "error" };
+  | { status: "error"; reason: "unavailable" | "rate_limited" | "invalid" };
 
 const TOTAL_STEPS = 5;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const labelFor = (options: ConfigOption[], id: string) => options.find((o) => o.id === id)?.label ?? id;
+
+function newSubmissionId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 function buildMailto(brief: ProjectBrief) {
   const subject = `Project brief — ${brief.name}${brief.company ? ` (${brief.company})` : ""}`;
   const body = [
-    `Build type: ${brief.buildType}`,
-    `Starting point: ${brief.startingPoint}`,
-    `Priorities: ${brief.priorities.join(", ")}`,
-    `Budget: ${brief.budget}`,
+    `Build type: ${labelFor(buildTypeOptions, brief.buildType)}`,
+    `Starting point: ${labelFor(startingPointOptions, brief.startingPoint)}`,
+    `Priorities: ${brief.priorities.map((id) => labelFor(priorityOptions, id)).join(", ")}`,
+    `Budget: ${labelFor(budgetOptions, brief.budget)}`,
     "",
     `Name: ${brief.name}`,
     `Email: ${brief.email}`,
@@ -96,7 +103,9 @@ export function ProjectConfigurator() {
     phone: "",
     description: "",
   });
-  const [website, setWebsite] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  // One id per brief: a retried request (double click, flaky network) can't send twice.
+  const submissionId = useRef<string>("");
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -152,22 +161,26 @@ export function ProjectConfigurator() {
     }
     setFieldErrors({});
     setSubmitState({ status: "submitting" });
+    if (!submissionId.current) submissionId.current = newSubmissionId();
     try {
       const res = await fetch("/api/start-a-project", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...brief, website }),
+        body: JSON.stringify({ ...brief, cz_hp: honeypot, submissionId: submissionId.current }),
       });
-      const data = await res.json();
-      if (data.ok) {
+      const data = (await res.json().catch(() => null)) as { ok?: boolean; reason?: string } | null;
+      // Success only when the server has genuinely accepted (and sent) the brief.
+      if (res.ok && data?.ok === true) {
         setSubmitState({ status: "success" });
-      } else if (data.reason === "unconfigured") {
-        setSubmitState({ status: "unconfigured" });
+      } else if (data?.reason === "rate_limited") {
+        setSubmitState({ status: "error", reason: "rate_limited" });
+      } else if (data?.reason === "missing_fields" || data?.reason === "invalid_body") {
+        setSubmitState({ status: "error", reason: "invalid" });
       } else {
-        setSubmitState({ status: "error" });
+        setSubmitState({ status: "error", reason: "unavailable" });
       }
     } catch {
-      setSubmitState({ status: "error" });
+      setSubmitState({ status: "error", reason: "unavailable" });
     }
   }
 
@@ -299,17 +312,18 @@ export function ProjectConfigurator() {
                 Tell us about the project
               </h2>
 
-              {/* Honeypot — hidden from real visitors, catches basic bots */}
+              {/* Honeypot — hidden from real visitors, catches basic bots. The
+                  name is deliberately not one browser autofill recognises. */}
               <div className="absolute left-[-9999px] top-auto h-0 w-0 overflow-hidden" aria-hidden="true">
-                <label htmlFor="website">Leave this field empty</label>
+                <label htmlFor="cz_hp">Leave this field empty</label>
                 <input
-                  id="website"
-                  name="website"
+                  id="cz_hp"
+                  name="cz_hp"
                   type="text"
                   tabIndex={-1}
                   autoComplete="off"
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
                 />
               </div>
 
@@ -325,7 +339,7 @@ export function ProjectConfigurator() {
                     aria-describedby={fieldErrors.name ? "name-error" : undefined}
                     value={contact.name}
                     onChange={(e) => setContact({ ...contact, name: e.target.value })}
-                    className={`mt-2 w-full rounded-lg border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan ${fieldErrors.name ? "border-red-400/60" : "border-line"}`}
+                    className={`mt-2 w-full rounded-lg border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan focus-visible:ring-2 focus-visible:ring-accent-cyan/30 ${fieldErrors.name ? "border-red-400/60" : "border-line"}`}
                   />
                   {fieldErrors.name && (
                     <p id="name-error" role="alert" className="mt-1.5 text-xs text-red-400">
@@ -345,7 +359,7 @@ export function ProjectConfigurator() {
                     aria-describedby={fieldErrors.email ? "email-error" : undefined}
                     value={contact.email}
                     onChange={(e) => setContact({ ...contact, email: e.target.value })}
-                    className={`mt-2 w-full rounded-lg border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan ${fieldErrors.email ? "border-red-400/60" : "border-line"}`}
+                    className={`mt-2 w-full rounded-lg border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan focus-visible:ring-2 focus-visible:ring-accent-cyan/30 ${fieldErrors.email ? "border-red-400/60" : "border-line"}`}
                   />
                   {fieldErrors.email && (
                     <p id="email-error" role="alert" className="mt-1.5 text-xs text-red-400">
@@ -361,7 +375,7 @@ export function ProjectConfigurator() {
                     id="company"
                     value={contact.company}
                     onChange={(e) => setContact({ ...contact, company: e.target.value })}
-                    className="mt-2 w-full rounded-lg border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan"
+                    className="mt-2 w-full rounded-lg border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan focus-visible:ring-2 focus-visible:ring-accent-cyan/30"
                   />
                 </div>
                 <div className="sm:col-span-1">
@@ -372,7 +386,7 @@ export function ProjectConfigurator() {
                     id="phone"
                     value={contact.phone}
                     onChange={(e) => setContact({ ...contact, phone: e.target.value })}
-                    className="mt-2 w-full rounded-lg border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan"
+                    className="mt-2 w-full rounded-lg border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan focus-visible:ring-2 focus-visible:ring-accent-cyan/30"
                   />
                 </div>
                 <div className="sm:col-span-2">
@@ -387,7 +401,7 @@ export function ProjectConfigurator() {
                     aria-describedby={fieldErrors.description ? "description-error" : undefined}
                     value={contact.description}
                     onChange={(e) => setContact({ ...contact, description: e.target.value })}
-                    className={`mt-2 w-full resize-none rounded-lg border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan ${fieldErrors.description ? "border-red-400/60" : "border-line"}`}
+                    className={`mt-2 w-full resize-none rounded-lg border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent-cyan focus-visible:ring-2 focus-visible:ring-accent-cyan/30 ${fieldErrors.description ? "border-red-400/60" : "border-line"}`}
                   />
                   {fieldErrors.description && (
                     <p id="description-error" role="alert" className="mt-1.5 text-xs text-red-400">
@@ -397,16 +411,29 @@ export function ProjectConfigurator() {
                 </div>
               </div>
 
-              {submitState.status === "unconfigured" && (
+              {submitState.status === "error" && (
                 <div
                   role="alert"
-                  className="mt-6 rounded-xl border border-accent-iris/30 bg-accent-iris/5 p-5 text-sm text-ink-muted"
+                  className="mt-6 rounded-xl border border-red-400/30 bg-red-400/5 p-5 text-sm text-ink-muted"
                 >
-                  <p>
-                    Our automated inbox isn&apos;t connected yet, so this
-                    couldn&apos;t send itself — nothing has been lost. Click
-                    below to send it from your own email client instead.
-                  </p>
+                  {submitState.reason === "rate_limited" ? (
+                    <p>
+                      We&apos;ve received several briefs from this connection in
+                      the last few minutes. Please wait a little and try again,
+                      or send it by email below. Nothing has been lost.
+                    </p>
+                  ) : submitState.reason === "invalid" ? (
+                    <p>
+                      Some of your answers didn&apos;t come through. Please check
+                      each step and try again, or send it by email below.
+                    </p>
+                  ) : (
+                    <p>
+                      Sorry, your brief couldn&apos;t be sent just now. Nothing has
+                      been lost: try again in a moment, or send it straight to
+                      info@catchzone.co.uk from your own email.
+                    </p>
+                  )}
                   <a
                     href={buildMailto(brief)}
                     className="mt-4 inline-block rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-void"
@@ -414,16 +441,6 @@ export function ProjectConfigurator() {
                     Send via email
                   </a>
                 </div>
-              )}
-
-              {submitState.status === "error" && (
-                <p role="alert" className="mt-6 text-sm text-red-400">
-                  Something went wrong sending this. Please email{" "}
-                  <a href="mailto:info@catchzone.co.uk" className="underline">
-                    info@catchzone.co.uk
-                  </a>{" "}
-                  directly.
-                </p>
               )}
             </div>
           )}

@@ -1,10 +1,9 @@
 "use client";
 
-import { useId, useMemo, useRef, useState } from "react";
+import { useId, useRef } from "react";
 import Image from "next/image";
 import {
   motion,
-  useMotionValueEvent,
   useScroll,
   useSpring,
   useTransform,
@@ -40,15 +39,6 @@ function positionKeys(start: number, end: number, hold = 1, change = 0.7) {
     }
   }
   return { input, output };
-}
-
-function useActiveScreen(position: MotionValue<number>) {
-  const [active, setActive] = useState(0);
-  useMotionValueEvent(position, "change", (p) => {
-    const next = Math.min(COUNT - 1, Math.max(0, Math.round(p)));
-    setActive((prev) => (prev === next ? prev : next));
-  });
-  return active;
 }
 
 /* ------------------------------------------------------------------ */
@@ -191,8 +181,6 @@ interface StageProps {
   position: MotionValue<number>;
   progress: MotionValue<number>;
   reveal: MotionValue<number>;
-  size?: "teaser" | "expanded";
-  showCaption?: boolean;
 }
 
 /**
@@ -200,9 +188,8 @@ interface StageProps {
  * rim light (no halo or ring), a light sweep across the glass on every
  * screen change and a soft contact shadow.
  */
-export function IslamQuestStage({ position, progress, reveal, size = "teaser", showCaption = true }: StageProps) {
+function IslamQuestStage({ position, progress, reveal }: StageProps) {
   const reduced = useReducedMotion();
-  const active = useActiveScreen(position);
 
   // 0 → 1 → 0 across each hand-over: drives the sweep and rim flare.
   const pulse = useTransform(position, (p) => Math.sin((p % 1) * Math.PI));
@@ -218,11 +205,10 @@ export function IslamQuestStage({ position, progress, reveal, size = "teaser", s
   const stageY = useTransform(reveal, (r) => (reduced ? 0 : (1 - r) * 40));
   const stageOpacity = useTransform(reveal, (r) => 0.35 + r * 0.65);
 
-  const width = size === "expanded" ? "w-[min(17rem,56vw)] md:w-[17.5rem] lg:w-[19rem] [@media(max-height:820px)]:md:w-[16rem]" : "w-[min(16.5rem,62vw)] md:w-[17rem] lg:w-[18.5rem]";
-
   return (
     <div className="relative flex flex-col items-center">
-      <motion.div className={`relative ${width}`} style={{ scale: stageScale, y: stageY, opacity: stageOpacity }}>
+      <motion.div
+        className="relative w-[min(17rem,56vw,24svh)] md:w-[17.5rem] lg:w-[19rem] [@media(max-height:820px)]:md:w-[16rem]" style={{ scale: stageScale, y: stageY, opacity: stageOpacity }}>
         {/* contact shadow (no halo, no circular glow) */}
         <div
           className="pointer-events-none absolute -bottom-[4%] left-1/2 h-[6%] w-[80%] -translate-x-1/2 rounded-[50%] blur-md"
@@ -259,16 +245,6 @@ export function IslamQuestStage({ position, progress, reveal, size = "teaser", s
 
       </motion.div>
 
-      {showCaption && (
-        <div className="relative z-10 mt-10 flex min-h-[3.5rem] flex-col items-center text-center" aria-live="polite">
-          <span className="mono text-[11px] tracking-[0.25em] text-ink-faint">
-            <span className="text-accent-cyan">{pad(active + 1)}</span> / {pad(COUNT)}
-          </span>
-          <span className={`mt-2 text-sm font-semibold text-ink ${size === "teaser" ? "md:hidden" : ""}`}>
-            {ISLAMQUEST_SCREENS[active]!.title}
-          </span>
-        </div>
-      )}
     </div>
   );
 }
@@ -288,8 +264,12 @@ function CinemaCaption({ screen, index, position }: { screen: IslamQuestScreen; 
       <p className="mono text-xs tracking-[0.25em] text-ink-faint">
         <span className="text-accent-cyan">{pad(index + 1)}</span> / {pad(COUNT)}
       </p>
-      <h3 className="mt-4 font-display text-3xl font-bold leading-[1.05] text-ink md:text-4xl lg:text-5xl">{screen.title}</h3>
-      <p className="mt-4 max-w-sm text-base leading-relaxed text-ink-muted">{screen.subtitle}</p>
+      <h3 className="mt-4 font-display text-3xl font-bold leading-[1.05] text-ink md:text-4xl lg:text-5xl [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-2xl">
+        {screen.title}
+      </h3>
+      <p className="mt-4 max-w-sm text-base leading-relaxed text-ink-muted [@media(max-height:700px)]:mt-2 [@media(max-height:700px)]:text-sm">
+        {screen.subtitle}
+      </p>
     </motion.div>
   );
 }
@@ -318,13 +298,46 @@ function RailTick({ index, position }: { index: number; position: MotionValue<nu
  * orbit language, larger, with each screen's caption given room to read.
  */
 export function IslamQuestCinema() {
+  const reduced = useReducedMotion();
+  if (reduced) return <StaticCinema />;
+  return <PinnedCinema />;
+}
+
+/** Reduced motion: one still device beside the full, numbered feature list. */
+function StaticCinema() {
+  return (
+    <section data-iq-cinema aria-labelledby="iq-cinema-static" className="py-16 md:py-24">
+      <div className="shell grid items-center gap-12 md:grid-cols-[1.15fr_0.85fr]">
+        <div>
+          <h2 id="iq-cinema-static" className="font-display text-3xl font-bold leading-[1.05] text-ink md:text-4xl">
+            Inside IslamQuest
+          </h2>
+          <ol className="mt-8 grid gap-x-8 gap-y-5 sm:grid-cols-2">
+            {ISLAMQUEST_SCREENS.map((s, i) => (
+              <li key={s.src} className="border-t border-line pt-4">
+                <p className="mono text-[11px] tracking-[0.25em] text-accent-cyan">{pad(i + 1)}</p>
+                <p className="mt-2 text-sm font-semibold text-ink">{s.title}</p>
+                <p className="mt-1 text-xs leading-relaxed text-ink-muted">{s.subtitle}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div className="mx-auto w-full max-w-[17rem]">
+          <IslamQuestDevice screen={ISLAMQUEST_SCREENS[0]!} sizes="272px" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PinnedCinema() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.5, restDelta: 0.0002 });
   const reveal = useTransform(progress, [0, 0.06], [0.6, 1], { clamp: true });
   const position = useTransform(progress, CINEMA_SCREENS.input, CINEMA_SCREENS.output);
   const listId = useId();
-  const items = useMemo(() => ISLAMQUEST_SCREENS, []);
+  const items = ISLAMQUEST_SCREENS;
 
   return (
     <section ref={ref} data-iq-cinema aria-labelledby={listId} className="relative h-[300vh] md:h-[340vh]">
@@ -341,7 +354,7 @@ export function IslamQuestCinema() {
       <div className="sticky top-0 flex h-[100svh] items-center overflow-hidden">
         <div className="shell relative grid w-full items-center gap-8 pt-16 md:grid-cols-[0.85fr_1.15fr] md:pt-12">
           <div className="order-2 md:order-1">
-            <div className="relative h-[11.5rem] md:h-[15rem]" aria-hidden="true">
+            <div className="relative h-[11.5rem] md:h-[15rem] [@media(max-height:700px)]:h-[9rem]" aria-hidden="true">
               {items.map((screen, i) => (
                 <CinemaCaption key={screen.src} screen={screen} index={i} position={position} />
               ))}
@@ -351,7 +364,7 @@ export function IslamQuestCinema() {
             </div>
           </div>
           <div className="order-1 md:order-2">
-            <IslamQuestStage position={position} progress={progress} reveal={reveal} size="expanded" showCaption={false} />
+            <IslamQuestStage position={position} progress={progress} reveal={reveal} />
           </div>
         </div>
       </div>

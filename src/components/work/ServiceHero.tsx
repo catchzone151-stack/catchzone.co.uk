@@ -1,6 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import dynamic from "next/dynamic";
+import { useInView } from "motion/react";
 import Link from "next/link";
 import { useDocumentVisible } from "@/hooks/useDocumentVisible";
 import { usePerformanceTier } from "@/lib/performance/usePerformanceTier";
@@ -19,13 +21,15 @@ interface ServiceHeroProps {
 export function ServiceHero({ service, coreState }: ServiceHeroProps) {
   const tier = usePerformanceTier();
   const documentVisible = useDocumentVisible();
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView = useInView(sectionRef, { margin: "120px 0px 120px 0px" });
   const showCanvas = tier !== "safe";
 
   return (
-    <section className="relative overflow-hidden border-b border-line bg-void pb-16 pt-32 md:min-h-[70vh] md:pb-24">
+    <section ref={sectionRef} className="relative overflow-hidden border-b border-line bg-void pb-16 pt-32 md:min-h-[70vh] md:pb-24">
       <div className="absolute inset-0 z-0">
         {showCanvas ? (
-          <ServicesCanvas state={coreState} frameloop={documentVisible ? "always" : "never"} />
+          <ServicesCanvas state={coreState} frameloop={inView && documentVisible ? "always" : "never"} quality={tier === "high" ? "high" : "balanced"} />
         ) : (
           <div
             className="h-full w-full"

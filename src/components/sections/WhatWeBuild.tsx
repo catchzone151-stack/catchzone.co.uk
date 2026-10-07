@@ -16,6 +16,7 @@ import { services, type Service } from "@/data/services";
 import type { CoreState } from "@/lib/three/coreTargets";
 import { usePerformanceTier } from "@/lib/performance/usePerformanceTier";
 import { useDocumentVisible } from "@/hooks/useDocumentVisible";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 
 const ServicesCanvas = dynamic(() => import("@/components/canvas/ServicesCanvas"), {
@@ -110,6 +111,63 @@ function ProgressSegment({ index, position }: { index: number; position: MotionV
   );
 }
 
+function SectionHeading() {
+  return (
+    <>
+      <div className="flex items-center gap-3">
+        <span className="mono text-xs text-accent-cyan">06</span>
+        <span className="mono text-xs uppercase tracking-[0.2em] text-ink-faint">What We Build</span>
+      </div>
+      <h2 className="mt-3 max-w-2xl font-display text-3xl font-bold leading-tight text-ink sm:text-4xl md:mt-4 md:text-5xl">
+        Three disciplines. One connected build.
+      </h2>
+      <p className="mt-4 hidden max-w-2xl text-base leading-relaxed text-ink-muted lg:block">
+        Every engagement draws on the same connected build approach and architecture.
+      </p>
+    </>
+  );
+}
+
+/**
+ * Reduced motion / no WebGL / low-power devices: the three capabilities
+ * side by side as one calm, unpinned composition.
+ */
+function StaticWhatWeBuild({ sectionRef }: { sectionRef: React.Ref<HTMLElement> }) {
+  return (
+    <section ref={sectionRef} id="what-we-build" aria-label="What We Build" className="relative border-t border-line bg-void py-24 md:py-32">
+      <AtmosphereLayer tone="cyan" />
+      <div className="shell relative z-10">
+        <SectionHeading />
+        <ol className="mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
+          {services.map((service, index) => (
+            <li key={service.slug} className="flex flex-col border-t border-line pt-6">
+              <span className="mono text-xs tracking-[0.2em] text-ink-muted">
+                <span className="text-accent-cyan">0{index + 1}</span> / 0{services.length}
+              </span>
+              <h3 className="mt-4 font-display text-2xl font-bold leading-tight text-ink">{service.name}</h3>
+              <p className="mt-4 text-sm leading-relaxed text-ink-muted">{service.description}</p>
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {service.outputs.slice(0, 3).map((output) => (
+                  <li key={output} className="rounded-full border border-line px-3 py-1.5 text-xs text-ink-muted">
+                    {output}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href={`/services/${service.slug}`}
+                className="mt-6 inline-flex w-fit items-center gap-2 text-sm font-semibold text-accent-cyan"
+              >
+                Learn more
+                <span aria-hidden="true">→</span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
 /**
  * 06 — What We Build. One pinned sequence: the three capabilities slide
  * across in turn while the convergence core reconfigures for each, then
@@ -119,8 +177,12 @@ export function WhatWeBuild() {
   const containerRef = useRef<HTMLElement>(null);
   const tier = usePerformanceTier();
   const documentVisible = useDocumentVisible();
+  // Phone landscape is too short for the pinned sequence to breathe.
+  const shortLandscape = useMediaQuery("(orientation: landscape) and (max-height: 500px)");
   const inView = useInView(containerRef, { margin: "120px 0px 120px 0px" });
-  const showCanvas = tier !== "safe";
+  // The WebGL core is only created once the section is within a screen of the viewport.
+  const nearView = useInView(containerRef, { once: true, margin: "100% 0px 100% 0px" });
+  const showCanvas = nearView;
 
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.5, restDelta: 0.0002 });
@@ -141,6 +203,8 @@ export function WhatWeBuild() {
 
   const coreState: CoreState = converged ? "ecosystem" : SERVICE_CORE_STATE[services[active]!.slug];
 
+  if (tier === "safe" || shortLandscape) return <StaticWhatWeBuild sectionRef={containerRef} />;
+
   return (
     <section
       ref={containerRef}
@@ -152,23 +216,14 @@ export function WhatWeBuild() {
         <AtmosphereLayer tone="cyan" />
 
         <div className="shell relative z-10 pt-24 md:pt-28">
-          <div className="flex items-center gap-3">
-            <span className="mono text-xs text-accent-cyan">06</span>
-            <span className="mono text-xs uppercase tracking-[0.2em] text-ink-faint">What We Build</span>
-          </div>
-          <h2 className="mt-3 max-w-2xl font-display text-3xl font-bold leading-tight text-ink sm:text-4xl md:mt-4 md:text-5xl">
-            Three disciplines. One connected build.
-          </h2>
-          <p className="mt-4 hidden max-w-2xl text-base leading-relaxed text-ink-muted lg:block">
-            Every engagement draws on the same connected build approach and architecture.
-          </p>
+          <SectionHeading />
         </div>
 
         <div className="shell relative z-10 grid min-h-0 flex-1 grid-rows-[minmax(0,0.8fr)_auto] gap-x-16 pb-8 md:pb-12 lg:grid-cols-2 lg:grid-rows-1">
           <motion.div className="relative min-h-0" style={{ x: canvasX }}>
             {showCanvas && (
               <div className="absolute inset-0">
-                <ServicesCanvas state={coreState} frameloop={inView && documentVisible ? "always" : "never"} />
+                <ServicesCanvas state={coreState} frameloop={inView && documentVisible ? "always" : "never"} quality={tier === "high" ? "high" : "balanced"} />
               </div>
             )}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-void via-transparent to-void/70" />

@@ -53,14 +53,26 @@ component code.
 `src/lib/performance/usePerformanceTier.ts` classifies the device into
 `high` / `balanced` / `safe` using WebGL availability, reduced-motion,
 `hardwareConcurrency`, `deviceMemory`, `connection.saveData`, touch
-capability, DPR and viewport width. `useAdaptivePerformanceTier` layers a
-runtime frame-timing watchdog on top that downgrades (never upgrades)
-the tier once, with a cooldown, if sustained frame times are poor.
+capability, DPR and viewport width. The tier is decided once on mount (and
+again if the reduced-motion preference changes) — it is deliberately not
+downgraded mid-scroll, because swapping a pinned WebGL section for its
+static layout would jump the page under the visitor.
 
-The intro/hero canvas is not mounted at all on the `safe` tier. `frameloop`
-is switched to `never` while the tab is hidden (`useDocumentVisible`), and
-a `webglcontextlost` listener prevents an unhandled context loss from
-breaking the page.
+- `safe` (reduced motion, no WebGL, Save-Data, ≤2 cores/≤2 GB): no canvas is
+  mounted anywhere. The journey (01–04), the IslamQuest trailer (05), What
+  We Build (06) and the case-study cinema each render an intentional static
+  composition instead of a pinned sequence.
+- `balanced`: every canvas renders at DPR ≤ 1.35; the trailer drops its
+  motion echoes and ghost silhouette; the journey drops the reflective floor.
+- `high`: DPR ≤ 1.75 and the full effect set.
+
+All three homepage canvases are lazy chunks (`next/dynamic`, `ssr: false`).
+The trailer and 06 canvases are only created once their section is within
+one screen of the viewport. Every canvas switches `frameloop` to `never`
+when its section is off-screen or the tab is hidden (`useDocumentVisible`),
+and a `webglcontextlost` listener prevents an unhandled context loss from
+breaking the page. Geometries, materials and cloned textures created in
+code are disposed on unmount.
 
 ## Project configurator / form backend
 
@@ -68,37 +80,56 @@ breaking the page.
 flow from the brief. It posts to `POST /api/start-a-project`
 (`src/app/api/start-a-project/route.ts`).
 
-**No email/CRM backend is currently configured.** The API route checks for
-`RESEND_API_KEY` and `RESEND_TO_EMAIL` environment variables:
+Every genuinely accepted submission is emailed to **info@catchzone.co.uk**
+through the Resend REST API (plain `fetch`, no SDK). The email is built by
+`src/lib/email/projectBriefEmail.ts`: all five steps with human-readable
+labels, the contact details, the description and a UK-time timestamp, as
+both plain text and HTML (every value HTML-escaped).
 
-- If both are set, it sends the brief via the Resend API and returns
-  `{ ok: true }`.
-- If not set, it returns `{ ok: false, reason: "unconfigured" }` — the UI
-  does **not** show a fake success state. Instead it offers a working
-  `mailto:` fallback pre-filled with the full brief, so the form is
-  genuinely usable today without a backend.
+Environment (server-only — never exposed to the client bundle):
 
-**To enable automatic sending before launch:** create a Resend account (or
-swap in an equivalent provider), set `RESEND_API_KEY` and
-`RESEND_TO_EMAIL` (default/documented destination: `info@catchzone.co.uk`)
-in the deployment environment, and redeploy — no code changes required.
-This is the exact one remaining step to make the configurator send
-automatically; the API key is never exposed client-side (it's read from
-`process.env` inside the server-only route handler).
+- `RESEND_API_KEY` — **required**. If it is missing the route logs
+  `[start-a-project] RESEND_API_KEY is not set …` and returns
+  `503 { ok: false, reason: "unconfigured" }`.
+- `RESEND_FROM_EMAIL` — optional sender, e.g.
+  `CatchZone Project Brief <brief@catchzone.co.uk>` (the default). It must
+  be on a domain verified in Resend, otherwise Resend rejects the send.
+- The recipient is fixed in code (`PROJECT_INBOX`); `RESEND_TO_EMAIL` is no
+  longer read.
 
-**Hardening already in place (Phase 3):**
-- Server-side validation of every field (email format, option ids checked
-  against the real `project-config.ts` lists, length caps on all text
-  fields) — the client-side selection UI is not trusted.
-- A hidden honeypot field (`website`); a filled value is treated as a bot
-  and silently reports success without sending or logging anything real.
+Reply-To is the enquirer's validated email, so replying in the inbox goes
+straight back to them. The client sends a per-attempt `submissionId`,
+forwarded as Resend's `Idempotency-Key`, so a retried request can't send
+the same brief twice.
+
+The UI only shows "Brief sent" when the server answers `200 { ok: true }`,
+which happens only after Resend accepts the email. Any other outcome
+(not configured, Resend rejection, network/timeout, rate limit, invalid
+data) shows a friendly error with a pre-filled `mailto:` fallback to
+info@catchzone.co.uk. Every failure is logged server-side with a
+`[start-a-project]` prefix (status and Resend error name/message, never
+the API key).
+
+**Launch checklist:** verify `catchzone.co.uk` (or the sender's
+subdomain) in Resend, set `RESEND_API_KEY` (and `RESEND_FROM_EMAIL` if the
+default sender isn't on the verified domain) in the deployment secrets,
+redeploy, send one test brief and check the server logs for
+`[start-a-project]` lines if it doesn't arrive.
+
+**Hardening:**
+- Server-side validation of every field: all five steps are required,
+  option ids are checked against the real `project-config.ts` lists,
+  email format is validated, single-line fields are stripped of control
+  characters and every text field is length-capped — the client-side
+  selection UI is not trusted.
+- A hidden honeypot field (`cz_hp`, a name autofill never targets); a
+  filled value is treated as a bot and reports success without sending.
 - A practical in-memory per-IP rate limit (5 submissions / 10 minutes).
   This resets on redeploy and is scoped to a single Node process — correct
   for the current single-instance `next start` deployment. If CatchZone
   ever moves to a multi-instance/edge deployment, swap this for a shared
   store (e.g. Upstash Redis) rather than assuming it still holds.
-- Reply-To is set to the enquirer's own (validated) email so replying in
-  an inbox goes straight back to them.
+- The Resend call has a 10 s timeout.
 
 ## Analytics
 

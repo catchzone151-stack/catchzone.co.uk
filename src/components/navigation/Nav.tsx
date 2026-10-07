@@ -37,6 +37,7 @@ export function Nav() {
             alt="CatchZone — Built for what's next"
             width={2000}
             height={667}
+            sizes="(min-width: 1024px) 168px, 144px"
             priority
             className="hidden h-11 w-auto sm:block md:h-12 lg:h-14"
           />
@@ -45,6 +46,7 @@ export function Nav() {
             alt="CatchZone"
             width={2000}
             height={667}
+            sizes="96px"
             priority
             className="h-8 w-auto sm:hidden"
           />

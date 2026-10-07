@@ -12,6 +12,7 @@ export function Footer() {
             alt="CatchZone — Built for what's next"
             width={2000}
             height={667}
+            sizes="240px"
             className="h-auto w-[240px]"
           />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-ink-muted">

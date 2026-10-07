@@ -66,10 +66,10 @@ function HeroCopy() {
       <p className="mono text-xs uppercase tracking-[0.3em] text-accent-cyan">
         Digital Product &amp; Engineering Studio
       </p>
-      <h1 className="mt-6 max-w-4xl font-display text-4xl font-bold leading-[1.02] text-ink sm:text-6xl md:text-7xl lg:text-[5.25rem] lg:leading-[0.98]">
+      <h1 className="mt-6 max-w-4xl font-display text-4xl font-bold leading-[1.02] text-ink sm:text-6xl md:text-7xl lg:text-[5.25rem] lg:leading-[0.98] [@media(max-height:500px)]:mt-3 [@media(max-height:500px)]:max-w-2xl [@media(max-height:500px)]:text-4xl">
         We build digital products that move your business forward.
       </h1>
-      <div className="mt-8 flex flex-col items-start gap-6 sm:flex-row sm:items-end sm:justify-between lg:max-w-4xl">
+      <div className="mt-8 flex flex-col items-start gap-6 sm:flex-row sm:items-end sm:justify-between lg:max-w-4xl [@media(max-height:500px)]:mt-5">
         <p className="max-w-md text-base leading-relaxed text-ink-muted md:text-lg">
           Apps. Web platforms. Business systems. Complete digital ecosystems —
           designed and engineered as one connected build.
@@ -115,9 +115,9 @@ function StageCaption({ stage, index, progress }: { stage: Stage; index: number;
   return (
     <div className="absolute inset-x-0 bottom-0 pb-10 sm:pb-14 md:landscape:bottom-auto md:landscape:top-1/2 md:landscape:-translate-y-1/2 md:landscape:pb-0">
       <motion.div className="shell" style={{ opacity, y, visibility }}>
-        <div className="max-w-sm md:max-w-md md:landscape:max-w-[22rem] lg:landscape:max-w-md">
+        <div className="max-w-sm md:max-w-md md:landscape:max-w-[21rem] xl:landscape:max-w-md">
           <StageLabel index={index} label={stage.label} />
-          <h2 className="mt-5 font-display text-3xl font-bold leading-[1.05] text-ink md:text-4xl lg:text-5xl">
+          <h2 className="mt-5 font-display text-3xl font-bold leading-[1.05] text-ink md:text-4xl xl:text-5xl">
             {stage.heading}
           </h2>
           <p className="mt-5 text-base leading-relaxed text-ink-muted">{stage.body}</p>
@@ -148,7 +148,7 @@ function StageRail({ progress }: { progress: MotionValue<number> }) {
 
   return (
     <motion.div
-      className="pointer-events-none absolute inset-x-0 bottom-8 hidden md:landscape:block"
+      className="pointer-events-none absolute inset-x-0 bottom-8 hidden md:landscape:block [@media(max-height:560px)]:!hidden"
       style={{ opacity }}
       aria-hidden="true"
     >
@@ -176,10 +176,11 @@ function StageRail({ progress }: { progress: MotionValue<number> }) {
 }
 
 /** Static presentation for reduced motion / no WebGL / low-power devices. */
-function StaticJourney() {
+function StaticJourney({ sectionRef }: { sectionRef: React.Ref<HTMLElement> }) {
   return (
     <>
       <section
+        ref={sectionRef}
         id="hero"
         className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden bg-void pb-20 pt-32 sm:justify-center sm:pb-0"
       >
@@ -252,7 +253,7 @@ export function CinematicJourney() {
 
   useEffect(() => setMounted(true), []);
 
-  if (mounted && tier === "safe") return <StaticJourney />;
+  if (mounted && tier === "safe") return <StaticJourney sectionRef={containerRef} />;
 
   const showCanvas = mounted;
 
@@ -261,7 +262,7 @@ export function CinematicJourney() {
       ref={containerRef}
       id="hero"
       aria-label="From idea to working software"
-      className="relative h-[440vh] bg-void md:h-[520vh]"
+      className="relative h-[380vh] bg-void sm:h-[440vh] lg:h-[520vh]"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <div
@@ -310,7 +311,7 @@ export function CinematicJourney() {
         />
 
         <motion.div
-          className="absolute inset-0 flex flex-col justify-end pb-24 pt-32 sm:justify-center sm:pb-0"
+          className="absolute inset-0 flex flex-col justify-end pb-24 pt-32 sm:justify-center sm:pb-0 [@media(max-height:500px)]:pt-16"
           style={{ opacity: heroOpacity, y: heroY, visibility: heroVisibility }}
         >
           <div className="shell relative z-10">

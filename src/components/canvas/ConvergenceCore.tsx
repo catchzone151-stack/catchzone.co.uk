@@ -8,6 +8,10 @@ import { coreTargets, type CoreState, type PieceTransform } from "@/lib/three/co
 
 const LERP_SPEED = 2.4;
 
+const _target = new THREE.Vector3();
+/** Shared outline for every web panel (never re-created per render). */
+const PANEL_BOX = new THREE.BoxGeometry(1.7, 1.05, 0.05);
+
 function lerpPiece(
   group: THREE.Group,
   target: PieceTransform,
@@ -15,7 +19,7 @@ function lerpPiece(
   mats: (THREE.Material | null)[],
 ) {
   const t = 1 - Math.exp(-LERP_SPEED * delta);
-  group.position.lerp(new THREE.Vector3(...target.pos), t);
+  group.position.lerp(_target.set(...target.pos), t);
   group.rotation.x = THREE.MathUtils.lerp(group.rotation.x, target.rot[0], t);
   group.rotation.y = THREE.MathUtils.lerp(group.rotation.y, target.rot[1], t);
   group.rotation.z = THREE.MathUtils.lerp(group.rotation.z, target.rot[2], t);
@@ -128,7 +132,7 @@ function WebPiece({ state, secondary = false }: PieceProps & { secondary?: boole
         <meshPhysicalMaterial ref={mat} color="#12141a" metalness={0.4} roughness={0.35} clearcoat={0.35} transparent opacity={0} />
       </RoundedBox>
       <lineSegments position={[0, 0, 0.001]}>
-        <edgesGeometry args={[new THREE.BoxGeometry(1.7, 1.05, 0.05)]} />
+        <edgesGeometry args={[PANEL_BOX]} />
         <lineBasicMaterial ref={edgeMat} color="#5eead4" transparent opacity={0} />
       </lineSegments>
       <mesh position={[0, 0.42, 0.03]}>

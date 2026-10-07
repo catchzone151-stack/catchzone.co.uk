@@ -20,6 +20,8 @@ import {
 } from "@/lib/three/iqTrailerTimeline";
 
 type Progress = MotionValue<number>;
+/** `balanced` drops the motion echoes and ghost silhouette and renders at a lower DPR. */
+type Quality = "high" | "balanced";
 
 const MINT = "#5eead4";
 const MASK_ID = 1;
@@ -316,11 +318,13 @@ function ScreenPlane({
   texture,
   alpha,
   progress,
+  echo,
 }: {
   spec: PlaneSpec;
   texture: THREE.Texture;
   alpha: THREE.Texture;
   progress: Progress;
+  echo: boolean;
 }) {
   const masked = useRef<THREE.Mesh>(null);
   const free = useRef<THREE.Mesh>(null);
@@ -339,6 +343,10 @@ function ScreenPlane({
     return { geo: g, map: t };
   }, [spec.band, texture]);
   useDisposable(geo);
+  // band slices clone the shared (cached) screenshot texture; only the clone is ours to free
+  useEffect(() => () => {
+    if (map !== texture) map.dispose();
+  }, [map, texture]);
 
   const m = useRef(new THREE.Matrix4());
   const prev = useRef(new THREE.Matrix4());
@@ -362,7 +370,7 @@ function ScreenPlane({
       (free.current.material as THREE.MeshBasicMaterial).opacity = opacity * freeAmt;
     }
 
-    if (spec.echo) {
+    if (echo) {
       // refracted edge echoes: trail the plane in proportion to its speed
       pa.current.setFromMatrixPosition(m.current);
       echoes.current.forEach((mesh, i) => {
@@ -389,7 +397,7 @@ function ScreenPlane({
           <meshBasicMaterial map={map} alphaMap={alpha} transparent toneMapped={false} depthWrite={false} />
         </mesh>
       )}
-      {spec.echo &&
+      {echo &&
         [0, 1].map((i) => (
           <mesh
             key={i}
@@ -416,24 +424,31 @@ function ScreenPlane({
   );
 }
 
-function Screens({ progress }: { progress: Progress }) {
+function Screens({ progress, quality }: { progress: Progress; quality: Quality }) {
   const textures = useTexture(ISLAMQUEST_SCREENS.map((s) => s.src));
   const alpha = useRoundedAlpha();
   const { gl } = useThree();
 
   useMemo(() => {
-    const aniso = Math.min(8, gl.capabilities.getMaxAnisotropy());
+    const aniso = Math.min(quality === "high" ? 8 : 4, gl.capabilities.getMaxAnisotropy());
     textures.forEach((t) => {
       t.colorSpace = THREE.SRGBColorSpace;
       t.anisotropy = aniso;
       t.needsUpdate = true;
     });
-  }, [textures, gl]);
+  }, [textures, gl, quality]);
 
   return (
     <>
       {PLANES.map((spec) => (
-        <ScreenPlane key={spec.key} spec={spec} texture={textures[spec.screen]!} alpha={alpha} progress={progress} />
+        <ScreenPlane
+          key={spec.key}
+          spec={spec}
+          texture={textures[spec.screen]!}
+          alpha={alpha}
+          progress={progress}
+          echo={Boolean(spec.echo) && quality === "high"}
+        />
       ))}
     </>
   );
@@ -448,7 +463,9 @@ function CameraRig({ progress }: { progress: Progress }) {
   useFrame(() => {
     const p = progress.get();
     const aspect = size.width / size.height;
-    const pullBack = aspect < 1 ? 1 + (1 - aspect) * 0.95 : 1;
+    // Portrait: pull back just enough that the phone's hero holds stay inside
+    // the frame while it still reads as one strong, full-size device.
+    const pullBack = aspect < 1 ? 1 + (1 - aspect) * 0.62 : 1;
     camera.position.set(0, 0, 6.5 * pullBack);
     camera.lookAt(0, 0, 0);
     const persp = camera as THREE.PerspectiveCamera;
@@ -469,11 +486,19 @@ const Studio = memo(function Studio() {
   );
 });
 
-export default function IslamQuestTrailerCanvas({ progress, active }: { progress: Progress; active: boolean }) {
+export default function IslamQuestTrailerCanvas({
+  progress,
+  active,
+  quality = "high",
+}: {
+  progress: Progress;
+  active: boolean;
+  quality?: Quality;
+}) {
   return (
     <Canvas
       camera={{ fov: 30, near: 0.1, far: 60, position: [0, 0, 6] }}
-      dpr={[1, 1.75]}
+      dpr={quality === "high" ? [1, 1.75] : [1, 1.35]}
       gl={{ antialias: true, alpha: true, stencil: true, powerPreference: "high-performance" }}
       frameloop={active ? "always" : "never"}
       aria-hidden="true"
@@ -487,9 +512,9 @@ export default function IslamQuestTrailerCanvas({ progress, active }: { progress
       <Studio />
       <CameraRig progress={progress} />
       <Phone progress={progress} />
-      <GhostDevice progress={progress} />
+      {quality === "high" && <GhostDevice progress={progress} />}
       <Suspense fallback={null}>
-        <Screens progress={progress} />
+        <Screens progress={progress} quality={quality} />
       </Suspense>
     </Canvas>
   );

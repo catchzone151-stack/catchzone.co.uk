@@ -23,6 +23,7 @@ export function ProjectCard({ project, delay = 0 }: { project: Project; delay?: 
               src={project.heroAsset}
               alt={`${project.title} preview`}
               fill
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               className="object-cover transition-transform duration-500 ease-cinematic group-hover:scale-105"
             />
           ) : project.accent && project.brandGlyph ? (

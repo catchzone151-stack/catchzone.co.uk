@@ -38,7 +38,21 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
   return (
     <AnimatePresence>
       {open && (
+        // dims the page under the panel; tapping it closes the menu
         <motion.div
+          key="scrim"
+          className="fixed inset-x-0 bottom-0 top-20 -z-10 bg-void/70 md:hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+      {open && (
+        <motion.div
+          key="panel"
           id="mobile-nav"
           ref={panelRef}
           role="dialog"
@@ -48,7 +62,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
           transition={{ duration: 0.25, ease: [0.65, 0, 0.35, 1] }}
-          className="border-b border-line bg-void/95 backdrop-blur-xl md:hidden"
+          className="max-h-[calc(100svh-5rem)] overflow-y-auto border-b border-line bg-void/95 backdrop-blur-xl md:hidden"
         >
           <nav className="shell flex flex-col gap-1 py-6" aria-label="Mobile">
             {primaryNav.map((link) => {

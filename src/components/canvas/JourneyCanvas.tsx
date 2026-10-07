@@ -49,6 +49,10 @@ function CameraRig({ progress, parallax }: { progress: Progress; parallax: boole
     // compactFactor) to keep the composition inside the frame.
     let pullBack = aspect < 1.1 ? 1 + (1.1 - aspect) * 1.3 : 1;
     if (phone) pullBack *= 1 + opening * 0.14;
+    // Squarer landscape screens (4:3 tablets, small laptops) keep the caption
+    // column at a fixed width, so the payload eases back and further right.
+    const squareness = aspect >= 1 ? Math.min(1, Math.max(0, (1.6 - aspect) / 0.6)) : 0;
+    pullBack *= 1 + squareness * 0.2;
     dir.current.subVectors(pos.current, target.current);
     // Shallower side angles on portrait keep the plinth's silhouette narrow.
     dir.current.x *= compactFactor(aspect);
@@ -72,7 +76,7 @@ function CameraRig({ progress, parallax }: { progress: Progress; parallax: boole
     const h = size.height;
     const offset = trackNum(VIEW_OFFSET_KEYS, p);
     if (aspect >= 1) {
-      persp.setViewOffset(w, h, -offset * w, 0, w, h);
+      persp.setViewOffset(w, h, -offset * (1 + squareness * 0.75) * w, 0, w, h);
     } else {
       // Opening: pull the orbit (which sits right of centre in world
       // space) into frame above the headline. Stages: lift the payload

@@ -278,6 +278,7 @@ export default async function ProjectPage({
                     alt={`${project.title} screenshot ${i + 1}`}
                     width={400}
                     height={800}
+                    sizes="(min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw"
                     className="w-full object-cover"
                   />
                 </Reveal>

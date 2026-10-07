@@ -6,13 +6,23 @@ import {
   budgetOptions,
   type ProjectBrief,
 } from "@/data/project-config";
+import { buildProjectBriefEmail } from "@/lib/email/projectBriefEmail";
 
 /**
- * Integration point for the project configurator. If RESEND_API_KEY and
- * RESEND_TO_EMAIL are set, this sends the brief via Resend. If not, it
- * deliberately does NOT report success — see docs/IMPLEMENTATION_NOTES.md
- * for the exact one-step launch configuration required.
+ * Start a Project submissions → an email to the CatchZone inbox via Resend.
+ *
+ * Only `RESEND_API_KEY` is required. The recipient is fixed to
+ * PROJECT_INBOX; the sender defaults to DEFAULT_FROM and can be overridden
+ * with `RESEND_FROM_EMAIL` to match whichever domain is verified in Resend.
+ * The route only reports success once Resend has accepted the email; every
+ * failure is logged server-side (never the API key) and surfaced to the
+ * visitor as a friendly error with a pre-filled email fallback.
  */
+
+const PROJECT_INBOX = "info@catchzone.co.uk";
+const DEFAULT_FROM = "CatchZone Project Brief <brief@catchzone.co.uk>";
+const RESEND_ENDPOINT = "https://api.resend.com/emails";
+const SEND_TIMEOUT_MS = 10_000;
 
 const MAX_LEN = {
   name: 120,
@@ -23,6 +33,8 @@ const MAX_LEN = {
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const FROM_RE = /^(?:[^<>\r\n]{1,80} <)?[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+>?$/;
+const SUBMISSION_ID_RE = /^[A-Za-z0-9-]{8,64}$/;
 
 const VALID_BUILD_TYPES = new Set(buildTypeOptions.map((o) => o.id));
 const VALID_STARTING_POINTS = new Set(startingPointOptions.map((o) => o.id));
@@ -36,17 +48,20 @@ function cleanLine(value: unknown, maxLen: number): string {
 }
 
 interface RawBody extends Partial<ProjectBrief> {
-  /** Honeypot — real visitors never populate this hidden field. */
-  website?: string;
+  /**
+   * Honeypot — hidden from people and given a name autofill never targets
+   * (a field called "website" can be autofilled, which would silently drop
+   * a real enquiry).
+   */
+  cz_hp?: string;
+  /** Client-generated id so a retried request can't send the email twice. */
+  submissionId?: string;
 }
 
 /**
- * In-memory sliding-window rate limit. Effective per Node process (this app
- * runs as a single `next start` server, not multi-instance edge functions),
- * which is a practical deterrent against casual abuse. It resets on
- * redeploy/restart and would need a shared store (e.g. Upstash Redis) to
- * hold across multiple instances — noted for a future horizontal-scale
- * deployment, not required for launch.
+ * In-memory sliding-window rate limit per Node process — a practical
+ * deterrent against casual abuse. It resets on restart and is per instance;
+ * a shared store (e.g. Upstash Redis) would be needed for a hard global cap.
  */
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
@@ -75,28 +90,23 @@ function getClientIp(request: Request): string {
   return request.headers.get("x-real-ip") ?? "unknown";
 }
 
+function fail(reason: string, status: number) {
+  return NextResponse.json({ ok: false, reason }, { status });
+}
+
 export async function POST(request: Request) {
-  const ip = getClientIp(request);
-  if (isRateLimited(ip)) {
-    return NextResponse.json(
-      { ok: false, reason: "rate_limited" },
-      { status: 429 },
-    );
-  }
+  if (isRateLimited(getClientIp(request))) return fail("rate_limited", 429);
 
   let raw: RawBody;
   try {
     raw = await request.json();
   } catch {
-    return NextResponse.json(
-      { ok: false, reason: "invalid_body" },
-      { status: 400 },
-    );
+    return fail("invalid_body", 400);
   }
+  if (!raw || typeof raw !== "object") return fail("invalid_body", 400);
 
-  // Honeypot: bots that fill every field trip this hidden one. Report a
-  // generic success so the bot doesn't learn to skip it, but never send.
-  if (raw.website) {
+  // Honeypot: report a generic success so bots don't learn to skip it, but never send.
+  if (typeof raw.cz_hp === "string" && raw.cz_hp.trim() !== "") {
     return NextResponse.json({ ok: true });
   }
 
@@ -104,7 +114,7 @@ export async function POST(request: Request) {
     buildType: VALID_BUILD_TYPES.has(raw.buildType ?? "") ? raw.buildType! : "",
     startingPoint: VALID_STARTING_POINTS.has(raw.startingPoint ?? "") ? raw.startingPoint! : "",
     priorities: Array.isArray(raw.priorities)
-      ? raw.priorities.filter((p): p is string => typeof p === "string" && VALID_PRIORITIES.has(p))
+      ? [...new Set(raw.priorities.filter((p): p is string => typeof p === "string" && VALID_PRIORITIES.has(p)))]
       : [],
     budget: VALID_BUDGETS.has(raw.budget ?? "") ? raw.budget! : "",
     name: cleanLine(raw.name, MAX_LEN.name),
@@ -114,64 +124,69 @@ export async function POST(request: Request) {
     description: typeof raw.description === "string" ? raw.description.trim().slice(0, MAX_LEN.description) : "",
   };
 
-  if (!brief.name || !brief.email || !brief.description || !EMAIL_RE.test(brief.email)) {
-    return NextResponse.json(
-      { ok: false, reason: "missing_fields" },
-      { status: 400 },
-    );
+  // Every one of the five steps is required by the form; reject anything that skipped them.
+  if (
+    !brief.buildType ||
+    !brief.startingPoint ||
+    brief.priorities.length === 0 ||
+    !brief.budget ||
+    !brief.name ||
+    !brief.description ||
+    !EMAIL_RE.test(brief.email)
+  ) {
+    return fail("missing_fields", 400);
   }
 
   const apiKey = process.env.RESEND_API_KEY;
-  const toEmail = process.env.RESEND_TO_EMAIL;
+  if (!apiKey) {
+    console.error("[start-a-project] RESEND_API_KEY is not set — the brief was not emailed.");
+    return fail("unconfigured", 503);
+  }
 
-  if (!apiKey || !toEmail) {
-    return NextResponse.json(
-      { ok: false, reason: "unconfigured" },
-      { status: 200 },
-    );
+  const configuredFrom = process.env.RESEND_FROM_EMAIL?.trim();
+  const from = configuredFrom && FROM_RE.test(configuredFrom) ? configuredFrom : DEFAULT_FROM;
+  const email = buildProjectBriefEmail(brief, new Date());
+
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${apiKey}`,
+    "Content-Type": "application/json",
+  };
+  if (typeof raw.submissionId === "string" && SUBMISSION_ID_RE.test(raw.submissionId)) {
+    headers["Idempotency-Key"] = `start-a-project/${raw.submissionId}`;
   }
 
   try {
-    const res = await fetch("https://api.resend.com/emails", {
+    const res = await fetch(RESEND_ENDPOINT, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
+      headers,
+      signal: AbortSignal.timeout(SEND_TIMEOUT_MS),
       body: JSON.stringify({
-        from: "CatchZone Project Brief <brief@catchzone.co.uk>",
-        to: [toEmail],
+        from,
+        to: [PROJECT_INBOX],
         reply_to: brief.email,
-        subject: `New project brief — ${brief.name}${brief.company ? ` (${brief.company})` : ""}`,
-        text: [
-          `Build type: ${brief.buildType || "—"}`,
-          `Starting point: ${brief.startingPoint || "—"}`,
-          `Priorities: ${brief.priorities.join(", ") || "—"}`,
-          `Budget: ${brief.budget || "—"}`,
-          "",
-          `Name: ${brief.name}`,
-          `Email: ${brief.email}`,
-          `Company: ${brief.company || "—"}`,
-          `Phone: ${brief.phone || "—"}`,
-          "",
-          "Description:",
-          brief.description,
-        ].join("\n"),
+        subject: email.subject,
+        text: email.text,
+        html: email.html,
       }),
     });
 
     if (!res.ok) {
-      return NextResponse.json(
-        { ok: false, reason: "send_failed" },
-        { status: 502 },
-      );
+      let detail = "";
+      try {
+        const body = (await res.json()) as { name?: string; message?: string };
+        detail = [body.name, body.message].filter(Boolean).join(": ");
+      } catch {
+        // non-JSON error body — the status code is enough to diagnose
+      }
+      console.error(`[start-a-project] Resend rejected the email (HTTP ${res.status}) ${detail}`.trim());
+      return fail("send_failed", 502);
     }
 
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json(
-      { ok: false, reason: "send_failed" },
-      { status: 502 },
+  } catch (error) {
+    console.error(
+      `[start-a-project] Could not reach Resend: ${error instanceof Error ? error.name : "unknown error"}`,
     );
+    return fail("send_failed", 502);
   }
 }

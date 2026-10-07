@@ -13,7 +13,7 @@ const config: Config = {
         ink: {
           DEFAULT: "#E6EBF0",
           muted: "#828B9A",
-          faint: "#565F6E",
+          faint: "#747D8C",
         },
         accent: {
           cyan: "#5EEAD4",
