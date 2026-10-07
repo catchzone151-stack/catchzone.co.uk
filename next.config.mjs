@@ -1,5 +1,17 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import { PHASE_DEVELOPMENT_SERVER } from "next/constants.js";
+
+/**
+ * `next dev` gets its own build directory. Dev and production otherwise share
+ * `.next`, and starting `next dev` clears it — so on a host where a dev server
+ * runs beside `next start` (the Replit workspace runs `npm run dev`), the
+ * production build is deleted from under the running server and every route
+ * fails with `ENOENT: … .next/server/app/page.js`. Production keeps `.next`.
+ *
+ * @param {string} phase
+ * @returns {import('next').NextConfig}
+ */
+const nextConfig = (phase) => ({
+  distDir: phase === PHASE_DEVELOPMENT_SERVER ? ".next-dev" : ".next",
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: false,
@@ -45,6 +57,6 @@ const nextConfig = {
       },
     ];
   },
-};
+});
 
 export default nextConfig;
