@@ -7,11 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/voice/test-voice-api.mjs",
+    "test:voice": "node scripts/voice/test-voice-api.mjs",
+    "voice:sync-languages": "node scripts/voice/sync-soniox-languages.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",
+    "@soniox/client": "2.4.0",
     "gsap": "^3.12.5",
     "motion": "^12.43.0",
     "next": "^15.5.24",

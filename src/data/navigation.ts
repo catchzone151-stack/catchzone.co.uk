@@ -6,6 +6,7 @@ export interface NavLink {
 export const primaryNav: NavLink[] = [
   { label: "Work", href: "/work" },
   { label: "Services", href: "/services" },
+  { label: "Voice", href: "/voice" },
   { label: "About", href: "/about" },
 ];
 
@@ -20,6 +21,8 @@ export const footerNav: NavLink[] = [
   { label: "Mobile & Digital Products", href: "/services/apps" },
   { label: "Premium Web Platforms", href: "/services/web" },
   { label: "Business Systems", href: "/services/systems" },
+  { label: "CatchZone Voice", href: "/voice" },
+  { label: "Voice for Business", href: "/voice/business" },
   { label: "About", href: "/about" },
   { label: "Start a Project", href: "/start-a-project" },
   { label: "Privacy", href: "/privacy" },

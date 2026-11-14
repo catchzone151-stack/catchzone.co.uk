@@ -81,6 +81,20 @@ export function Hero() {
           animate={phase === "hero" ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
         >
+          <Link
+            href="/voice"
+            className="group mb-6 inline-flex max-w-full items-center gap-2.5 rounded-full border border-white/10 bg-void/40 py-1.5 pl-1.5 pr-4 text-xs text-ink-muted backdrop-blur-sm transition-colors hover:border-accent-cyan/40 hover:text-ink"
+          >
+            <span className="rounded-full bg-gradient-to-r from-accent-cyan/20 to-[#8b5cf6]/25 px-2 py-0.5 font-semibold text-ink">
+              New
+            </span>
+            <span className="truncate">
+              CatchZone Voice<span className="hidden sm:inline"> — real-time voice translation</span>
+            </span>
+            <span aria-hidden="true" className="text-accent-cyan transition-transform group-hover:translate-x-0.5">
+              →
+            </span>
+          </Link>
           <p className="mono text-xs uppercase tracking-[0.3em] text-accent-cyan">
             Digital Product &amp; Engineering Studio
           </p>
