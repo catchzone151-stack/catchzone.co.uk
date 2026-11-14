@@ -223,6 +223,41 @@ what a real modelling pass would add on top of what code can already do.
 
 ---
 
+## ASSET-011 — CatchZone Voice logos (cinematic + minimal)
+
+- **Status: SUPPLIED, in use.** Owner-supplied "CatchZone Voice Cinematic
+  Version" and "CatchZone Voice Minimal Version" (2000×667, RGBA). Both have
+  genuine alpha transparency and render cleanly on the dark site background.
+  They reached this build as WebP exports of the attachments; the original
+  PNG masters are not in the repository.
+- Processing: transparent padding trimmed (24 px margin kept around the soft
+  glow), re-encoded as WebP — no artwork changes.
+  - `public/brand/voice/catchzone-voice-cinematic.webp` (1870×390) — homepage
+    Voice spotlight artwork.
+  - `public/brand/voice/catchzone-voice-minimal.webp` (1941×201) — Voice
+    product sub-navigation on `/voice`, `/voice/languages`, `/voice/business`.
+- Observation: both files contain a semi-transparent soft white glow around
+  the white lettering. That is intended on dark backgrounds, but the logos
+  are **not suitable for light backgrounds** (white text). Supply a
+  dark-text variant if a light-background use is ever needed.
+- The primary CatchZone company logo was not modified.
+
+## ASSET-012 — CatchZone Voice social share image
+
+- **Status: GENERATED from supplied artwork.** `public/og/catchzone-voice.png`
+  (1200×630): the supplied cinematic logo centred on the site's dark
+  surface with restrained cyan/violet light. Used as Open Graph / Twitter
+  image for the three Voice pages. Replace with a designed share card if
+  preferred.
+
+## ASSET-013 — Optional future Voice assets (not required)
+
+- Real product photography or screen recordings of the private two-person
+  evaluation app would strengthen `/voice/business`. None were supplied, so
+  none were fabricated; the pages use live UI and abstract waveform visuals.
+
+---
+
 ## Notes
 
 - All CatchZone logos, the IslamQuest banner/screenshots, and the Lumi

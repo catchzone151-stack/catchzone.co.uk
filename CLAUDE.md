@@ -13,6 +13,8 @@ For the latest surgical composition corrections, also read `docs/CATCHZONE_FINAL
 
 For the production launch dependency/security pass, read `docs/CATCHZONE_LAUNCH_SECURITY.md` completely. During that pass, it is the latest authority for dependency versions, migration scope and validation. The site design is already approved; do not use the security upgrade as an excuse to redesign it.
 
+For CatchZone Voice work (`/voice*`, the homepage Voice spotlight, the public demo), read `docs/CATCHZONE_VOICE.md` and `docs/VOICE_DEMO_OPERATIONS.md`. Never enable paid Soniox processing or expose `SONIOX_DEMO_API_KEY` client-side; the demo must stay fail-closed until its documented prerequisites are met.
+
 ## Working rules
 - Inspect the existing repository and assets before changing architecture.
 - Preserve real CatchZone content/assets where useful; do not invent testimonials, client logos, awards, metrics, users, revenue, downloads or other unverifiable claims.
