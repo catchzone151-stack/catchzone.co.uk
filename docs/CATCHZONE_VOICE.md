@@ -21,12 +21,21 @@ already disallowed in robots.
 
 ## Homepage
 
-- Section 05 "Featured Build" (IslamQuest) is replaced by `VoiceSpotlight`
-  ("Featured Product"). IslamQuest's `/work` presentation, case study, app
-  links and project record are unchanged. `SelectedWork.tsx` is no longer
-  imported by the homepage but is kept for easy rollback.
-- A small "New · CatchZone Voice" link sits above the hero eyebrow.
-- "Voice" added to the primary navigation (desktop and mobile) and footer.
+Integrated on the live-site base (`claude/eloquent-galileo-82ee5u`), whose
+homepage is `CinematicJourney` (orbit hero → Idea → Design → Build → Ship)
+followed by `SelectedWork`.
+
+- `CinematicJourney` and its canvas/timeline code are untouched.
+- Inside `SelectedWork` (section 05, same wrapper and hand-off gradient from
+  the journey), the IslamQuest feature is replaced by `VoiceSpotlight`
+  (cinematic logo, EN ⇄ ES speaker bridge, capabilities, CTAs to `/voice`).
+  The "Also live on Google Play" row excludes IslamQuest; IslamQuest's
+  `/work` feature (`FeaturedProjectCard`), case study, app links and project
+  data are unchanged.
+- "Voice" is added to the primary navigation (desktop + mobile) and the
+  footer through `src/data/navigation.ts`; the nav/footer components keep
+  their live design. There is no extra hero entry point, so the journey's
+  opening composition stays exactly as live.
 
 ## Single source of truth for languages
 
@@ -64,8 +73,9 @@ agent assist or quick phrases.
 - `npm run test:voice` — 31 server/data tests (mocked fetch; no network).
 - `docs/voice/voice-demo-store.test.sql` — Postgres functional tests.
 - `node scripts/voice/qa-browser.mjs [baseUrl] [shotsDir]` — Playwright QA
-  (responsive, a11y basics, picker keyboard/RTL, error states, and the full
-  live flow against a scripted Soniox stand-in that exists only in the test).
+  (responsive, a11y basics, homepage CinematicJourney + Voice integration,
+  nav/footer, picker keyboard/RTL, error states, and the full live flow
+  against a scripted Soniox stand-in that exists only in the test).
 
 ## SEO notes
 

@@ -95,31 +95,47 @@ ok(`responsive pass: ${ROUTES.length} routes × ${WIDTHS.length} widths`);
 {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(BASE + "/", { waitUntil: "networkidle" });
-  const spot = page.locator("#voice-spotlight-title");
-  await spot.scrollIntoViewIfNeeded();
+  const html = await page.content();
+  // Live homepage: the IDEA → DESIGN → BUILD → SHIP CinematicJourney, not the obsolete 3D-panel hero.
+  if (html.includes("It starts as a rough idea.")) ok("homepage renders the live CinematicJourney");
+  else bad("CinematicJourney missing from homepage");
+  // The obsolete Hero/SketchToBuild components were removed from the branch; confirm the
+  // journey's own four stages render instead.
+  const stages = ["Idea", "Design", "Build", "Ship"].filter((label) => html.includes(`>${label}<`));
+  if (stages.length === 4) ok("journey stages Idea → Design → Build → Ship present");
+  else bad(`journey stages found: ${stages.join(", ")}`);
+  const section = page.locator("section#work");
+  await section.scrollIntoViewIfNeeded();
   await page.waitForTimeout(900);
-  const section = page.locator("section", { has: spot });
   if (SHOTS) await section.screenshot({ path: path.join(SHOTS, "home-voice-spotlight-1440.png") });
   const text = await section.innerText();
-  if (/islamquest/i.test(text)) bad("homepage spotlight still mentions IslamQuest");
-  else ok("homepage featured section no longer shows IslamQuest");
+  if (/islamquest/i.test(text)) bad("homepage featured section still mentions IslamQuest");
+  else ok("homepage featured section (SelectedWork) no longer shows IslamQuest");
+  if (/Conversations without language barriers/.test(text)) ok("SelectedWork now features CatchZone Voice");
+  else bad("Voice spotlight missing from SelectedWork");
   const cta = section.getByRole("link", { name: /Explore CatchZone Voice/ });
   if ((await cta.getAttribute("href")) === "/voice") ok("spotlight primary CTA → /voice");
   else bad("spotlight CTA href wrong");
   const navVoice = page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Voice" });
   if ((await navVoice.count()) === 1) ok("primary nav has Voice entry");
   else bad("primary nav missing Voice");
-  const chip = page.locator("#hero a[href='/voice']");
-  if ((await chip.count()) === 1) ok("hero has discreet Voice entry point");
-  else bad("hero Voice chip missing");
+  const footerVoice = page.getByRole("navigation", { name: "Footer" }).getByRole("link", { name: "CatchZone Voice" });
+  if ((await footerVoice.count()) === 1) ok("footer has CatchZone Voice link");
+  else bad("footer missing Voice link");
   await page.close();
 
   const mobile = await browser.newPage({ viewport: { width: 390, height: 860 } });
   await mobile.goto(BASE + "/", { waitUntil: "networkidle" });
-  const s2 = mobile.locator("#voice-spotlight-title");
+  await mobile.getByRole("button", { name: "Open menu" }).click();
+  const mobileVoice = mobile.getByRole("dialog", { name: "Mobile navigation" }).getByRole("link", { name: "Voice" });
+  if ((await mobileVoice.count()) === 1) ok("mobile navigation has Voice entry");
+  else bad("mobile navigation missing Voice");
+  await shot(mobile, "home-mobile-nav-390");
+  await mobile.getByRole("button", { name: "Close menu" }).click();
+  const s2 = mobile.locator("section#work");
   await s2.scrollIntoViewIfNeeded();
   await mobile.waitForTimeout(900);
-  if (SHOTS) await mobile.locator("section", { has: s2 }).screenshot({ path: path.join(SHOTS, "home-voice-spotlight-390.png") });
+  if (SHOTS) await s2.screenshot({ path: path.join(SHOTS, "home-voice-spotlight-390.png") });
   await mobile.close();
 
   const wq = await browser.newPage({ viewport: { width: 1440, height: 900 } });

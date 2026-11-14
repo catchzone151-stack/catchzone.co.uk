@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { featuredProjects } from "@/data/projects";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { FeaturedProjectCard } from "@/components/work/FeaturedProjectCard";
+import { VoiceSpotlight } from "@/components/sections/VoiceSpotlight";
 import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 
 export function SelectedWork() {
-  const [hero, ...rest] = featuredProjects;
-  const otherLive = rest.filter((p) => p.status === "live");
+  // The homepage feature is CatchZone Voice. IslamQuest stays a featured
+  // project on /work (FeaturedProjectCard) but is not shown on the homepage.
+  const otherLive = featuredProjects.filter((p) => p.status === "live" && p.slug !== "islamquest");
 
   return (
     <section
@@ -22,16 +23,14 @@ export function SelectedWork() {
       <div className="shell relative z-10">
         <SectionHeading
           index="05"
-          eyebrow="Featured Build"
-          title="Taken from idea to working software."
-          description="One flagship product, shown in full — built end-to-end by CatchZone, the same connected approach behind every build."
+          eyebrow="Featured Product"
+          title="Conversations without language barriers."
+          description="CatchZone Voice — our own real-time speech translation product, designed and built end-to-end by CatchZone."
         />
 
-        {hero && (
-          <div className="mt-16">
-            <FeaturedProjectCard project={hero} />
-          </div>
-        )}
+        <div className="mt-16">
+          <VoiceSpotlight />
+        </div>
 
         {otherLive.length > 0 && (
           <div className="mt-16 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-line pt-8 text-center">
