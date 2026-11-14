@@ -22,18 +22,27 @@ export function VoiceSpotlight() {
   return (
     <div>
       {/* Product stage: cinematic artwork + two connected language streams */}
-      <Reveal className="relative overflow-hidden rounded-[32px] border border-white/[0.08] bg-[radial-gradient(70%_90%_at_50%_0%,rgba(56,189,248,0.10),transparent_70%),linear-gradient(180deg,#0b0c11,#060609)] px-5 pb-10 pt-12 sm:px-10 md:pb-14 md:pt-16">
+      <Reveal className="relative overflow-hidden rounded-[32px] border border-white/[0.08] bg-[radial-gradient(70%_90%_at_50%_0%,rgba(56,189,248,0.10),transparent_70%),linear-gradient(180deg,#0b0c11,#060609)] light:bg-[radial-gradient(70%_90%_at_50%_0%,rgba(56,189,248,0.10),transparent_70%),linear-gradient(180deg,#ffffff,#f0efea)] light:shadow-[0_40px_90px_-50px_rgba(14,17,22,0.35)] px-5 pb-10 pt-12 sm:px-10 md:pb-14 md:pt-16">
         <div
           className="pointer-events-none absolute inset-x-[15%] top-[30%] h-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(139,92,246,0.16),transparent)] blur-2xl"
           aria-hidden="true"
         />
+        {/* Approved Cinematic logo: Dark variant on the dark stage, Light variant on the light stage. */}
         <Image
-          src="/brand/voice/catchzone-voice-cinematic.webp"
+          src="/brand/voice/catchzone-voice-cinematic-dark.webp"
           alt="CatchZone Voice"
-          width={1870}
-          height={390}
+          width={1862}
+          height={383}
           sizes="(min-width: 1024px) 760px, 90vw"
-          className="relative mx-auto h-auto w-full max-w-[760px]"
+          className="theme-only-dark relative mx-auto h-auto w-full max-w-[760px]"
+        />
+        <Image
+          src="/brand/voice/catchzone-voice-cinematic-light.webp"
+          alt="CatchZone Voice"
+          width={1862}
+          height={383}
+          sizes="(min-width: 1024px) 760px, 90vw"
+          className="theme-only-light relative mx-auto h-auto w-full max-w-[760px]"
         />
 
         <div className="relative mx-auto mt-10 flex max-w-4xl items-center gap-3 sm:gap-6 md:mt-12" aria-hidden="true">
@@ -100,7 +109,7 @@ function SpeakerNode({ code, name, lang, side }: { code: string; name: string; l
   return (
     <div className="flex shrink-0 flex-col items-center gap-2">
       <div className={`relative h-14 w-14 rounded-full bg-gradient-to-br p-px sm:h-20 sm:w-20 ${ring}`}>
-        <div className="flex h-full w-full items-center justify-center rounded-full bg-[#07080b]">
+        <div className="flex h-full w-full items-center justify-center rounded-full bg-[#07080b] light:bg-surface-raised">
           <svg viewBox="0 0 24 24" className="h-5 w-5 text-ink sm:h-7 sm:w-7">
             <circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
             <path d="M5 19.5c1.2-3.4 4-5 7-5s5.8 1.6 7 5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />

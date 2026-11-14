@@ -26,7 +26,8 @@ export function ServiceHero({ service, coreState }: ServiceHeroProps) {
   const showCanvas = tier !== "safe";
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden border-b border-line bg-void pb-16 pt-32 md:min-h-[70vh] md:pb-24">
+    <>
+    <section ref={sectionRef} className="theme-dark relative overflow-hidden border-b border-line bg-void pb-16 pt-32 md:min-h-[70vh] md:pb-24">
       <div className="absolute inset-0 z-0">
         {showCanvas ? (
           <ServicesCanvas state={coreState} frameloop={inView && documentVisible ? "always" : "never"} quality={tier === "high" ? "high" : "balanced"} />
@@ -71,5 +72,8 @@ export function ServiceHero({ service, coreState }: ServiceHeroProps) {
         </p>
       </div>
     </section>
+    {/* light mode only: soft dusk from the dark hero into the light page */}
+    <div className="theme-seam" aria-hidden="true" />
+    </>
   );
 }

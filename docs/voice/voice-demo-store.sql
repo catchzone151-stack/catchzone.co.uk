@@ -109,6 +109,25 @@ begin
 end;
 $$;
 
+-- Retention: removes records older than two days. Called on every claim and
+-- also scheduled daily (below), so records are deleted even when the demo is idle.
+create or replace function public.voice_demo_purge() returns void
+language sql
+security definer
+set search_path = public
+as $$
+  delete from public.voice_demo_sessions
+   where day < (now() at time zone 'utc')::date - 2;
+$$;
+
+revoke all on function public.voice_demo_purge() from public, anon, authenticated;
+grant execute on function public.voice_demo_purge() to service_role;
+
+-- Daily retention job (REQUIRED when activating the demo). Requires the
+-- pg_cron extension: Supabase Dashboard → Database → Extensions → pg_cron.
+-- Then run, once:
+--   select cron.schedule('voice-demo-purge', '17 3 * * *', 'select public.voice_demo_purge()');
+
 revoke all on function public.voice_demo_claim(uuid, text, text, integer, integer, integer, integer, integer, integer) from public, anon, authenticated;
 revoke all on function public.voice_demo_release(uuid, boolean) from public, anon, authenticated;
 grant execute on function public.voice_demo_claim(uuid, text, text, integer, integer, integer, integer, integer, integer) to service_role;

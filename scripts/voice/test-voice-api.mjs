@@ -424,7 +424,7 @@ await test("store limit outcomes are passed through (visitor_limit → 429)", as
 });
 
 /* ------------------------------------------------------------------ */
-console.log("\nVoice enquiry form");
+console.log("\nVoice enquiry form (Resend mocked — no email is sent)");
 
 function enquiry(body) {
   return new Request("https://catchzone.co.uk/api/voice/enquiry", {
@@ -433,42 +433,126 @@ function enquiry(body) {
     body: JSON.stringify(body),
   });
 }
-const validEnquiry = { name: "Test", email: "test@example.com", company: "Example Ltd", message: "Hello", intent: "demonstration" };
+const validEnquiry = { name: "Test <b>User</b>", email: "test@example.com", company: "Example Ltd", message: "Hello <script>x</script>", intent: "demonstration" };
+const resendOk = () => { fetchImpl = async () => new Response(JSON.stringify({ id: "mock" }), { status: 200 }); };
 
-await test("reports 'unconfigured' (never fake success) without Resend env", async () => {
+await test("reports 'unconfigured' (503, never fake success) without RESEND_API_KEY", async () => {
   setEnv();
-  const body = await (await enquiryRoute.POST(enquiry(validEnquiry))).json();
-  assert.deepEqual(body, { ok: false, reason: "unconfigured" });
+  const res = await enquiryRoute.POST(enquiry(validEnquiry));
+  assert.equal(res.status, 503);
+  assert.deepEqual(await res.json(), { ok: false, reason: "unconfigured" });
   assert.equal(fetchCalls.length, 0);
 });
 
-await test("validates required fields and email", async () => {
-  setEnv();
-  const res = await enquiryRoute.POST(enquiry({ ...validEnquiry, email: "not-an-email" }));
-  assert.equal(res.status, 400);
-  assert.equal((await enquiryRoute.POST(enquiry({ ...validEnquiry, company: "" }))).status, 400);
-});
-
-await test("sends via Resend (mocked) with reply-to and reports delivery failures", async () => {
-  setEnv({ RESEND_API_KEY: "re_test", RESEND_TO_EMAIL: "inbox@example.com" });
-  fetchImpl = async () => new Response("{}", { status: 200 });
+await test("needs only RESEND_API_KEY; always delivers to info@catchzone.co.uk (no RESEND_TO_EMAIL)", async () => {
+  setEnv({ RESEND_API_KEY: "re_test" });
+  resendOk();
   assert.deepEqual(await (await enquiryRoute.POST(enquiry(validEnquiry))).json(), { ok: true });
   const sent = fetchCalls[0];
   assert.equal(sent.url, "https://api.resend.com/emails");
+  assert.deepEqual(sent.body.to, ["info@catchzone.co.uk"]);
+  assert.equal(sent.body.from, "CatchZone Voice <brief@catchzone.co.uk>");
   assert.equal(sent.body.reply_to, "test@example.com");
-  assert.match(sent.body.subject, /private demonstration/);
-
-  fetchImpl = async () => new Response("{}", { status: 500 });
-  const failed = await enquiryRoute.POST(enquiry(validEnquiry));
-  assert.equal(failed.status, 502);
-  assert.equal((await failed.json()).reason, "send_failed");
+  assert.equal(sent.init.headers.Authorization, "Bearer re_test");
 });
 
-await test("honeypot submissions are accepted silently and never sent", async () => {
-  setEnv({ RESEND_API_KEY: "re_test", RESEND_TO_EMAIL: "inbox@example.com" });
-  fetchImpl = async () => new Response("{}", { status: 200 });
-  assert.deepEqual(await (await enquiryRoute.POST(enquiry({ ...validEnquiry, website: "spam" }))).json(), { ok: true });
+await test("RESEND_TO_EMAIL is ignored; RESEND_FROM_EMAIL overrides the sender like Start a Project", async () => {
+  setEnv({ RESEND_API_KEY: "re_test", RESEND_TO_EMAIL: "someone-else@example.com", RESEND_FROM_EMAIL: "CatchZone <hello@catchzone.co.uk>" });
+  resendOk();
+  await enquiryRoute.POST(enquiry(validEnquiry));
+  assert.deepEqual(fetchCalls[0].body.to, ["info@catchzone.co.uk"]);
+  assert.equal(fetchCalls[0].body.from, "CatchZone <hello@catchzone.co.uk>");
+});
+
+await test("distinct subjects for private demonstrations and business enquiries", async () => {
+  setEnv({ RESEND_API_KEY: "re_test" });
+  resendOk();
+  await enquiryRoute.POST(enquiry(validEnquiry));
+  await enquiryRoute.POST(enquiry({ ...validEnquiry, intent: "requirements" }));
+  assert.match(fetchCalls[0].body.subject, /^CatchZone Voice — Private demonstration request — /);
+  assert.match(fetchCalls[1].body.subject, /^CatchZone Voice — Business enquiry — /);
+});
+
+await test("HTML email escapes visitor input", async () => {
+  setEnv({ RESEND_API_KEY: "re_test" });
+  resendOk();
+  await enquiryRoute.POST(enquiry(validEnquiry));
+  const html = fetchCalls[0].body.html;
+  assert.ok(!html.includes("<script>x</script>") && html.includes("&lt;script&gt;"));
+  assert.ok(!html.includes("<b>User</b>"));
+});
+
+await test("submission id becomes a Resend Idempotency-Key (no duplicate emails on retry)", async () => {
+  setEnv({ RESEND_API_KEY: "re_test" });
+  resendOk();
+  await enquiryRoute.POST(enquiry({ ...validEnquiry, submissionId: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d" }));
+  assert.equal(fetchCalls[0].init.headers["Idempotency-Key"], "voice-enquiry/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d");
+  await enquiryRoute.POST(enquiry({ ...validEnquiry, submissionId: "bad id!" }));
+  assert.equal(fetchCalls[1].init.headers["Idempotency-Key"], undefined);
+});
+
+await test("validates required fields and email", async () => {
+  setEnv({ RESEND_API_KEY: "re_test" });
+  resendOk();
+  assert.equal((await enquiryRoute.POST(enquiry({ ...validEnquiry, email: "not-an-email" }))).status, 400);
+  assert.equal((await enquiryRoute.POST(enquiry({ ...validEnquiry, company: "" }))).status, 400);
+  assert.equal((await enquiryRoute.POST(enquiry({ ...validEnquiry, message: "   " }))).status, 400);
   assert.equal(fetchCalls.length, 0);
+});
+
+await test("provider rejection or outage → 502 send_failed (never success)", async () => {
+  setEnv({ RESEND_API_KEY: "re_test" });
+  fetchImpl = async () => new Response(JSON.stringify({ name: "validation_error" }), { status: 422 });
+  const rejected = await enquiryRoute.POST(enquiry(validEnquiry));
+  assert.equal(rejected.status, 502);
+  assert.equal((await rejected.json()).reason, "send_failed");
+  fetchImpl = async () => { throw new TypeError("network down"); };
+  const down = await enquiryRoute.POST(enquiry(validEnquiry));
+  assert.equal(down.status, 502);
+});
+
+await test("honeypot (cz_hp) submissions are accepted silently and never sent", async () => {
+  setEnv({ RESEND_API_KEY: "re_test" });
+  resendOk();
+  assert.deepEqual(await (await enquiryRoute.POST(enquiry({ ...validEnquiry, cz_hp: "spam" }))).json(), { ok: true });
+  assert.equal(fetchCalls.length, 0);
+});
+
+/* ------------------------------------------------------------------ */
+console.log("\nStart a Project form (existing proven route, Resend mocked — no email is sent)");
+
+const projectRoute = load("src/app/api/start-a-project/route.ts");
+const cfg = load("src/data/project-config.ts");
+function brief(extra = {}) {
+  return new Request("https://catchzone.co.uk/api/start-a-project", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-forwarded-for": `198.51.100.${ipCounter++}` },
+    body: JSON.stringify({
+      buildType: cfg.buildTypeOptions[0].id,
+      startingPoint: cfg.startingPointOptions[0].id,
+      priorities: [cfg.priorityOptions[0].id],
+      budget: cfg.budgetOptions[0].id,
+      name: "Test", email: "test@example.com", company: "", phone: "",
+      description: "A project", ...extra,
+    }),
+  });
+}
+
+await test("start-a-project: unconfigured without RESEND_API_KEY", async () => {
+  setEnv();
+  const res = await projectRoute.POST(brief());
+  assert.equal((await res.json()).reason, "unconfigured");
+  assert.equal(fetchCalls.length, 0);
+});
+
+await test("start-a-project: delivers to info@catchzone.co.uk with reply-to; failures are reported", async () => {
+  setEnv({ RESEND_API_KEY: "re_test" });
+  resendOk();
+  assert.equal((await (await projectRoute.POST(brief())).json()).ok, true);
+  assert.deepEqual(fetchCalls[0].body.to, ["info@catchzone.co.uk"]);
+  assert.equal(fetchCalls[0].body.reply_to, "test@example.com");
+  fetchImpl = async () => new Response("{}", { status: 500 });
+  assert.equal((await projectRoute.POST(brief())).status, 502);
 });
 
 /* ------------------------------------------------------------------ */

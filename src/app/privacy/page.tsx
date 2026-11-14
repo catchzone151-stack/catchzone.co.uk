@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "CatchZone Ltd privacy policy.",
+  description:
+    "How CatchZone Ltd collects, uses and protects personal data in its apps, website enquiries and the CatchZone Voice live demo.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -154,7 +155,8 @@ export default function PrivacyPage() {
             hashes are salted per day, cannot be reversed to reveal your IP
             address, and contain no audio or conversation content. These
             records are stored with our database provider (Supabase) and
-            deleted automatically after about two days.
+            deleted automatically by a daily clean-up once they are more than
+            two days old.
           </p>
           <p>
             We rely on your consent for processing your microphone audio in the

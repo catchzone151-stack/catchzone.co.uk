@@ -96,27 +96,47 @@ export function LanguageExplorer() {
       </p>
 
       {grouped ? (
-        <div className="mt-8 space-y-14">
+        <div className="mt-8 space-y-4">
           {LANGUAGE_GROUPS.map((group) => (
-            <section key={group.id} aria-labelledby={`group-${group.id}`}>
-              <div className="flex items-baseline justify-between gap-4 border-b border-line pb-3">
-                <h2 id={`group-${group.id}`} className="font-display text-2xl font-bold text-ink">
+            // Collapsible region. Open by default and always in the HTML, so every
+            // language stays visible to visitors without JavaScript and to search engines.
+            <details
+              key={group.id}
+              open
+              className="group/region rounded-3xl border border-line bg-white/[0.015] px-4 py-2 sm:px-6"
+            >
+              <summary className="flex min-h-[56px] cursor-pointer list-none items-center justify-between gap-4 py-2 [&::-webkit-details-marker]:hidden">
+                <h2 id={`group-${group.id}`} className="font-display text-xl font-bold text-ink sm:text-2xl">
                   {group.label}
                 </h2>
-                <span className="mono text-xs text-ink-faint">{group.codes.length}</span>
-              </div>
+                <span className="flex items-center gap-3">
+                  <span className="mono text-xs text-ink-faint">
+                    {group.codes.length} {group.codes.length === 1 ? "language" : "languages"}
+                  </span>
+                  <span
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15 text-ink-muted transition-transform group-open/region:rotate-180"
+                    aria-hidden="true"
+                  >
+                    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5">
+                      <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                    </svg>
+                  </span>
+                </span>
+              </summary>
               {group.id === "europe" && (
-                <p className="mt-3 max-w-2xl text-sm text-ink-muted">
+                <p className="max-w-2xl text-sm text-ink-muted">
                   Including {EU_OFFICIAL_SUPPORTED} of the 24 official languages of the European Union — useful for UK
                   and EU teams supporting customers across the continent.
                 </p>
               )}
-              <LanguageGrid
-                languages={group.codes
-                  .map((c) => getLanguage(c)!)
-                  .sort((a, b) => a.name.localeCompare(b.name, "en"))}
-              />
-            </section>
+              <div className="pb-4">
+                <LanguageGrid
+                  languages={group.codes
+                    .map((c) => getLanguage(c)!)
+                    .sort((a, b) => a.name.localeCompare(b.name, "en"))}
+                />
+              </div>
+            </details>
           ))}
         </div>
       ) : filtered.length > 0 ? (
@@ -133,40 +153,44 @@ export function LanguageExplorer() {
 
 function LanguageGrid({ languages }: { languages: VoiceLanguage[] }) {
   return (
-    <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <ul className="mt-4 grid grid-cols-1 gap-2 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {languages.map((l) => {
         // Pair with English by default; English itself pairs with Spanish.
         const from = l.code === DEFAULT_SOURCE ? "en" : DEFAULT_SOURCE;
         const to = l.code === DEFAULT_SOURCE ? "es" : l.code;
+        const fromName = getLanguage(from)?.name;
+        const toName = getLanguage(to)?.name;
         return (
-          <li key={l.code} className="group relative rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 transition-colors hover:border-accent-cyan/35">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <p className="font-semibold text-ink">{l.name}</p>
-                {l.nativeName !== l.name && (
-                  <p lang={l.code} dir={l.dir} className="mt-1 truncate text-lg text-ink-muted">
-                    {l.nativeName}
-                  </p>
-                )}
-              </div>
-              <span className="mono mt-0.5 shrink-0 rounded-md border border-white/10 px-1.5 py-0.5 text-[11px] uppercase text-ink-faint">
-                {l.code}
-              </span>
-            </div>
-            {(l.dir === "rtl" || l.speechOutputNote) && (
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-ink-faint">
-                {l.dir === "rtl" && <span className="rounded-full bg-white/[0.05] px-2 py-0.5">Right-to-left</span>}
-                {l.speechOutputNote && (
-                  <span className="rounded-full bg-white/[0.05] px-2 py-0.5">Spoken output: {l.speechOutputNote}</span>
-                )}
-              </div>
-            )}
+          <li key={l.code}>
+            {/* The whole card opens the Conversation Studio with this pair selected. */}
             <Link
               href={`/voice?from=${from}&to=${to}#studio`}
-              className="mt-3 inline-flex min-h-[32px] items-center text-xs font-semibold text-accent-cyan after:absolute after:inset-0 after:rounded-2xl hover:underline"
-              aria-label={`Try ${getLanguage(from)?.name} and ${getLanguage(to)?.name} in the Conversation Studio`}
+              aria-label={`${l.name}${l.nativeName !== l.name ? ` (${l.nativeName})` : ""} — try ${fromName} and ${toName} in the Conversation Studio`}
+              className="group flex min-h-[64px] items-center justify-between gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 transition-colors hover:border-accent-cyan/40 hover:bg-white/[0.04]"
             >
-              Try {getLanguage(from)?.name} ⇄ {getLanguage(to)?.name} →
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold text-ink">{l.name}</span>
+                {l.nativeName !== l.name && (
+                  <span lang={l.code} dir={l.dir} className="block truncate text-sm text-ink-muted">
+                    {l.nativeName}
+                  </span>
+                )}
+                {(l.dir === "rtl" || l.speechOutputNote) && (
+                  <span className="mt-1 block text-[11px] leading-snug text-ink-faint">
+                    {[l.dir === "rtl" ? "Right-to-left" : null, l.speechOutputNote ? `Voice: ${l.speechOutputNote}` : null]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </span>
+                )}
+              </span>
+              <span className="flex shrink-0 flex-col items-end gap-1">
+                <span className="mono rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] uppercase text-ink-faint">
+                  {l.code}
+                </span>
+                <span aria-hidden="true" className="text-xs text-accent-cyan opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                  Try →
+                </span>
+              </span>
             </Link>
           </li>
         );

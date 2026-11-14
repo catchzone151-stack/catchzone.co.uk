@@ -1,25 +1,31 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        void: "#040406",
+        // Theme tokens (see globals.css). Dark values are the original palette;
+        // [data-theme="light"] swaps them, `.theme-dark` scopes restore dark.
+        void: "rgb(var(--void-rgb) / <alpha-value>)",
         surface: {
-          DEFAULT: "#0A0B0E",
-          raised: "#12141A",
+          DEFAULT: "rgb(var(--surface-rgb) / <alpha-value>)",
+          raised: "rgb(var(--surface-raised-rgb) / <alpha-value>)",
         },
         ink: {
-          DEFAULT: "#E6EBF0",
-          muted: "#828B9A",
-          faint: "#747D8C",
+          DEFAULT: "rgb(var(--ink-rgb) / <alpha-value>)",
+          muted: "rgb(var(--ink-muted-rgb) / <alpha-value>)",
+          faint: "rgb(var(--ink-faint-rgb) / <alpha-value>)",
         },
         accent: {
-          cyan: "#5EEAD4",
-          iris: "#6E62E5",
+          cyan: "rgb(var(--accent-cyan-rgb) / <alpha-value>)",
+          iris: "rgb(var(--accent-iris-rgb) / <alpha-value>)",
         },
-        line: "rgba(255,255,255,0.07)",
+        line: "rgb(var(--tint-rgb) / var(--line-alpha))",
+        // Hairlines and frosted fills (`border-white/10`, `bg-white/[0.03]`) follow
+        // the theme: white on dark, near-black on light.
+        white: "rgb(var(--tint-rgb) / <alpha-value>)",
       },
       fontFamily: {
         display: ["var(--font-display)", "sans-serif"],
@@ -40,7 +46,13 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // `light:` — styles that apply only in the light theme, e.g. `light:bg-white`.
+    // Dark-theme classes stay untouched, so the original dark design is preserved.
+    plugin(({ addVariant }) => {
+      addVariant("light", '[data-theme="light"] &');
+    }),
+  ],
 };
 
 export default config;

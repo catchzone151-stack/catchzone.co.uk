@@ -44,13 +44,22 @@ export function VoiceSubnav({
       )}
       <div className="flex flex-col gap-4 border-b border-line pb-4 sm:flex-row sm:items-center sm:justify-between">
         <Link href="/voice" className="flex items-center" aria-label="CatchZone Voice overview">
+          {/* Approved Minimal logo — Dark variant on dark, Light variant on light. */}
           <Image
-            src="/brand/voice/catchzone-voice-minimal.webp"
+            src="/brand/voice/catchzone-voice-minimal-dark.webp"
             alt="CatchZone Voice"
-            width={1941}
-            height={201}
-            className="h-5 w-auto sm:h-6"
-            priority
+            width={1935}
+            height={194}
+            sizes="240px"
+            className="theme-only-dark h-5 w-auto sm:h-6"
+          />
+          <Image
+            src="/brand/voice/catchzone-voice-minimal-light.webp"
+            alt="CatchZone Voice"
+            width={1935}
+            height={194}
+            sizes="240px"
+            className="theme-only-light h-5 w-auto sm:h-6"
           />
         </Link>
         <nav aria-label="CatchZone Voice" className="-mx-1 flex gap-1 overflow-x-auto">

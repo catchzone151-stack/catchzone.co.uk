@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Syne, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { MotionConfig } from "motion/react";
@@ -47,10 +47,10 @@ export const metadata: Metadata = {
     url: siteUrl,
     images: [
       {
-        url: "/assets/images/CatchZone/CatchZone Wording.png",
+        url: "/og/catchzone.png",
         width: 1200,
         height: 630,
-        alt: "CatchZone",
+        alt: "CatchZone — Built for what's next",
       },
     ],
   },
@@ -59,18 +59,35 @@ export const metadata: Metadata = {
     title: "CatchZone — Digital Product & Engineering Studio",
     description:
       "CatchZone designs and builds apps, web platforms, business systems and complete connected digital ecosystems.",
+    images: ["/og/catchzone.png"],
   },
   icons: {
-    icon: "/assets/images/CatchZone/favicon.png",
+    icon: [
+      { url: "/brand/favicon.ico", sizes: "any" },
+      { url: "/brand/favicon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/brand/icon-192.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: "/brand/apple-touch-icon.png",
   },
 };
+
+export const viewport: Viewport = {
+  themeColor: "#040406",
+};
+
+/**
+ * Applies the saved theme before first paint so there is no flash of the
+ * wrong theme. Dark is the default; only "light" or "dark" are accepted.
+ */
+const themeInitScript = `(function(){try{var t=localStorage.getItem("cz-theme");if(t!=="light")t="dark";var d=document.documentElement;d.setAttribute("data-theme",t);}catch(e){}})();`;
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "CatchZone",
   url: siteUrl,
-  logo: `${siteUrl}/assets/images/CatchZone/CatchZone Logo.png`,
+  logo: `${siteUrl}/brand/catchzone-logo-schema.png`,
+  slogan: "Built for what's next",
   email: "info@catchzone.co.uk",
   address: {
     "@type": "PostalAddress",
@@ -87,7 +104,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
+    <html
+      lang="en"
+      data-theme="dark"
+      suppressHydrationWarning
+      className={`${display.variable} ${body.variable} ${mono.variable}`}
+    >
+      <head>
+        {/* eslint-disable-next-line react/no-danger */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body>
         <script
           type="application/ld+json"

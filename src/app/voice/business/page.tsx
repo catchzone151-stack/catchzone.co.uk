@@ -235,7 +235,7 @@ export default function VoiceBusinessPage() {
                 body: "A customer-specific integration with the systems your advisers already use. Planning may involve approved APIs, embedded interfaces and supported audio-routing arrangements, and is always subject to technical assessment and implementation.",
               },
             ].map((r) => (
-              <article key={r.n} className="rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(18,20,26,0.8),rgba(10,11,14,0.8))] p-7 md:p-9">
+              <article key={r.n} className="rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(18,20,26,0.8),rgba(10,11,14,0.8))] light:bg-[linear-gradient(180deg,#ffffff,#f3f2ee)] p-7 md:p-9">
                 <p className="mono text-[11px] uppercase tracking-[0.2em] text-accent-cyan">{r.n}</p>
                 <h3 className="mt-4 font-display text-2xl font-bold text-ink">{r.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-ink-muted">{r.body}</p>

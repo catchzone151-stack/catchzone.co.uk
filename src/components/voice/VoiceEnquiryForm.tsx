@@ -37,6 +37,11 @@ export function VoiceEnquiryForm() {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const formRef = useRef<HTMLFormElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
+  // Synchronous guard against double submission (state updates are async).
+  const inFlight = useRef(false);
+  // One id per enquiry attempt: retries of the same attempt reuse it, so the server's
+  // Resend Idempotency-Key prevents a duplicate email. Reset after a successful send.
+  const submissionId = useRef<string | null>(null);
 
   // The section's two call-to-action buttons set the intent and focus the form.
   useEffect(() => {
@@ -55,6 +60,7 @@ export function VoiceEnquiryForm() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (inFlight.current) return;
     const form = e.currentTarget;
     if (!form.checkValidity()) {
       form.reportValidity();
@@ -62,18 +68,33 @@ export function VoiceEnquiryForm() {
     }
     const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
     const mailto = buildMailto(intent, data);
+    submissionId.current ??=
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+    inFlight.current = true;
     setStatus({ kind: "sending" });
     try {
       const res = await fetch("/api/voice/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, intent }),
+        body: JSON.stringify({ ...data, intent, submissionId: submissionId.current }),
       });
-      const json = (await res.json()) as { ok: boolean; reason?: string };
-      if (json.ok) {
+      let json: { ok: boolean; reason?: string };
+      try {
+        json = (await res.json()) as { ok: boolean; reason?: string };
+      } catch {
+        json = { ok: false, reason: "send_failed" };
+      }
+      if (json.ok && res.ok) {
         setStatus({ kind: "sent" });
+        submissionId.current = null;
         form.reset();
-      } else if (json.reason === "unconfigured") {
+        return;
+      }
+      // Keep the id only when Resend may have been reached (a retry must not duplicate the email).
+      if (json.reason !== "send_failed") submissionId.current = null;
+      if (json.reason === "unconfigured") {
         setStatus({ kind: "unconfigured", mailto });
       } else if (json.reason === "missing_fields") {
         setStatus({ kind: "error", message: "Please complete every field with a valid business email.", mailto });
@@ -84,6 +105,8 @@ export function VoiceEnquiryForm() {
       }
     } catch {
       setStatus({ kind: "error", message: "Your message couldn’t be sent. Please check your connection or email us directly.", mailto });
+    } finally {
+      inFlight.current = false;
     }
   }
 
@@ -189,8 +212,8 @@ export function VoiceEnquiryForm() {
         {/* Honeypot — hidden from people and assistive technology. */}
         <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
           <label>
-            Website
-            <input name="website" tabIndex={-1} autoComplete="off" />
+            Leave this field empty
+            <input name="cz_hp" tabIndex={-1} autoComplete="off" />
           </label>
         </div>
       </div>

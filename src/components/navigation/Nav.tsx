@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useScroll, useMotionValueEvent } from "motion/react";
 import { primaryNav, primaryCta } from "@/data/navigation";
 import { MobileNav } from "@/components/navigation/MobileNav";
+import { ThemeToggle } from "@/components/navigation/ThemeToggle";
 
 export function Nav() {
   const pathname = usePathname();
@@ -25,30 +26,32 @@ export function Nav() {
   return (
     <header className="fixed inset-x-0 top-0 z-nav">
       <div
-        className={`shell flex h-20 items-center justify-between transition-[background-color,border-color,backdrop-filter] duration-500 ${
+        className={`site-header-bar shell flex h-20 items-center justify-between transition-[background-color,border-color,backdrop-filter] duration-500 ${
           scrolled
             ? "border-b border-line bg-void/75 backdrop-blur-md"
             : "border-b border-transparent bg-transparent"
         }`}
       >
-        <Link href="/" className="flex items-center" aria-label="CatchZone home">
+        {/* Not `priority`: only the variant visible at this breakpoint is fetched
+            (the hidden one is a lazy, display:none image). */}
+        {/* Approved CatchZone Neon Orbital logo. In light mode the white lettering
+            sits on a dark brand plate (.logo-plate) — the artwork itself is unchanged. */}
+        <Link href="/" className="logo-plate -ml-2 flex items-center rounded-2xl px-2 py-1" aria-label="CatchZone home">
           <Image
-            src="/brand/catchzone-logo-full.png"
+            src="/brand/catchzone-logo.webp"
             alt="CatchZone — Built for what's next"
-            width={2000}
-            height={667}
-            sizes="(min-width: 1024px) 168px, 144px"
-            priority
-            className="hidden h-11 w-auto sm:block md:h-12 lg:h-14"
+            width={1512}
+            height={785}
+            sizes="(min-width: 1024px) 132px, 116px"
+            className="hidden h-[60px] w-auto sm:block lg:h-[68px]"
           />
           <Image
-            src="/brand/catchzone-logo-mobile.png"
+            src="/brand/catchzone-wordmark.webp"
             alt="CatchZone"
-            width={2000}
-            height={667}
-            sizes="96px"
-            priority
-            className="h-8 w-auto sm:hidden"
+            width={1476}
+            height={278}
+            sizes="160px"
+            className="h-[30px] w-auto sm:hidden"
           />
         </Link>
 
@@ -82,13 +85,15 @@ export function Nav() {
           })}
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 self-stretch md:gap-3">
           <Link
             href={primaryCta.href}
             className="cta-breathe hidden rounded-full border border-accent-cyan/30 bg-white/[0.02] px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-accent-cyan hover:text-accent-cyan md:inline-block"
           >
             {primaryCta.label}
           </Link>
+
+          <ThemeToggle className="self-stretch" />
 
           <button
             type="button"

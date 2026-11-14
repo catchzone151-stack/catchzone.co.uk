@@ -15,6 +15,8 @@ For the production launch dependency/security pass, read `docs/CATCHZONE_LAUNCH_
 
 For CatchZone Voice work (`/voice*`, the homepage Voice spotlight, the public demo), read `docs/CATCHZONE_VOICE.md` and `docs/VOICE_DEMO_OPERATIONS.md`. Never enable paid Soniox processing or expose `SONIOX_DEMO_API_KEY` client-side; the demo must stay fail-closed until its documented prerequisites are met.
 
+For logos, the light/dark theme system or the pull-string switch, read `docs/THEME_AND_BRANDING.md`. Dark mode is the default and must remain visually identical to the live site; never alter the approved logo artwork.
+
 ## Working rules
 - Inspect the existing repository and assets before changing architecture.
 - Preserve real CatchZone content/assets where useful; do not invent testimonials, client logos, awards, metrics, users, revenue, downloads or other unverifiable claims.

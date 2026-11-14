@@ -7,14 +7,16 @@ export function Footer() {
     <footer className="border-t border-line bg-surface">
       <div className="shell grid gap-10 py-16 md:grid-cols-[1.2fr_1fr_1fr]">
         <div>
-          <Image
-            src="/brand/catchzone-logo-full.png"
-            alt="CatchZone — Built for what's next"
-            width={2000}
-            height={667}
-            sizes="240px"
-            className="h-auto w-[240px]"
-          />
+          <div className="logo-plate -ml-3 inline-block rounded-2xl px-3 py-2">
+            <Image
+              src="/brand/catchzone-logo.webp"
+              alt="CatchZone — Built for what's next"
+              width={1512}
+              height={785}
+              sizes="280px"
+              className="h-auto w-[280px]"
+            />
+          </div>
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-ink-muted">
             Apps. Web platforms. Business systems. Connected digital
             ecosystems — designed and built as one.

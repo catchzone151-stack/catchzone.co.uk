@@ -195,7 +195,7 @@ export function ConversationStudio() {
   );
 
   return (
-    <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,20,26,0.92),rgba(10,11,14,0.96))] shadow-[0_40px_120px_-40px_rgba(56,189,248,0.25)]">
+    <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,20,26,0.92),rgba(10,11,14,0.96))] light:bg-[linear-gradient(180deg,#ffffff,#f3f2ee)] light:shadow-[0_40px_100px_-50px_rgba(14,17,22,0.3)] shadow-[0_40px_120px_-40px_rgba(56,189,248,0.25)]">
       <div
         className="pointer-events-none absolute inset-0"
         style={{

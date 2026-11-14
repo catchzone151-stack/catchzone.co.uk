@@ -1,18 +1,33 @@
 import { NextResponse } from "next/server";
+import { buildVoiceEnquiryEmail, type VoiceEnquiry, type VoiceEnquiryIntent } from "@/lib/email/voiceEnquiryEmail";
 
 /**
- * CatchZone Voice enquiry form. Mirrors the established
- * /api/start-a-project delivery path: sends through Resend only when
- * RESEND_API_KEY and RESEND_TO_EMAIL are configured, and otherwise returns
- * { ok:false, reason:"unconfigured" } so the UI offers a mailto fallback
- * instead of claiming the message was sent.
+ * CatchZone Voice enquiries → the CatchZone inbox via Resend.
+ *
+ * Mirrors the proven /api/start-a-project delivery path exactly:
+ *   - only `RESEND_API_KEY` is required;
+ *   - the recipient is fixed to info@catchzone.co.uk;
+ *   - the sender defaults to the verified brief@catchzone.co.uk address and
+ *     can be overridden with `RESEND_FROM_EMAIL`;
+ *   - Reply-To is the visitor's validated email;
+ *   - a client submission id becomes a Resend Idempotency-Key, so a retried
+ *     request can never send the email twice.
+ * Success is only reported once Resend has accepted the email. Failures are
+ * logged server-side (never the API key) and the UI offers a mailto fallback.
  */
 
 export const dynamic = "force-dynamic";
 
+const INBOX = "info@catchzone.co.uk";
+const DEFAULT_FROM = "CatchZone Voice <brief@catchzone.co.uk>";
+const RESEND_ENDPOINT = "https://api.resend.com/emails";
+const SEND_TIMEOUT_MS = 10_000;
+
 const MAX_LEN = { name: 120, email: 200, company: 160, message: 3000 };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const INTENTS = new Set(["demonstration", "requirements"]);
+const FROM_RE = /^(?:[^<>\r\n]{1,80} <)?[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+>?$/;
+const SUBMISSION_ID_RE = /^[A-Za-z0-9-]{8,64}$/;
+const INTENTS = new Set<VoiceEnquiryIntent>(["demonstration", "requirements"]);
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
@@ -42,67 +57,77 @@ function cleanLine(value: unknown, maxLen: number): string {
   return value.replace(/[\r\n\t]+/g, " ").trim().slice(0, maxLen);
 }
 
+function fail(reason: string, status: number) {
+  return NextResponse.json({ ok: false, reason }, { status });
+}
+
 export async function POST(request: Request) {
-  if (isRateLimited(clientIp(request))) {
-    return NextResponse.json({ ok: false, reason: "rate_limited" }, { status: 429 });
-  }
+  if (isRateLimited(clientIp(request))) return fail("rate_limited", 429);
 
   let raw: Record<string, unknown>;
   try {
     raw = await request.json();
   } catch {
-    return NextResponse.json({ ok: false, reason: "invalid_body" }, { status: 400 });
+    return fail("invalid_body", 400);
   }
+  if (!raw || typeof raw !== "object") return fail("invalid_body", 400);
 
-  // Honeypot — silently accept, never send.
-  if (raw.website) return NextResponse.json({ ok: true });
+  // Honeypot (same autofill-safe name as the Start a Project form): accept silently, never send.
+  if (raw.cz_hp) return NextResponse.json({ ok: true });
 
-  const name = cleanLine(raw.name, MAX_LEN.name);
-  const email = cleanLine(raw.email, MAX_LEN.email);
-  const company = cleanLine(raw.company, MAX_LEN.company);
-  const message =
-    typeof raw.message === "string" ? raw.message.trim().slice(0, MAX_LEN.message) : "";
-  const intent = typeof raw.intent === "string" && INTENTS.has(raw.intent) ? raw.intent : "requirements";
+  const enquiry: VoiceEnquiry = {
+    intent: typeof raw.intent === "string" && INTENTS.has(raw.intent as VoiceEnquiryIntent)
+      ? (raw.intent as VoiceEnquiryIntent)
+      : "requirements",
+    name: cleanLine(raw.name, MAX_LEN.name),
+    email: cleanLine(raw.email, MAX_LEN.email),
+    company: cleanLine(raw.company, MAX_LEN.company),
+    message: typeof raw.message === "string" ? raw.message.trim().slice(0, MAX_LEN.message) : "",
+  };
 
-  if (!name || !email || !company || !message || !EMAIL_RE.test(email)) {
-    return NextResponse.json({ ok: false, reason: "missing_fields" }, { status: 400 });
+  if (!enquiry.name || !enquiry.company || !enquiry.message || !EMAIL_RE.test(enquiry.email)) {
+    return fail("missing_fields", 400);
   }
 
   const apiKey = process.env.RESEND_API_KEY;
-  const toEmail = process.env.RESEND_TO_EMAIL;
-  if (!apiKey || !toEmail) {
-    return NextResponse.json({ ok: false, reason: "unconfigured" }, { status: 200 });
+  if (!apiKey) {
+    console.error("[voice-enquiry] RESEND_API_KEY is not set — the enquiry was not emailed.");
+    return fail("unconfigured", 503);
   }
 
-  const subjectPrefix =
-    intent === "demonstration" ? "CatchZone Voice — private demonstration request" : "CatchZone Voice enquiry";
+  const configuredFrom = process.env.RESEND_FROM_EMAIL?.trim();
+  const from = configuredFrom && FROM_RE.test(configuredFrom) ? configuredFrom : DEFAULT_FROM;
+  const email = buildVoiceEnquiryEmail(enquiry, new Date());
+
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${apiKey}`,
+    "Content-Type": "application/json",
+  };
+  if (typeof raw.submissionId === "string" && SUBMISSION_ID_RE.test(raw.submissionId)) {
+    headers["Idempotency-Key"] = `voice-enquiry/${raw.submissionId}`;
+  }
 
   try {
-    const res = await fetch("https://api.resend.com/emails", {
+    const res = await fetch(RESEND_ENDPOINT, {
       method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      headers,
+      signal: AbortSignal.timeout(SEND_TIMEOUT_MS),
       body: JSON.stringify({
-        from: "CatchZone Voice <voice@catchzone.co.uk>",
-        to: [toEmail],
-        reply_to: email,
-        subject: `${subjectPrefix} — ${name} (${company})`,
-        text: [
-          `Request: ${intent === "demonstration" ? "Private demonstration" : "Discuss requirements"}`,
-          `Name: ${name}`,
-          `Business email: ${email}`,
-          `Company: ${company}`,
-          "",
-          "Message:",
-          message,
-        ].join("\n"),
+        from,
+        to: [INBOX],
+        reply_to: enquiry.email,
+        subject: email.subject,
+        text: email.text,
+        html: email.html,
       }),
-      signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) {
-      return NextResponse.json({ ok: false, reason: "send_failed" }, { status: 502 });
+      console.error(`[voice-enquiry] Resend rejected the email (HTTP ${res.status})`);
+      return fail("send_failed", 502);
     }
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ ok: false, reason: "send_failed" }, { status: 502 });
+  } catch (error) {
+    console.error(`[voice-enquiry] Could not reach Resend: ${error instanceof Error ? error.name : "unknown error"}`);
+    return fail("send_failed", 502);
   }
 }

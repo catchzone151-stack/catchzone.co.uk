@@ -13,7 +13,7 @@ details for the live demo are in `docs/VOICE_DEMO_OPERATIONS.md`.
 | `/voice/business` | Contact centres, travel support, bookings, hospitality. Integration routes (subject to technical assessment), FAQ. `FAQPage` + `BreadcrumbList`. |
 | `/api/voice/status` | Availability for the Studio (never contacts Soniox). |
 | `/api/voice/session`, `/api/voice/session/end` | Public demo trial start/end (see runbook). |
-| `/api/voice/enquiry` | Voice enquiry form → Resend when `RESEND_API_KEY`/`RESEND_TO_EMAIL` are set; otherwise reports `unconfigured` and the UI offers a mailto fallback. |
+| `/api/voice/enquiry` | Voice enquiry form. Same proven delivery path as `/api/start-a-project`: only `RESEND_API_KEY` is required; always delivered to info@catchzone.co.uk from the verified `brief@catchzone.co.uk` sender (override with `RESEND_FROM_EMAIL`); Reply-To = visitor; distinct subjects for private-demonstration requests and business enquiries; `cz_hp` honeypot; Resend Idempotency-Key from a client submission id. Without the key it reports `unconfigured` (503) and the UI offers a mailto fallback — never a fake success. |
 
 All three pages share `VoiceSubnav` (product nav + breadcrumbs) and
 `VoiceContact` (contact section + short form). Sitemap updated; `/api/` was
@@ -36,6 +36,16 @@ followed by `SelectedWork`.
   footer through `src/data/navigation.ts`; the nav/footer components keep
   their live design. There is no extra hero entry point, so the journey's
   opening composition stays exactly as live.
+
+## Branding & themes
+
+Voice logos switch with the site theme (see `docs/THEME_AND_BRANDING.md`):
+Cinematic Dark/Light for the homepage spotlight, Minimal Dark/Light for the
+Voice sub-navigation. Only the visible variant is downloaded.
+
+`/voice/languages` groups languages in collapsible regions (open by default,
+so every language is in the HTML) with compact cards that link straight into
+the Studio with that pair selected.
 
 ## Single source of truth for languages
 

@@ -223,32 +223,34 @@ what a real modelling pass would add on top of what code can already do.
 
 ---
 
-## ASSET-011 — CatchZone Voice logos (cinematic + minimal)
+## ASSET-011 — Approved brand files (company + CatchZone Voice)
 
-- **Status: SUPPLIED, in use.** Owner-supplied "CatchZone Voice Cinematic
-  Version" and "CatchZone Voice Minimal Version" (2000×667, RGBA). Both have
-  genuine alpha transparency and render cleanly on the dark site background.
-  They reached this build as WebP exports of the attachments; the original
-  PNG masters are not in the repository.
-- Processing: transparent padding trimmed (24 px margin kept around the soft
-  glow), re-encoded as WebP — no artwork changes.
-  - `public/brand/voice/catchzone-voice-cinematic.webp` (1870×390) — homepage
-    Voice spotlight artwork.
-  - `public/brand/voice/catchzone-voice-minimal.webp` (1941×201) — Voice
-    product sub-navigation on `/voice`, `/voice/languages`, `/voice/business`.
-- Observation: both files contain a semi-transparent soft white glow around
-  the white lettering. That is intended on dark backgrounds, but the logos
-  are **not suitable for light backgrounds** (white text). Supply a
-  dark-text variant if a light-background use is ever needed.
-- The primary CatchZone company logo was not modified.
-
-## ASSET-012 — CatchZone Voice social share image
-
-- **Status: GENERATED from supplied artwork.** `public/og/catchzone-voice.png`
-  (1200×630): the supplied cinematic logo centred on the site's dark
-  surface with restrained cyan/violet light. Used as Open Graph / Twitter
-  image for the three Voice pages. Replace with a designed share card if
-  preferred.
+- **Status: SUPPLIED and in use** (final branding pass). Five owner-approved
+  files, all with genuine alpha transparency, verified on dark and light
+  backgrounds. Processing was limited to trimming transparent margins and
+  WebP encoding — no artwork changes.
+  - `CatchZone Neon Orbital Logo.png` → `public/brand/catchzone-logo.webp`
+    (1512×785): desktop header, footer. White lettering, so in light mode it
+    sits on a dark brand plate (`.logo-plate`); never inverted or recoloured.
+  - Derived from it, unaltered pixels: `public/brand/catchzone-wordmark.webp`
+    (1476×278) — "CatchZone" lettering crop for the mobile header (the slogan
+    is unreadable at that size); only the cut orbit fragments at the crop
+    edges are softly feathered, lettering alpha verified byte-identical.
+  - Favicon / app icons (`public/brand/favicon.ico`, `favicon-32/48.png`,
+    `icon-192/512.png`, `apple-touch-icon.png`): the approved "Z" glyph
+    segmented from the logo, on the brand near-black tile.
+  - Social/schema: `public/og/catchzone.png` (1200×630) and
+    `public/brand/catchzone-logo-schema.png` (logo on dark, so the white
+    lettering stays visible where platforms show logos on white).
+  - Voice: `public/brand/voice/catchzone-voice-{cinematic,minimal}-{dark,light}.webp`
+    from `CatchZone_Voice_{Cinematic,Minimal}_{Dark,Light}_BrandMatched.png`.
+    Dark variants have white lettering (dark backgrounds only); Light
+    variants have near-black lettering (light backgrounds only). The site
+    swaps them with the theme. `public/og/catchzone-voice.png` uses Cinematic Dark.
+- Superseded and removed from `public/brand`: `catchzone-logo-full.png`,
+  `catchzone-logo-mobile.png`, and the earlier Voice webp exports. Historic
+  files under `public/assets/images/CatchZone/` are left untouched (legacy
+  `/apps` pages may use them).
 
 ## ASSET-013 — Optional future Voice assets (not required)
 

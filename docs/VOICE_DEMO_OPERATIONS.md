@@ -77,7 +77,12 @@ refused when `NODE_ENV=production`).
    creates `public.voice_demo_sessions` (RLS on, no policies, no access for
    `anon`/`authenticated`) and two `security definer` functions callable only
    by `service_role`.
-3. Optional verification on a **throwaway** database:
+3. **Retention job (required):** enable the `pg_cron` extension
+   (Dashboard → Database → Extensions) and run once:
+   `select cron.schedule('voice-demo-purge', '17 3 * * *', 'select public.voice_demo_purge()');`
+   This deletes fair-use records older than two days even when the demo is
+   idle, which is what the privacy policy states.
+4. Optional verification on a **throwaway** database:
    `docs/voice/voice-demo-store.test.sql` (truncates the table).
 
 ### 2.3 Environment variables (Replit Secrets — server only)
@@ -152,7 +157,21 @@ Fastest → slowest, any one is sufficient:
   errors, temporary-key HTTP status). No secrets or content are logged.
 - Supabase: `select day, count(*), sum(reserved_seconds) from voice_demo_sessions group by day;`
 
-## 6. Enabling — checklist
+## 6. Owner activation checklist (short form)
+
+1. Soniox Console: create a **new, dedicated** project for the public website
+   demo. Never reuse the key of the private client-evaluation environment.
+2. In that project set a monthly **cost limit** + email alert, and low
+   real-time STT and TTS **concurrency quotas** (e.g. 2).
+3. Create an API key with only: Temporary API keys, Speech-to-text real-time,
+   Text-to-speech real-time.
+4. Supabase: run `docs/voice/voice-demo-store.sql`, enable `pg_cron`, schedule
+   the daily purge (§2.2 step 3).
+5. Set the hosting secrets from §2.3, with `VOICE_DEMO_SPEND_CONTROLS_CONFIRMED=true`
+   and finally `VOICE_DEMO_ENABLED=true`.
+6. Redeploy, then follow §7.
+
+## 7. Enabling — verification
 
 1. Complete §2.1–2.3.
 2. Deploy, then `GET /api/voice/status` → `{"available":true,...}`.
@@ -160,7 +179,7 @@ Fastest → slowest, any one is sufficient:
    `cz-voice-demo:` reference and the expected duration.
 4. Try a third trial from the same browser → "used today's free live trials".
 
-## 7. Updating the language catalogue
+## 8. Updating the language catalogue
 
 `npm run voice:sync-languages` re-reads Soniox's published STT, translation and
 TTS language tables, refuses to write if they disagree, and (if

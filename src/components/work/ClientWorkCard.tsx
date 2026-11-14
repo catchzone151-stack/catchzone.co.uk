@@ -91,7 +91,7 @@ export function ClientWorkCard({ project }: { project: ClientWorkProject }) {
           aria-hidden="true"
         />
 
-        <div className="relative w-full max-w-[600px]">
+        <div className="theme-dark relative w-full max-w-[600px]">
           {/* secondary companion screen — arrives just after the primary */}
           <motion.div
             className="absolute -left-[4%] top-[2%] z-0 w-[42%] overflow-hidden rounded-lg shadow-[0_30px_60px_-25px_rgba(0,0,0,0.65)] sm:-left-[6%] sm:top-[6%]"

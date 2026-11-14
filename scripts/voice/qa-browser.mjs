@@ -55,8 +55,10 @@ const browser = await chromium.launch({
   args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream", "--autoplay-policy=no-user-gesture-required"],
 });
 
+for (const theme of ["dark", "light"])
 for (const width of WIDTHS) {
   const context = await browser.newContext({ viewport: { width, height: width <= 430 ? 860 : 900 } });
+  await context.addInitScript((t) => localStorage.setItem("cz-theme", t), theme);
   for (const route of ROUTES) {
     const page = await context.newPage();
     const errors = [];
@@ -67,7 +69,8 @@ for (const width of WIDTHS) {
       if (!u.includes("_rsc") && !u.startsWith("data:")) errors.push(`requestfailed ${u} ${r.failure()?.errorText}`);
     });
     const res = await page.goto(BASE + route, { waitUntil: "networkidle" });
-    if (!res || res.status() !== 200) bad(`${route}@${width}: HTTP ${res?.status()}`);
+    if (!res || res.status() !== 200) bad(`${route}@${width}/${theme}: HTTP ${res?.status()}`);
+    if ((await page.evaluate(() => document.documentElement.dataset.theme)) !== theme) bad(`${route}@${width}: theme ${theme} not applied`);
     await revealAll(page);
     const metrics = await page.evaluate(() => ({
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -81,13 +84,79 @@ for (const width of WIDTHS) {
     if (SHOTS && (route.startsWith("/voice") || route === "/")) {
       await page.evaluate(() => window.scrollTo(0, 0));
       await page.waitForTimeout(700);
-      await shot(page, `${route === "/" ? "home" : route.slice(1).replaceAll("/", "-")}-${width}`);
+      await shot(page, `${route === "/" ? "home" : route.slice(1).replaceAll("/", "-")}-${theme}-${width}`);
     }
     await page.close();
   }
   await context.close();
 }
-ok(`responsive pass: ${ROUTES.length} routes × ${WIDTHS.length} widths`);
+ok(`responsive pass: ${ROUTES.length} routes × ${WIDTHS.length} widths × 2 themes`);
+
+/* ------------------------------------------------------------------ */
+/* 1b. Theme switch: semantics, persistence, no flash, pull gesture     */
+/* ------------------------------------------------------------------ */
+{
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE + "/", { waitUntil: "networkidle" });
+  if ((await page.evaluate(() => document.documentElement.dataset.theme)) === "dark") ok("dark is the default theme");
+  else bad("default theme is not dark");
+  const sw = page.getByRole("switch", { name: "Light mode" });
+  if ((await sw.getAttribute("aria-checked")) === "false") ok("theme switch exposed as role=switch, unchecked in dark");
+  else bad("theme switch semantics wrong");
+  const box = await sw.boundingBox();
+  if (box && box.width >= 44 && box.height >= 44) ok(`theme switch touch target ${Math.round(box.width)}×${Math.round(box.height)}px`);
+  else bad(`theme switch target too small ${JSON.stringify(box)}`);
+  await sw.focus();
+  await page.keyboard.press("Enter");
+  if ((await page.evaluate(() => document.documentElement.dataset.theme)) === "light" && (await sw.getAttribute("aria-checked")) === "true") ok("Enter toggles to light");
+  else bad("Enter did not toggle");
+  await page.keyboard.press("Space");
+  if ((await page.evaluate(() => document.documentElement.dataset.theme)) === "dark") ok("Space toggles back to dark");
+  else bad("Space did not toggle");
+  await sw.click();
+  await page.reload({ waitUntil: "networkidle" });
+  if ((await page.evaluate(() => document.documentElement.dataset.theme)) === "light") ok("light theme persists after refresh");
+  else bad("theme not persisted after refresh");
+  await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Voice" }).click();
+  await page.waitForURL("**/voice");
+  if ((await page.evaluate(() => document.documentElement.dataset.theme)) === "light") ok("light theme persists across navigation");
+  else bad("theme lost on navigation");
+  // Light variants of the Voice logo are the ones displayed.
+  const visibleLogo = await page.evaluate(() => [...document.querySelectorAll('img[alt="CatchZone Voice"]')].filter((i) => i.offsetParent !== null).map((i) => i.getAttribute("src")).join(" "));
+  if (/minimal-light/.test(visibleLogo) && !/minimal-dark/.test(visibleLogo)) ok("light theme shows the Minimal Light Voice logo only");
+  else bad(`wrong Voice logo variant visible: ${visibleLogo}`);
+  // No flash: theme attribute is already set when the first paint-relevant script runs.
+  const pre = await ctx.newPage();
+  await pre.addInitScript(() => {
+    document.addEventListener("DOMContentLoaded", () => { window.__themeAtDcl = document.documentElement.dataset.theme; });
+    new MutationObserver(() => {}).observe(document, { childList: true });
+  });
+  await pre.goto(BASE + "/about", { waitUntil: "domcontentloaded" });
+  const bgAtLoad = await pre.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  if ((await pre.evaluate(() => window.__themeAtDcl)) === "light" && bgAtLoad === "rgb(246, 245, 241)") ok("no theme flash: light applied before DOMContentLoaded");
+  else bad(`theme flash risk: ${await pre.evaluate(() => window.__themeAtDcl)} / ${bgAtLoad}`);
+  // Optional pull gesture (drag the bead down) also toggles.
+  const sw2 = pre.getByRole("switch", { name: "Light mode" });
+  const b2 = await sw2.boundingBox();
+  await pre.mouse.move(b2.x + b2.width / 2, b2.y + 40);
+  await pre.mouse.down();
+  await pre.mouse.move(b2.x + b2.width / 2, b2.y + 70, { steps: 8 });
+  await pre.mouse.up();
+  await pre.waitForTimeout(200);
+  if ((await pre.evaluate(() => document.documentElement.dataset.theme)) === "dark") ok("pull gesture toggles the theme (exactly once)");
+  else bad("pull gesture did not toggle exactly once");
+  await ctx.close();
+
+  // Mobile: switch sits beside the menu button without overlapping it.
+  const m = await browser.newPage({ viewport: { width: 360, height: 800 } });
+  await m.goto(BASE + "/", { waitUntil: "networkidle" });
+  const s1 = await m.getByRole("switch", { name: "Light mode" }).boundingBox();
+  const s2 = await m.getByRole("button", { name: "Open menu" }).boundingBox();
+  if (s1 && s2 && s1.x + s1.width <= s2.x + 1) ok("mobile: theme switch does not overlap the menu button");
+  else bad(`mobile overlap: ${JSON.stringify(s1)} ${JSON.stringify(s2)}`);
+  await m.close();
+}
 
 /* ------------------------------------------------------------------ */
 /* 2. Homepage Voice spotlight                                         */
