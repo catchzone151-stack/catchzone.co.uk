@@ -86,7 +86,7 @@ export default function VoiceLanguagesPage() {
               href="/voice/business"
               className="inline-flex min-h-[48px] items-center rounded-full border border-white/15 px-6 text-sm font-semibold text-ink transition-colors hover:border-accent-cyan/60 hover:text-accent-cyan"
             >
-              Voice translation for business
+              Voice Translation for Business
             </Link>
           </div>
         </div>

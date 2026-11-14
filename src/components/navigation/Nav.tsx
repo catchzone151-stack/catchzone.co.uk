@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useScroll, useMotionValueEvent } from "motion/react";
 import { primaryNav, primaryCta } from "@/data/navigation";
 import { MobileNav } from "@/components/navigation/MobileNav";
 import { ThemeToggle } from "@/components/navigation/ThemeToggle";
+import { CompanyLogo } from "@/components/brand/CompanyLogo";
 
 export function Nav() {
   const pathname = usePathname();
@@ -32,27 +32,15 @@ export function Nav() {
             : "border-b border-transparent bg-transparent"
         }`}
       >
-        {/* Not `priority`: only the variant visible at this breakpoint is fetched
-            (the hidden one is a lazy, display:none image). */}
-        {/* Approved CatchZone Neon Orbital logo. In light mode the white lettering
-            sits on a dark brand plate (.logo-plate) — the artwork itself is unchanged. */}
-        <Link href="/" className="logo-plate -ml-2 flex items-center rounded-2xl px-2 py-1" aria-label="CatchZone home">
-          <Image
-            src="/brand/catchzone-logo.webp"
-            alt="CatchZone — Built for what's next"
-            width={1512}
-            height={785}
-            sizes="(min-width: 1024px) 132px, 116px"
-            className="hidden h-[60px] w-auto sm:block lg:h-[68px]"
-          />
-          <Image
-            src="/brand/catchzone-wordmark.webp"
-            alt="CatchZone"
-            width={1476}
-            height={278}
-            sizes="160px"
-            className="h-[30px] w-auto sm:hidden"
-          />
+        {/* Approved CatchZone logo (vector), dark or light file per theme. Full logo
+            from 640px; compact wordmark on small phones, where the slogan can't be read. */}
+        <Link href="/" className="flex items-center" aria-label="CatchZone home">
+          <span className="hidden sm:contents">
+            <CompanyLogo className="h-[58px] w-auto lg:h-[64px]" />
+          </span>
+          <span className="contents sm:hidden">
+            <CompanyLogo variant="compact" className="h-[26px] w-auto" />
+          </span>
         </Link>
 
         <nav

@@ -4,7 +4,7 @@ import Link from "next/link";
 const LINKS = [
   { href: "/voice", label: "Overview" },
   { href: "/voice/languages", label: "Languages" },
-  { href: "/voice/business", label: "For business" },
+  { href: "/voice/business", label: "For Business" },
 ];
 
 /**
@@ -44,22 +44,23 @@ export function VoiceSubnav({
       )}
       <div className="flex flex-col gap-4 border-b border-line pb-4 sm:flex-row sm:items-center sm:justify-between">
         <Link href="/voice" className="flex items-center" aria-label="CatchZone Voice overview">
-          {/* Approved Minimal logo — Dark variant on dark, Light variant on light. */}
+          {/* Approved CatchZone Voice logo, rendered from the vector master:
+              Logo-1 (white lettering) in dark mode, Logo-2 (dark lettering) in light mode. */}
           <Image
-            src="/brand/voice/catchzone-voice-minimal-dark.webp"
+            src="/brand/voice/catchzone-voice-logo-dark.webp"
             alt="CatchZone Voice"
-            width={1935}
-            height={194}
-            sizes="240px"
-            className="theme-only-dark h-5 w-auto sm:h-6"
+            width={1100}
+            height={201}
+            sizes="200px"
+            className="theme-only-dark h-8 w-auto sm:h-9"
           />
           <Image
-            src="/brand/voice/catchzone-voice-minimal-light.webp"
+            src="/brand/voice/catchzone-voice-logo-light.webp"
             alt="CatchZone Voice"
-            width={1935}
-            height={194}
-            sizes="240px"
-            className="theme-only-light h-5 w-auto sm:h-6"
+            width={1100}
+            height={219}
+            sizes="200px"
+            className="theme-only-light h-8 w-auto sm:h-9"
           />
         </Link>
         <nav aria-label="CatchZone Voice" className="-mx-1 flex gap-1 overflow-x-auto">

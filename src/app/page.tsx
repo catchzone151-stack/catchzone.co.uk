@@ -15,18 +15,10 @@ export default function HomePage() {
     <>
       {/* IDEA → DESIGN → BUILD → SHIP hands straight off to the work it
           produces, so the featured build follows the journey directly. */}
-      {/* Light mode keeps these WebGL sections on their dark cinematic stage;
-          .theme-seam adds a soft dusk transition (light mode only). */}
-      <div className="theme-dark bg-void">
-        <CinematicJourney />
-      </div>
-      <div className="theme-seam" aria-hidden="true" />
+      {/* The journey has art-directed dark and light versions of the same scene. */}
+      <CinematicJourney />
       <SelectedWork />
-      <div className="theme-seam" data-direction="up" aria-hidden="true" />
-      <div className="theme-dark bg-void">
-        <WhatWeBuild />
-      </div>
-      <div className="theme-seam" aria-hidden="true" />
+      <WhatWeBuild />
       <Ecosystem />
       <Process />
       <ProjectCTA />

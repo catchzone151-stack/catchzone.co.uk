@@ -1,10 +1,14 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { createContext, useContext, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 import { coreTargets, type CoreState, type PieceTransform } from "@/lib/three/coreTargets";
+import { CORE_DARK, type CorePalette } from "@/lib/three/corePalette";
+
+/** Theme palette for the solid bodies/lines (emissive panels are theme-independent). */
+const PaletteContext = createContext<CorePalette>(CORE_DARK);
 
 const LERP_SPEED = 2.4;
 
@@ -37,6 +41,7 @@ interface PieceProps {
 
 /** PHONE piece — a compact device sliver. */
 function PhonePiece({ state }: PieceProps) {
+  const pal = useContext(PaletteContext);
   const group = useRef<THREE.Group>(null);
   const mat = useRef<THREE.MeshPhysicalMaterial>(null);
   const screenMat = useRef<THREE.MeshStandardMaterial>(null);
@@ -49,7 +54,7 @@ function PhonePiece({ state }: PieceProps) {
   return (
     <group ref={group}>
       <RoundedBox args={[0.55, 1.1, 0.08]} radius={0.09} smoothness={4}>
-        <meshPhysicalMaterial ref={mat} color="#15171d" metalness={0.75} roughness={0.3} clearcoat={0.5} transparent opacity={0} />
+        <meshPhysicalMaterial ref={mat} color={pal.body.color} metalness={pal.body.metalness} roughness={pal.body.roughness} clearcoat={0.5} transparent opacity={0} />
       </RoundedBox>
       <mesh position={[0, 0, 0.045]}>
         <planeGeometry args={[0.44, 0.92]} />
@@ -109,6 +114,7 @@ function WebContentBlocks({ opacityRef }: { opacityRef: React.MutableRefObject<n
 
 /** WEB piece — a browser-style panel with a top bar and real content cards. */
 function WebPiece({ state, secondary = false }: PieceProps & { secondary?: boolean }) {
+  const pal = useContext(PaletteContext);
   const group = useRef<THREE.Group>(null);
   const mat = useRef<THREE.MeshPhysicalMaterial>(null);
   const barMat = useRef<THREE.MeshStandardMaterial>(null);
@@ -129,7 +135,7 @@ function WebPiece({ state, secondary = false }: PieceProps & { secondary?: boole
   return (
     <group ref={group}>
       <RoundedBox args={[1.7, 1.05, 0.05]} radius={0.05} smoothness={3}>
-        <meshPhysicalMaterial ref={mat} color="#12141a" metalness={0.4} roughness={0.35} clearcoat={0.35} transparent opacity={0} />
+        <meshPhysicalMaterial ref={mat} color={pal.panel.color} metalness={pal.panel.metalness} roughness={pal.panel.roughness} clearcoat={0.35} transparent opacity={0} />
       </RoundedBox>
       <lineSegments position={[0, 0, 0.001]}>
         <edgesGeometry args={[PANEL_BOX]} />
@@ -146,6 +152,7 @@ function WebPiece({ state, secondary = false }: PieceProps & { secondary?: boole
 
 /** DATA piece — a stacked-disc database form. */
 function DataPiece({ state }: PieceProps) {
+  const pal = useContext(PaletteContext);
   const group = useRef<THREE.Group>(null);
   const mats = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
 
@@ -165,9 +172,9 @@ function DataPiece({ state }: PieceProps) {
             ref={(el) => {
               mats.current[idx] = el;
             }}
-            color="#0d0f13"
-            metalness={0.6}
-            roughness={0.3}
+            color={pal.disc.color}
+            metalness={pal.disc.metalness}
+            roughness={pal.disc.roughness}
             emissive="#6e62e5"
             emissiveIntensity={0.55}
             transparent
@@ -199,6 +206,7 @@ function DataPiece({ state }: PieceProps) {
 
 /** SYSTEM piece — an interlocking ring around a core, orbit/integration motif. */
 function SystemPiece({ state }: PieceProps) {
+  const pal = useContext(PaletteContext);
   const group = useRef<THREE.Group>(null);
   const coreMat = useRef<THREE.MeshPhysicalMaterial>(null);
   const ringMat = useRef<THREE.MeshStandardMaterial>(null);
@@ -214,7 +222,7 @@ function SystemPiece({ state }: PieceProps) {
     <group ref={group}>
       <mesh>
         <icosahedronGeometry args={[0.32, 0]} />
-        <meshPhysicalMaterial ref={coreMat} color="#15171d" metalness={0.7} roughness={0.3} clearcoat={0.5} transparent opacity={0} />
+        <meshPhysicalMaterial ref={coreMat} color={pal.body.color} metalness={pal.body.metalness} roughness={pal.body.roughness} clearcoat={0.5} transparent opacity={0} />
       </mesh>
       <mesh rotation={[Math.PI / 2.4, 0, 0]}>
         <torusGeometry args={[0.55, 0.015, 8, 48]} />
@@ -284,6 +292,7 @@ function CenterCore({ state }: PieceProps) {
 }
 
 function Connectors({ state }: PieceProps) {
+  const pal = useContext(PaletteContext);
   const positions = useMemo(() => {
     const pts: [number, number, number][] = [
       [0, 0, 0],
@@ -327,13 +336,14 @@ function Connectors({ state }: PieceProps) {
           args={[positions, 3]}
         />
       </bufferGeometry>
-      <lineBasicMaterial ref={matRef} color="#828b9a" transparent opacity={0} />
+      <lineBasicMaterial ref={matRef} color={pal.connector} transparent opacity={0} />
     </lineSegments>
   );
 }
 
-export function ConvergenceCore({ state }: PieceProps) {
+export function ConvergenceCore({ state, palette = CORE_DARK }: PieceProps & { palette?: CorePalette }) {
   return (
+    <PaletteContext.Provider value={palette}>
     <group>
       <CenterCore state={state} />
       <Connectors state={state} />
@@ -344,5 +354,6 @@ export function ConvergenceCore({ state }: PieceProps) {
       <SystemPiece state={state} />
       <AutomationPiece state={state} />
     </group>
+    </PaletteContext.Provider>
   );
 }

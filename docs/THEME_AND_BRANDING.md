@@ -20,19 +20,40 @@
   read the variables, so existing classes adapt automatically.
 - `light:` Tailwind variant (`[data-theme="light"] &`) for the few light-only
   adjustments. Dark classes are never changed.
-- `.theme-dark` re-declares the dark tokens for a subtree. Used for the
-  WebGL/cinematic sections, which are art-directed for a dark stage:
-  - homepage `CinematicJourney` (orbit hero + Idea → Design → Build → Ship) — unchanged;
-  - homepage `WhatWeBuild` (pinned WebGL capability core);
-  - Services heroes (`ServiceHero`, WebGL core);
-  - device-screen artwork (`BrandDeviceArt`, `ClientWorkCard`).
-  In light mode a `.theme-seam` adds a soft dusk gradient between those dark
-  stages and the light page (it renders nothing in dark mode).
-- In light mode the header is always a frosted off-white bar so the nav is
-  legible over the dark hero.
+- `.theme-dark` re-declares the dark tokens for a subtree. It is now only
+  used for device-screen artwork (`BrandDeviceArt`, `ClientWorkCard`), which
+  stays dark like a real screen.
+- In light mode the header is a frosted off-white bar.
 - `.theme-only-dark` / `.theme-only-light` swap theme-specific images. Hidden
   variants are lazy `display:none` images, so they are not downloaded.
 - Theme changes animate colours for ~0.45 s (skipped with reduced motion).
+- `ThemeToggle` re-syncs `data-theme` from storage on mount, as a fallback for
+  client-rendered error shells (e.g. `notFound()` in a dynamic route) where the
+  inline script does not run.
+
+### WebGL scenes (art-directed light versions)
+
+The 3D scenes have a light version of the **same** scene: same geometry,
+camera, timeline, scroll mapping and UI screenshots. Only materials, lines,
+fog, floor and lighting change. There are no CSS filters or colour inversion.
+
+- **Homepage journey** (orbit hero → Idea → Design → Build → Ship):
+  `src/lib/three/journeyPalette.ts`. `JOURNEY_DARK` holds the original values
+  verbatim, so dark mode renders exactly as before. `JOURNEY_LIGHT` is a pearl
+  / blue-grey studio (`#ebf1f2` stage and fog, light reflection environment)
+  with satin floor, brushed-steel gates, silver devices, a white ceramic
+  plinth, charcoal wireframes and deeper teal lines.
+- **Capability core** (homepage "What we build" and Services heroes):
+  `src/lib/three/corePalette.ts` (`CORE_DARK` = original values,
+  `CORE_LIGHT` = silver/satin bodies). Emissive screens and panels keep their colours.
+- `useSiteTheme()` (`src/lib/theme/useSiteTheme.ts`) follows `<html data-theme>`
+  with a MutationObserver, so switching theme updates the live scene without a
+  reload. Materials whose blending changes are re-keyed; imperative materials
+  are updated in place; wireframe textures are regenerated per palette.
+- The page overlays/scrims around the journey use `rgb(var(--void-rgb) / x)`,
+  so they follow the theme automatically.
+- Reduced motion and no-WebGL fallbacks (`StaticJourney`, `StaticWhatWeBuild`)
+  are DOM-only and use the theme tokens.
 
 ### Pull-string switch
 
@@ -43,24 +64,43 @@ visible focus ring, no cord motion under `prefers-reduced-motion`.
 
 ## Company logo
 
-Approved file: *CatchZone Neon Orbital Logo* (white lettering, neon orbit,
-slogan **BUILT FOR WHAT'S NEXT**). Never regenerate, recolour, invert or
-re-typeset it.
+Approved artwork: `Catchzone logo Dark.png` (white "Catch", for dark
+backgrounds) and `Catchzone logo light.png` (dark lettering, for light
+backgrounds), both with the slogan **BUILT FOR WHAT'S NEXT**. Never
+regenerate, recolour, invert or re-typeset them.
 
-| Placement | Asset | Notes |
-| --- | --- | --- |
-| Desktop/tablet header (≥640 px) | `/brand/catchzone-logo.webp` | 60–68 px tall |
-| Mobile header (<640 px) | `/brand/catchzone-wordmark.webp` | lettering crop; slogan too small to read at this size |
-| Footer | `/brand/catchzone-logo.webp` | 280 px wide; slogan legible |
-| Light mode (all of the above) | same artwork on `.logo-plate` | dark brand plate behind the unchanged logo |
-| Favicon / app icons | `/brand/favicon.ico`, `icon-*.png`, `apple-touch-icon.png` | approved "Z" glyph on near-black |
-| Social / schema | `/og/catchzone.png`, `/brand/catchzone-logo-schema.png` | logo on dark |
+The site uses **SVG masters** traced from the approved PNGs by
+`scripts/brand/vectorise_logo.py` (potrace on 4× upsampled masks; each
+colour element traced separately; gradient stops sampled from the artwork).
+They render sharply at every size and pixel density. Re-run the script if
+the source artwork is ever re-supplied:
+
+```
+python3 scripts/brand/vectorise_logo.py <folder with the approved PNGs> public/brand all
+```
+
+| Placement | Dark theme | Light theme | Notes |
+| --- | --- | --- | --- |
+| Desktop/tablet header (≥640 px) | `/brand/catchzone-logo-dark.svg` | `/brand/catchzone-logo-light.svg` | 58–64 px tall, no plate/tile |
+| Mobile header (<640 px) | `/brand/catchzone-wordmark-dark.svg` | `/brand/catchzone-wordmark-light.svg` | compact wordmark; slogan unreadable at this size |
+| Footer | `/brand/catchzone-logo-dark.svg` | `/brand/catchzone-logo-light.svg` | 280 px wide; slogan legible |
+| Favicon / app icons | `/brand/catchzone-icon.svg`, `favicon.ico`, `icon-*.png`, `apple-touch-icon.png` | — | approved "Z" glyph |
+| Social / schema | `/og/catchzone.png`, `/brand/catchzone-logo-schema.png` | — | rendered from the vectors |
+
+Component: `src/components/brand/CompanyLogo.tsx` (`variant="full" | "compact"`).
 
 ## CatchZone Voice logos
 
+Approved artwork: `CatchZone Voice Neon Wave Logo-1.png` (dark) and
+`CatchZone Voice Waveform Logo-2.png` (light).
+
 | Use | Dark theme | Light theme |
 | --- | --- | --- |
-| Large showcase (homepage spotlight) | Cinematic Dark | Cinematic Light |
-| Voice sub-navigation | Minimal Dark | Minimal Light |
+| Homepage spotlight (large) | `voice/catchzone-voice-logo-dark.svg` | `voice/catchzone-voice-logo-light.svg` |
+| Voice sub-navigation on `/voice`, `/voice/languages`, `/voice/business` | `voice/catchzone-voice-logo-dark.webp` | `voice/catchzone-voice-logo-light.webp` |
 
-Files: `public/brand/voice/catchzone-voice-{cinematic,minimal}-{dark,light}.webp`.
+The "CatchZone Voice" lettering is fully vector. The neon waveform is a
+photographic glow (thousands of soft, blended strands) that can't be traced
+faithfully, so it is kept as a cleaned, transparent raster embedded in the SVG.
+The small sub-navigation uses lighter WebP exports of the same files.
+The earlier `BrandMatched` cinematic/minimal Voice files are retired.

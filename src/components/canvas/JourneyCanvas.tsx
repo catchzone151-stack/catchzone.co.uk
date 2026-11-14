@@ -24,10 +24,10 @@ import {
   Payload,
   ShipLayer,
 } from "@/components/canvas/JourneyObjects";
+import { journeyPalette } from "@/lib/three/journeyPalette";
+import { useSiteTheme } from "@/lib/theme/useSiteTheme";
 
 type Progress = MotionValue<number>;
-
-const VOID = "#040406";
 
 function CameraRig({ progress, parallax }: { progress: Progress; parallax: boolean }) {
   const { camera, size, pointer } = useThree();
@@ -104,9 +104,16 @@ function Atmosphere({ progress }: { progress: Progress }) {
 }
 
 /** Soft studio light panels — reflections only, never visible directly. */
-const StudioEnvironment = memo(function StudioEnvironment() {
+const StudioEnvironment = memo(function StudioEnvironment({
+  intensity,
+  backdrop,
+}: {
+  intensity: number;
+  backdrop: string | null;
+}) {
   return (
-    <Environment resolution={256} frames={1} environmentIntensity={0.9}>
+    <Environment resolution={256} frames={1} environmentIntensity={intensity}>
+      {backdrop && <color attach="background" args={[backdrop]} />}
       <Lightformer form="rect" intensity={2.4} color="#ffffff" position={[0, 6, -2]} rotation-x={Math.PI / 2} scale={[12, 4, 1]} />
       <Lightformer form="rect" intensity={1.3} color="#dfe6f2" position={[-7, 1.5, 0]} rotation-y={Math.PI / 2} scale={[8, 1.4, 1]} />
       <Lightformer form="rect" intensity={1.1} color="#dfe6f2" position={[7, 1.2, -2]} rotation-y={-Math.PI / 2} scale={[8, 1.1, 1]} />
@@ -124,6 +131,8 @@ interface JourneyCanvasProps {
 }
 
 export default function JourneyCanvas({ progress, active, quality, parallax }: JourneyCanvasProps) {
+  // Same scene in both themes; only materials, lines, fog and lighting change.
+  const palette = journeyPalette(useSiteTheme());
   return (
     <Canvas
       camera={{ fov: 38, near: 0.1, far: 80, position: [0, 0.3, 8.6] }}
@@ -135,25 +144,26 @@ export default function JourneyCanvas({ progress, active, quality, parallax }: J
         gl.domElement.addEventListener("webglcontextlost", (e) => e.preventDefault());
       }}
     >
-      <color attach="background" args={[VOID]} />
-      <fog attach="fog" args={[VOID, 7, 23]} />
-      <ambientLight intensity={0.14} />
-      <directionalLight position={[4, 6, 5]} intensity={0.75} color="#e2e8f2" />
-      <directionalLight position={[-5, 3, -9]} intensity={0.45} color="#a9b2ff" />
+      <color attach="background" args={[palette.background]} />
+      <fog attach="fog" args={[palette.fog, 7, 23]} />
+      <ambientLight intensity={palette.ambient} />
+      <directionalLight position={[4, 6, 5]} intensity={palette.key.intensity} color={palette.key.color} />
+      <directionalLight position={[-5, 3, -9]} intensity={palette.rim.intensity} color={palette.rim.color} />
 
-      <StudioEnvironment />
+      {/* keyed: the reflection map is rendered once, so rebuild it on theme change */}
+      <StudioEnvironment key={palette.name} intensity={palette.envIntensity} backdrop={palette.envBackground} />
       <CameraRig progress={progress} parallax={parallax} />
       <Atmosphere progress={progress} />
 
-      <Floor reflective={quality === "high"} />
-      <FloorLights />
-      <Gates progress={progress} />
-      <OpeningOrbit progress={progress} />
-      <GuideLine progress={progress} />
-      <GuideNode progress={progress} />
-      <ShipLayer progress={progress} />
+      <Floor reflective={quality === "high"} palette={palette} />
+      <FloorLights palette={palette} />
+      <Gates progress={progress} palette={palette} />
+      <OpeningOrbit progress={progress} palette={palette} />
+      <GuideLine progress={progress} palette={palette} />
+      <GuideNode progress={progress} palette={palette} />
+      <ShipLayer progress={progress} palette={palette} />
       <Suspense fallback={null}>
-        <Payload progress={progress} />
+        <Payload progress={progress} palette={palette} />
       </Suspense>
     </Canvas>
   );

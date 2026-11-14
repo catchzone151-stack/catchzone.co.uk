@@ -122,10 +122,12 @@ ok(`responsive pass: ${ROUTES.length} routes × ${WIDTHS.length} widths × 2 the
   await page.waitForURL("**/voice");
   if ((await page.evaluate(() => document.documentElement.dataset.theme)) === "light") ok("light theme persists across navigation");
   else bad("theme lost on navigation");
-  // Light variants of the Voice logo are the ones displayed.
-  const visibleLogo = await page.evaluate(() => [...document.querySelectorAll('img[alt="CatchZone Voice"]')].filter((i) => i.offsetParent !== null).map((i) => i.getAttribute("src")).join(" "));
-  if (/minimal-light/.test(visibleLogo) && !/minimal-dark/.test(visibleLogo)) ok("light theme shows the Minimal Light Voice logo only");
+  // Light theme: Voice Logo-2 (dark lettering) only.
+  const visibleLogo = await page.evaluate(() => [...document.querySelectorAll('img[alt="CatchZone Voice"]')].filter((i) => i.offsetParent !== null).map((i) => decodeURIComponent(i.currentSrc || i.src)).join(" "));
+  if (/voice-logo-light/.test(visibleLogo) && !/voice-logo-dark/.test(visibleLogo)) ok("light theme shows the light Voice logo (Logo-2) only");
   else bad(`wrong Voice logo variant visible: ${visibleLogo}`);
+  if ((await page.getByRole("navigation", { name: "CatchZone Voice" }).getByRole("link", { name: "For Business" }).count()) === 1) ok("Voice navigation reads 'For Business'");
+  else bad("Voice navigation label not 'For Business'");
   // No flash: theme attribute is already set when the first paint-relevant script runs.
   const pre = await ctx.newPage();
   await pre.addInitScript(() => {
@@ -134,7 +136,7 @@ ok(`responsive pass: ${ROUTES.length} routes × ${WIDTHS.length} widths × 2 the
   });
   await pre.goto(BASE + "/about", { waitUntil: "domcontentloaded" });
   const bgAtLoad = await pre.evaluate(() => getComputedStyle(document.body).backgroundColor);
-  if ((await pre.evaluate(() => window.__themeAtDcl)) === "light" && bgAtLoad === "rgb(246, 245, 241)") ok("no theme flash: light applied before DOMContentLoaded");
+  if ((await pre.evaluate(() => window.__themeAtDcl)) === "light" && bgAtLoad === "rgb(247, 248, 246)") ok("no theme flash: light applied before DOMContentLoaded");
   else bad(`theme flash risk: ${await pre.evaluate(() => window.__themeAtDcl)} / ${bgAtLoad}`);
   // Optional pull gesture (drag the bead down) also toggles.
   const sw2 = pre.getByRole("switch", { name: "Light mode" });
@@ -147,6 +149,37 @@ ok(`responsive pass: ${ROUTES.length} routes × ${WIDTHS.length} widths × 2 the
   if ((await pre.evaluate(() => document.documentElement.dataset.theme)) === "dark") ok("pull gesture toggles the theme (exactly once)");
   else bad("pull gesture did not toggle exactly once");
   await ctx.close();
+
+  // Brand assets per theme, desktop + mobile, and no logo backing tile in light mode.
+  for (const theme of ["dark", "light"]) {
+    for (const width of [1440, 390]) {
+      const c2 = await browser.newContext({ viewport: { width, height: 900 } });
+      await c2.addInitScript((t) => localStorage.setItem("cz-theme", t), theme);
+      const pg = await c2.newPage();
+      await pg.goto(BASE + "/voice", { waitUntil: "networkidle" });
+      const info = await pg.evaluate(() => {
+        const vis = (sel) => [...document.querySelectorAll(sel)].filter((i) => i.offsetParent !== null && i.getBoundingClientRect().width > 0).map((i) => decodeURIComponent(i.currentSrc || i.src));
+        const header = document.querySelector("header");
+        const link = header.querySelector('a[aria-label="CatchZone home"]');
+        return {
+          header: vis('header img[alt^="CatchZone"]'),
+          voice: vis('img[alt="CatchZone Voice"]'),
+          linkBg: getComputedStyle(link).backgroundImage + "|" + getComputedStyle(link).backgroundColor,
+          html: document.documentElement.outerHTML,
+        };
+      });
+      const expectCompany = width < 640 ? `catchzone-wordmark-${theme}.svg` : `catchzone-logo-${theme}.svg`;
+      if (info.header.length === 1 && info.header[0].endsWith(expectCompany)) ok(`${theme}/${width}: header shows ${expectCompany}`);
+      else bad(`${theme}/${width}: header logo ${JSON.stringify(info.header)}`);
+      if (info.voice.length >= 1 && info.voice.every((u) => u.includes(`voice-logo-${theme}`))) ok(`${theme}/${width}: Voice logo is the ${theme} variant`);
+      else bad(`${theme}/${width}: Voice logos ${JSON.stringify(info.voice)}`);
+      if (info.linkBg === "none|rgba(0, 0, 0, 0)") ok(`${theme}/${width}: no backing tile behind the header logo`);
+      else bad(`${theme}/${width}: logo backing ${info.linkBg}`);
+      if (!/BrandMatched|voice-minimal|voice-cinematic|catchzone-logo\.webp|catchzone-wordmark\.webp|logo-plate/.test(info.html)) ok(`${theme}/${width}: no retired logo assets referenced`);
+      else bad(`${theme}/${width}: retired logo asset referenced`);
+      await c2.close();
+    }
+  }
 
   // Mobile: switch sits beside the menu button without overlapping it.
   const m = await browser.newPage({ viewport: { width: 360, height: 800 } });

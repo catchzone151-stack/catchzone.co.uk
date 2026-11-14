@@ -105,7 +105,7 @@ export default function VoiceBusinessPage() {
         breadcrumb={[
           { name: "Home", href: "/" },
           { name: "CatchZone Voice", href: "/voice" },
-          { name: "For business", href: "/voice/business" },
+          { name: "For Business", href: "/voice/business" },
         ]}
       />
 

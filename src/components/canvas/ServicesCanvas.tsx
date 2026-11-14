@@ -5,6 +5,8 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { coreTargets, type CoreState } from "@/lib/three/coreTargets";
 import { ConvergenceCore } from "@/components/canvas/ConvergenceCore";
+import { corePalette } from "@/lib/three/corePalette";
+import { useSiteTheme } from "@/lib/theme/useSiteTheme";
 
 const LERP_SPEED = 2.2;
 const _camTarget = new THREE.Vector3();
@@ -30,6 +32,7 @@ interface ServicesCanvasProps {
 }
 
 export default function ServicesCanvas({ state, frameloop = "always", quality = "high" }: ServicesCanvasProps) {
+  const palette = corePalette(useSiteTheme());
   return (
     <Canvas
       camera={{ fov: 40, position: [0.32, 0, 4.1] }}
@@ -41,15 +44,15 @@ export default function ServicesCanvas({ state, frameloop = "always", quality = 
         gl.domElement.addEventListener("webglcontextlost", (e) => e.preventDefault());
       }}
     >
-      <color attach="background" args={["#040406"]} />
-      <fog attach="fog" args={["#040406", 6, 13]} />
-      <ambientLight intensity={0.45} />
-      <directionalLight position={[3, 4, 5]} intensity={1.1} color="#e6ebf0" />
-      <pointLight position={[-3, -1, 2]} intensity={1.8} color="#6e62e5" />
-      <pointLight position={[3, 1, 3]} intensity={1.4} color="#5eead4" />
+      <color attach="background" args={[palette.background]} />
+      <fog attach="fog" args={[palette.fog, 6, 13]} />
+      <ambientLight intensity={palette.ambient} />
+      <directionalLight position={[3, 4, 5]} intensity={palette.key.intensity} color={palette.key.color} />
+      <pointLight position={[-3, -1, 2]} intensity={palette.irisLight} color="#6e62e5" />
+      <pointLight position={[3, 1, 3]} intensity={palette.mintLight} color="#5eead4" />
 
       <CameraRig state={state} />
-      <ConvergenceCore state={state} />
+      <ConvergenceCore state={state} palette={palette} />
     </Canvas>
   );
 }

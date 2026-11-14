@@ -28,7 +28,7 @@ followed by `SelectedWork`.
 - `CinematicJourney` and its canvas/timeline code are untouched.
 - Inside `SelectedWork` (section 05, same wrapper and hand-off gradient from
   the journey), the IslamQuest feature is replaced by `VoiceSpotlight`
-  (cinematic logo, EN ⇄ ES speaker bridge, capabilities, CTAs to `/voice`).
+  (Voice logo, EN ⇄ ES speaker bridge, capabilities, CTAs to `/voice`).
   The "Also live on Google Play" row excludes IslamQuest; IslamQuest's
   `/work` feature (`FeaturedProjectCard`), case study, app links and project
   data are unchanged.
@@ -40,8 +40,9 @@ followed by `SelectedWork`.
 ## Branding & themes
 
 Voice logos switch with the site theme (see `docs/THEME_AND_BRANDING.md`):
-Cinematic Dark/Light for the homepage spotlight, Minimal Dark/Light for the
-Voice sub-navigation. Only the visible variant is downloaded.
+`public/brand/voice/catchzone-voice-logo-{dark,light}.svg` for the homepage
+spotlight, and the matching `.webp` exports in the Voice sub-navigation
+(`/voice`, `/voice/languages`, `/voice/business`). Only the visible variant is downloaded.
 
 `/voice/languages` groups languages in collapsible regions (open by default,
 so every language is in the HTML) with compact cards that link straight into

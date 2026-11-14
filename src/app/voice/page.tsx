@@ -265,7 +265,7 @@ export default function VoicePage() {
               },
               {
                 href: "/voice/business",
-                eyebrow: "For business",
+                eyebrow: "For Business",
                 title: "Voice translation for customer service",
                 body: "How CatchZone Voice fits contact centres, travel support, bookings and hospitality teams.",
               },

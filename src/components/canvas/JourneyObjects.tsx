@@ -33,10 +33,9 @@ import {
   type Vec3,
 } from "@/lib/three/journeyTimeline";
 import { createScreenMaterial, createWireTexture } from "@/lib/three/journeyScreens";
+import type { JourneyPalette } from "@/lib/three/journeyPalette";
 
 type Progress = MotionValue<number>;
-
-const MINT = "#5eead4";
 
 /* ------------------------------------------------------------------ */
 /* Shared geometry helpers                                              */
@@ -134,7 +133,7 @@ function setReveal(geo: THREE.BufferGeometry, indexCount: number, to: number, fr
 /* Opening orbit, guide line and the node of light                     */
 /* ------------------------------------------------------------------ */
 
-export function OpeningOrbit({ progress }: { progress: Progress }) {
+export function OpeningOrbit({ progress, palette }: { progress: Progress; palette: JourneyPalette }) {
   const points = useMemo(
     () =>
       circlePoints(OPENING_ORBIT.center, OPENING_ORBIT.radius, OPENING_ORBIT.rotation, 0.75, Math.PI * 2 + 0.35, 140),
@@ -158,7 +157,7 @@ export function OpeningOrbit({ progress }: { progress: Progress }) {
 
   return (
     <mesh geometry={geo}>
-      <meshBasicMaterial ref={mat} color={MINT} transparent opacity={0.85} toneMapped={false} depthWrite={false} />
+      <meshBasicMaterial ref={mat} color={palette.accent} transparent opacity={0.85} toneMapped={false} depthWrite={false} />
     </mesh>
   );
 }
@@ -171,7 +170,7 @@ function useGuideCurve() {
   }, []);
 }
 
-export function GuideLine({ progress }: { progress: Progress }) {
+export function GuideLine({ progress, palette }: { progress: Progress; palette: JourneyPalette }) {
   const points = useGuideCurve();
   const { geo, indexCount } = useTube(points, 0.0085, 420);
   useDisposable(geo);
@@ -185,7 +184,7 @@ export function GuideLine({ progress }: { progress: Progress }) {
 
   return (
     <mesh geometry={geo}>
-      <meshBasicMaterial ref={mat} color={MINT} transparent opacity={0.62} toneMapped={false} depthWrite={false} />
+      <meshBasicMaterial ref={mat} color={palette.accent} transparent opacity={0.62} toneMapped={false} depthWrite={false} />
     </mesh>
   );
 }
@@ -216,7 +215,7 @@ function useGlowTexture() {
  * orbit, leads the visitor along the build line, powers the finished
  * product and finally settles into the orbit that wraps it.
  */
-export function GuideNode({ progress }: { progress: Progress }) {
+export function GuideNode({ progress, palette }: { progress: Progress; palette: JourneyPalette }) {
   const group = useRef<THREE.Group>(null);
   const light = useRef<THREE.PointLight>(null);
   const sprite = useRef<THREE.Sprite>(null);
@@ -247,19 +246,29 @@ export function GuideNode({ progress }: { progress: Progress }) {
     const pulse = 1 + Math.sin(t * 1.6) * 0.06;
     group.current.scale.setScalar(intro * pulse);
     if (light.current) light.current.intensity = 1.3 * intro;
-    if (sprite.current) (sprite.current.material as THREE.SpriteMaterial).opacity = 0.75 * intro;
+    if (sprite.current) (sprite.current.material as THREE.SpriteMaterial).opacity = palette.glow.opacity * intro;
   });
 
   return (
     <group ref={group}>
       <mesh>
         <sphereGeometry args={[0.034, 20, 20]} />
-        <meshBasicMaterial color="#e9fffb" toneMapped={false} />
+        <meshBasicMaterial color={palette.spark} toneMapped={false} />
       </mesh>
       <sprite ref={sprite} scale={[0.62, 0.62, 0.62]}>
-        <spriteMaterial map={glow} color={MINT} transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
+        {/* keyed so a theme change rebuilds the material with the right blending mode */}
+        <spriteMaterial
+          key={palette.name}
+          map={glow}
+          color={palette.glow.color}
+          transparent
+          opacity={0}
+          depthWrite={false}
+          blending={palette.glow.blending}
+          toneMapped={false}
+        />
       </sprite>
-      <pointLight ref={light} color={MINT} intensity={0} distance={4.5} decay={2} />
+      <pointLight ref={light} color={palette.glow.color} intensity={0} distance={4.5} decay={2} />
     </group>
   );
 }
@@ -268,33 +277,38 @@ export function GuideNode({ progress }: { progress: Progress }) {
 /* Environment: floor and threshold frames                              */
 /* ------------------------------------------------------------------ */
 
-export function Floor({ reflective }: { reflective: boolean }) {
+export function Floor({ reflective, palette }: { reflective: boolean; palette: JourneyPalette }) {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, FLOOR_Y, -14]}>
       <planeGeometry args={[60, 70]} />
       {reflective ? (
         <MeshReflectorMaterial
+          key={palette.name}
           resolution={1024}
           blur={[420, 120]}
           mixBlur={1}
-          mixStrength={2.2}
+          mixStrength={palette.floor.mixStrength}
           mixContrast={1.05}
-          mirror={0.75}
+          mirror={palette.floor.mirror}
           depthScale={0.9}
           minDepthThreshold={0.35}
           maxDepthThreshold={1.3}
-          roughness={0.92}
-          metalness={0.55}
-          color="#060709"
+          roughness={palette.floor.roughness}
+          metalness={palette.floor.metalness}
+          color={palette.floor.color}
         />
       ) : (
-        <meshStandardMaterial color="#07080a" metalness={0.6} roughness={0.55} />
+        <meshStandardMaterial
+          color={palette.floorFallback.color}
+          metalness={palette.floorFallback.metalness}
+          roughness={palette.floorFallback.roughness}
+        />
       )}
     </mesh>
   );
 }
 
-function Gate({ z, progress, index }: { z: number; progress: Progress; index: number }) {
+function Gate({ z, progress, index, palette }: { z: number; progress: Progress; index: number; palette: JourneyPalette }) {
   const width = 8.2;
   const height = 4.9;
   const beam = 0.055;
@@ -303,6 +317,11 @@ function Gate({ z, progress, index }: { z: number; progress: Progress; index: nu
     [],
   );
   useDisposable(beamMat);
+  useEffect(() => {
+    beamMat.color.set(palette.gate.color);
+    beamMat.metalness = palette.gate.metalness;
+    beamMat.roughness = palette.gate.roughness;
+  }, [beamMat, palette]);
   const lineMat = useRef<THREE.LineBasicMaterial>(null);
   const lineGeo = useMemo(() => {
     const inset = 0.06;
@@ -324,7 +343,7 @@ function Gate({ z, progress, index }: { z: number; progress: Progress; index: nu
     const visible = range(p, 0.04, 0.12) * (1 - range(p, 0.73, 0.84));
     beamMat.opacity = visible;
     beamMat.visible = visible > 0.001;
-    if (lineMat.current) lineMat.current.opacity = 0.26 * visible * (index === 0 ? 1 : 0.85);
+    if (lineMat.current) lineMat.current.opacity = palette.gate.lineOpacity * visible * (index === 0 ? 1 : 0.85);
   });
 
   const beams: { pos: Vec3; size: Vec3 }[] = [
@@ -342,7 +361,7 @@ function Gate({ z, progress, index }: { z: number; progress: Progress; index: nu
       ))}
       <line>
         <primitive object={lineGeo} attach="geometry" />
-        <lineBasicMaterial ref={lineMat} color="#c3cad6" transparent opacity={0.26} depthWrite={false} />
+        <lineBasicMaterial ref={lineMat} color={palette.gate.line} transparent opacity={palette.gate.lineOpacity} depthWrite={false} />
       </line>
     </group>
   );
@@ -352,7 +371,7 @@ function Gate({ z, progress, index }: { z: number; progress: Progress; index: nu
  * Soft pools of overhead light on the studio floor, one per stage, so the
  * floor reads as a surface and each stage has somewhere to stand.
  */
-export function FloorLights() {
+export function FloorLights({ palette }: { palette: JourneyPalette }) {
   const tex = useGlowTexture();
   const pools: { pos: Vec3; size: number; opacity: number }[] = [
     { pos: [0, FLOOR_Y + 0.004, -5.4], size: 9, opacity: 0.3 },
@@ -365,12 +384,13 @@ export function FloorLights() {
         <mesh key={pool.pos[2]} position={pool.pos} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[pool.size, pool.size * 0.7]} />
           <meshBasicMaterial
+            key={palette.name}
             map={tex}
-            color="#b9c6d9"
+            color={palette.floorLights.color}
             transparent
-            opacity={pool.opacity}
+            opacity={pool.opacity * palette.floorLights.opacityScale}
             depthWrite={false}
-            blending={THREE.AdditiveBlending}
+            blending={palette.floorLights.blending}
             toneMapped={false}
           />
         </mesh>
@@ -379,11 +399,11 @@ export function FloorLights() {
   );
 }
 
-export function Gates({ progress }: { progress: Progress }) {
+export function Gates({ progress, palette }: { progress: Progress; palette: JourneyPalette }) {
   return (
     <>
       {GATE_Z.map((z, i) => (
-        <Gate key={z} z={z} index={i} progress={progress} />
+        <Gate key={z} z={z} index={i} progress={progress} palette={palette} />
       ))}
     </>
   );
@@ -393,23 +413,29 @@ export function Gates({ progress }: { progress: Progress }) {
 /* Payload                                                              */
 /* ------------------------------------------------------------------ */
 
-const BODY_COLOR = "#1a1c21";
-
-function useDeviceMaterial() {
+function useDeviceMaterial(palette: JourneyPalette) {
   const mat = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
-        color: BODY_COLOR,
-        metalness: 0.9,
-        roughness: 0.3,
-        clearcoat: 0.6,
+        color: palette.device.color,
+        metalness: palette.device.metalness,
+        roughness: palette.device.roughness,
+        clearcoat: palette.device.clearcoat,
         clearcoatRoughness: 0.22,
         envMapIntensity: 1.25,
         transparent: true,
         opacity: 0,
       }),
+    // created once; theme changes update it in place below
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+  useEffect(() => {
+    mat.color.set(palette.device.color);
+    mat.metalness = palette.device.metalness;
+    mat.roughness = palette.device.roughness;
+    mat.clearcoat = palette.device.clearcoat;
+  }, [mat, palette]);
   return useDisposable(mat);
 }
 
@@ -432,7 +458,7 @@ function deviceShape(spec: ScreenSpec): DeviceShape {
  * slides in from behind as its construction outline fades, and the
  * display gets a stand while the tablet and phone get docks.
  */
-function DeviceBody({ spec, progress }: { spec: ScreenSpec; progress: Progress }) {
+function DeviceBody({ spec, progress, palette }: { spec: ScreenSpec; progress: Progress; palette: JourneyPalette }) {
   const shape = deviceShape(spec);
   const geo = useSlabGeometry(shape.w, shape.h, shape.depth, shape.radius, 0.012);
   const edges = useMemo(() => new THREE.EdgesGeometry(geo, 28), [geo]);
@@ -441,8 +467,8 @@ function DeviceBody({ spec, progress }: { spec: ScreenSpec; progress: Progress }
   const stand = useRef<THREE.Group>(null);
   const edgeMat = useRef<THREE.LineBasicMaterial>(null);
   const glassMat = useRef<THREE.MeshStandardMaterial>(null);
-  const bodyMat = useDeviceMaterial();
-  const standMat = useDeviceMaterial();
+  const bodyMat = useDeviceMaterial(palette);
+  const standMat = useDeviceMaterial(palette);
 
   const isDisplay = spec.id === "desktop";
   const neckGeo = useSlabGeometry(0.17, 0.92, 0.045, 0.02, 0.008);
@@ -464,7 +490,7 @@ function DeviceBody({ spec, progress }: { spec: ScreenSpec; progress: Progress }
     bodyMat.opacity = appear;
     bodyMat.visible = appear > 0.001;
     if (edgeMat.current) edgeMat.current.opacity = outline * 0.75;
-    if (glassMat.current) glassMat.current.opacity = 0.32 * appear;
+    if (glassMat.current) glassMat.current.opacity = palette.device.glare * appear;
 
     const standT = ease.out(clamp01((tb - 0.38) / 0.55));
     standMat.opacity = standT;
@@ -478,7 +504,7 @@ function DeviceBody({ spec, progress }: { spec: ScreenSpec; progress: Progress }
         <mesh geometry={geo} material={bodyMat} />
         {isDisplay && <mesh geometry={rearGeo} material={bodyMat} position={[0, -0.05, -0.05]} />}
         <lineSegments geometry={edges}>
-          <lineBasicMaterial ref={edgeMat} color="#d6dde8" transparent opacity={0} depthWrite={false} />
+          <lineBasicMaterial ref={edgeMat} color={palette.device.edge} transparent opacity={0} depthWrite={false} />
         </lineSegments>
       </group>
 
@@ -528,6 +554,7 @@ function UIComponent({
   wire,
   progress,
   index,
+  edgeColor,
 }: {
   spec: ComponentSpec;
   parent: ScreenSpec;
@@ -535,13 +562,14 @@ function UIComponent({
   wire: THREE.Texture;
   progress: Progress;
   index: number;
+  edgeColor: string;
 }) {
   const ref = useRef<THREE.Mesh>(null);
   const size = componentSize(spec, parent);
   const material = useMemo(
-    () => createScreenMaterial({ ui, wire, size, radius: 0.012, rect: spec.rect }),
+    () => createScreenMaterial({ ui, wire, size, radius: 0.012, rect: spec.rect, edgeColor }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ui, wire],
+    [ui, wire, edgeColor],
   );
   useDisposable(material);
 
@@ -594,17 +622,19 @@ function ScreenRig({
   ui,
   progress,
   index,
+  palette,
 }: {
   spec: ScreenSpec;
   ui: THREE.Texture;
   progress: Progress;
   index: number;
+  palette: JourneyPalette;
 }) {
   const group = useRef<THREE.Group>(null);
   const wire = useMemo(() => {
     const w = spec.id === "phone" ? 512 : 1024;
-    return createWireTexture(spec.id, w, Math.round(w * (spec.size[1] / spec.size[0])));
-  }, [spec]);
+    return createWireTexture(spec.id, w, Math.round(w * (spec.size[1] / spec.size[0])), palette.wire);
+  }, [spec, palette.wire]);
   useDisposable(wire);
 
   const components = useMemo(() => COMPONENTS.filter((c) => c.screen === spec.id), [spec.id]);
@@ -616,8 +646,9 @@ function ScreenRig({
         size: spec.size,
         radius: spec.radius,
         holes: components.map((c) => c.rect),
+        edgeColor: palette.revealEdge,
       }),
-    [ui, wire, spec, components],
+    [ui, wire, spec, components, palette.revealEdge],
   );
   useDisposable(material);
 
@@ -650,21 +681,33 @@ function ScreenRig({
       <mesh material={material} renderOrder={2}>
         <planeGeometry args={spec.size} />
       </mesh>
-      <DeviceBody spec={spec} progress={progress} />
+      <DeviceBody spec={spec} progress={progress} palette={palette} />
       {components.map((c, i) => (
-        <UIComponent key={i} spec={c} parent={spec} ui={ui} wire={wire} progress={progress} index={index * 3 + i} />
+        <UIComponent
+          key={i}
+          spec={c}
+          parent={spec}
+          ui={ui}
+          wire={wire}
+          progress={progress}
+          index={index * 3 + i}
+          edgeColor={palette.revealEdge}
+        />
       ))}
     </group>
   );
 }
 
-function ProductMap({ progress }: { progress: Progress }) {
+function ProductMap({ progress, palette }: { progress: Progress; palette: JourneyPalette }) {
   const ref = useRef<THREE.Mesh>(null);
-  const wire = useMemo(() => createWireTexture("map", 1024, Math.round(1024 * (MAP_SPEC.size[1] / MAP_SPEC.size[0]))), []);
+  const wire = useMemo(
+    () => createWireTexture("map", 1024, Math.round(1024 * (MAP_SPEC.size[1] / MAP_SPEC.size[0])), palette.wire),
+    [palette.wire],
+  );
   useDisposable(wire);
   const material = useMemo(
-    () => createScreenMaterial({ ui: null, wire, size: MAP_SPEC.size, radius: 0.02 }),
-    [wire],
+    () => createScreenMaterial({ ui: null, wire, size: MAP_SPEC.size, radius: 0.02, edgeColor: palette.revealEdge }),
+    [wire, palette.revealEdge],
   );
   useDisposable(material);
 
@@ -693,7 +736,7 @@ function ProductMap({ progress }: { progress: Progress }) {
 }
 
 /** Display plinth that rises from the floor as the devices are built. */
-function Plinth({ progress }: { progress: Progress }) {
+function Plinth({ progress, palette }: { progress: Progress; palette: JourneyPalette }) {
   const ref = useRef<THREE.Group>(null);
   const geo = useSlabGeometry(4.5, 2.2, 0.5, 0.18, 0.03);
   const mat = useRef<THREE.MeshPhysicalMaterial>(null);
@@ -711,10 +754,10 @@ function Plinth({ progress }: { progress: Progress }) {
       <mesh geometry={geo} rotation={[-Math.PI / 2, 0, 0]}>
         <meshPhysicalMaterial
           ref={mat}
-          color="#0c0d10"
-          metalness={0.45}
-          roughness={0.42}
-          clearcoat={0.35}
+          color={palette.plinth.color}
+          metalness={palette.plinth.metalness}
+          roughness={palette.plinth.roughness}
+          clearcoat={palette.plinth.clearcoat}
           clearcoatRoughness={0.4}
           transparent
           opacity={0}
@@ -747,11 +790,13 @@ function Connection({
   progress,
   delay,
   arc,
+  palette,
 }: {
   points: Vec3[];
   progress: Progress;
   delay: number;
   arc: boolean;
+  palette: JourneyPalette;
 }) {
   const pts = useMemo(() => {
     const v = points.map((p) => new THREE.Vector3(...p));
@@ -782,17 +827,17 @@ function Connection({
   return (
     <>
       <mesh geometry={geo}>
-        <meshBasicMaterial ref={mat} color={MINT} transparent opacity={0} toneMapped={false} depthWrite={false} />
+        <meshBasicMaterial ref={mat} color={palette.accent} transparent opacity={0} toneMapped={false} depthWrite={false} />
       </mesh>
       <mesh ref={pulse}>
         <sphereGeometry args={[0.022, 12, 12]} />
-        <meshBasicMaterial ref={pulseMat} color="#e9fffb" transparent opacity={0} toneMapped={false} depthWrite={false} />
+        <meshBasicMaterial ref={pulseMat} color={palette.spark} transparent opacity={0} toneMapped={false} depthWrite={false} />
       </mesh>
     </>
   );
 }
 
-function ShipOrbit({ progress }: { progress: Progress }) {
+function ShipOrbit({ progress, palette }: { progress: Progress; palette: JourneyPalette }) {
   const anchor = SHIP_ORBIT;
   const points = useMemo(
     () => circlePoints([0, 0, 0], anchor.radius, anchor.rotation, 0.9, 0.9 + Math.PI * 2 - 0.28, 160),
@@ -813,7 +858,7 @@ function ShipOrbit({ progress }: { progress: Progress }) {
 
   return (
     <mesh ref={mesh} geometry={geo} position={anchor.center}>
-      <meshBasicMaterial ref={mat} color={MINT} transparent opacity={0} toneMapped={false} depthWrite={false} />
+      <meshBasicMaterial ref={mat} color={palette.accent} transparent opacity={0} toneMapped={false} depthWrite={false} />
     </mesh>
   );
 }
@@ -822,7 +867,7 @@ function ShipOrbit({ progress }: { progress: Progress }) {
 /* Payload root                                                         */
 /* ------------------------------------------------------------------ */
 
-export function Payload({ progress }: { progress: Progress }) {
+export function Payload({ progress, palette }: { progress: Progress; palette: JourneyPalette }) {
   const anchor = useRef<THREE.Group>(null);
   const stage = useRef<THREE.Group>(null);
   const textures = useTexture(SCREENS.map((s) => s.texture));
@@ -845,21 +890,21 @@ export function Payload({ progress }: { progress: Progress }) {
 
   return (
     <group ref={anchor}>
-      <ProductMap progress={progress} />
+      <ProductMap progress={progress} palette={palette} />
       {SCREENS.map((spec, i) => (
-        <ScreenRig key={spec.id} spec={spec} ui={textures[i]!} progress={progress} index={i} />
+        <ScreenRig key={spec.id} spec={spec} ui={textures[i]!} progress={progress} index={i} palette={palette} />
       ))}
       <group ref={stage}>
-        <Plinth progress={progress} />
+        <Plinth progress={progress} palette={palette} />
         {LINKS.map((link, i) => (
-          <Connection key={i} points={link.points} progress={progress} delay={link.delay} arc={link.arc} />
+          <Connection key={i} points={link.points} progress={progress} delay={link.delay} arc={link.arc} palette={palette} />
         ))}
       </group>
     </group>
   );
 }
 
-export function ShipLayer({ progress }: { progress: Progress }) {
-  return <ShipOrbit progress={progress} />;
+export function ShipLayer({ progress, palette }: { progress: Progress; palette: JourneyPalette }) {
+  return <ShipOrbit progress={progress} palette={palette} />;
 }
 

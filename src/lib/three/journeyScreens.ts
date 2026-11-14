@@ -210,15 +210,25 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
  * is drawn twice with a sub-pixel jitter so it reads as a considered sketch
  * rather than a vector UI.
  */
-export function createWireTexture(id: ScreenId | "map", width: number, height: number) {
+export function createWireTexture(
+  id: ScreenId | "map",
+  width: number,
+  height: number,
+  colors: { stroke: string; faint: string; fill: string } = {
+    stroke: "rgba(214, 222, 234, 0.92)",
+    faint: "rgba(214, 222, 234, 0.42)",
+    fill: "rgba(160, 172, 192, 0.07)",
+  },
+) {
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d")!;
   const rand = seeded(id.length * 7919 + width);
   const lw = Math.max(1.6, width / 420);
-  const stroke = "rgba(214, 222, 234, 0.92)";
-  const faint = "rgba(214, 222, 234, 0.42)";
+  // Sketch stroke colours are theme-specific (light strokes on the dark stage,
+  // charcoal strokes on the light stage); the drawing itself is identical.
+  const { stroke, faint } = colors;
 
   const X = (u: number) => u * width;
   const Y = (v: number) => v * height;
@@ -247,7 +257,7 @@ export function createWireTexture(id: ScreenId | "map", width: number, height: n
         }
         if (p.fill) {
           roundRect(ctx, X(x0), Y(y0), X(x1) - X(x0), Y(y1) - Y(y0), (p.radius ?? 6) * (width / 1024));
-          ctx.fillStyle = "rgba(160, 172, 192, 0.07)";
+          ctx.fillStyle = colors.fill;
           ctx.fill();
         }
         pass((jx, jy) => {
@@ -466,6 +476,7 @@ export function createScreenMaterial({
   radius,
   rect = [0, 0, 1, 1],
   holes = [],
+  edgeColor = "#5eead4",
 }: {
   ui: THREE.Texture | null;
   wire: THREE.Texture;
@@ -473,6 +484,7 @@ export function createScreenMaterial({
   radius: number;
   rect?: [number, number, number, number];
   holes?: [number, number, number, number][];
+  edgeColor?: string;
 }) {
   const uniforms: ScreenUniforms = {
     uUI: { value: ui },
@@ -487,7 +499,7 @@ export function createScreenMaterial({
     uHoleAmt: { value: 0 },
     uHole0: { value: new THREE.Vector4(...(holes[0] ?? [2, 2, 2, 2])) },
     uHole1: { value: new THREE.Vector4(...(holes[1] ?? [2, 2, 2, 2])) },
-    uEdgeColor: { value: new THREE.Color("#5eead4") },
+    uEdgeColor: { value: new THREE.Color(edgeColor) },
   };
   return new THREE.ShaderMaterial({
     uniforms,

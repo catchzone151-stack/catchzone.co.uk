@@ -27,21 +27,22 @@ export function VoiceSpotlight() {
           className="pointer-events-none absolute inset-x-[15%] top-[30%] h-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(139,92,246,0.16),transparent)] blur-2xl"
           aria-hidden="true"
         />
-        {/* Approved Cinematic logo: Dark variant on the dark stage, Light variant on the light stage. */}
+        {/* Approved CatchZone Voice logo (vector lettering + original waveform):
+            Logo-1 (white lettering) on the dark stage, Logo-2 (dark lettering) on the light stage. */}
         <Image
-          src="/brand/voice/catchzone-voice-cinematic-dark.webp"
+          src="/brand/voice/catchzone-voice-logo-dark.svg"
           alt="CatchZone Voice"
-          width={1862}
-          height={383}
-          sizes="(min-width: 1024px) 760px, 90vw"
+          width={1889}
+          height={346}
+          unoptimized
           className="theme-only-dark relative mx-auto h-auto w-full max-w-[760px]"
         />
         <Image
-          src="/brand/voice/catchzone-voice-cinematic-light.webp"
+          src="/brand/voice/catchzone-voice-logo-light.svg"
           alt="CatchZone Voice"
-          width={1862}
-          height={383}
-          sizes="(min-width: 1024px) 760px, 90vw"
+          width={1878}
+          height={374}
+          unoptimized
           className="theme-only-light relative mx-auto h-auto w-full max-w-[760px]"
         />
 

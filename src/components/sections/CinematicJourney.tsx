@@ -188,7 +188,7 @@ function StaticJourney({ sectionRef }: { sectionRef: React.Ref<HTMLElement> }) {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(50% 45% at 72% 38%, rgba(94,234,212,0.09), transparent 65%), radial-gradient(60% 50% at 20% 80%, rgba(110,98,229,0.08), transparent 70%), #040406",
+              "radial-gradient(50% 45% at 72% 38%, rgba(94,234,212,0.09), transparent 65%), radial-gradient(60% 50% at 20% 80%, rgba(110,98,229,0.08), transparent 70%), rgb(var(--void-rgb))",
           }}
           aria-hidden="true"
         />
@@ -269,7 +269,7 @@ export function CinematicJourney() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(50% 45% at 72% 38%, rgba(94,234,212,0.07), transparent 65%), #040406",
+              "radial-gradient(50% 45% at 72% 38%, rgba(94,234,212,0.07), transparent 65%), rgb(var(--void-rgb))",
           }}
           aria-hidden="true"
         />
@@ -289,7 +289,7 @@ export function CinematicJourney() {
           className="pointer-events-none absolute inset-0 hidden md:landscape:block"
           style={{
             opacity: scrimOpacity,
-            background: "linear-gradient(90deg, rgba(4,4,6,0.82) 0%, rgba(4,4,6,0.5) 26%, rgba(4,4,6,0) 50%)",
+            background: "linear-gradient(90deg, rgb(var(--void-rgb) / 0.82) 0%, rgb(var(--void-rgb) / 0.5) 26%, rgb(var(--void-rgb) / 0) 50%)",
           }}
           aria-hidden="true"
         />
@@ -297,7 +297,7 @@ export function CinematicJourney() {
           className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] md:landscape:hidden"
           style={{
             opacity: scrimOpacity,
-            background: "linear-gradient(0deg, rgba(4,4,6,0.94) 0%, rgba(4,4,6,0.7) 45%, rgba(4,4,6,0) 100%)",
+            background: "linear-gradient(0deg, rgb(var(--void-rgb) / 0.94) 0%, rgb(var(--void-rgb) / 0.7) 45%, rgb(var(--void-rgb) / 0) 100%)",
           }}
           aria-hidden="true"
         />
@@ -305,7 +305,7 @@ export function CinematicJourney() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "linear-gradient(0deg, rgba(4,4,6,0.85) 0%, rgba(4,4,6,0) 32%), linear-gradient(100deg, rgba(4,4,6,0.55) 0%, rgba(4,4,6,0) 45%)",
+              "linear-gradient(0deg, rgb(var(--void-rgb) / 0.85) 0%, rgb(var(--void-rgb) / 0) 32%), linear-gradient(100deg, rgb(var(--void-rgb) / 0.55) 0%, rgb(var(--void-rgb) / 0) 45%)",
           }}
           aria-hidden="true"
         />
@@ -342,7 +342,7 @@ export function CinematicJourney() {
           className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2"
           style={{
             opacity: handoff,
-            background: "linear-gradient(0deg, #040406 0%, rgba(4,4,6,0.6) 45%, rgba(4,4,6,0) 100%)",
+            background: "linear-gradient(0deg, rgb(var(--void-rgb)) 0%, rgb(var(--void-rgb) / 0.6) 45%, rgb(var(--void-rgb) / 0) 100%)",
           }}
           aria-hidden="true"
         />

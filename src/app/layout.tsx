@@ -64,6 +64,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/brand/favicon.ico", sizes: "any" },
+      { url: "/brand/catchzone-icon.svg", type: "image/svg+xml" },
       { url: "/brand/favicon-32.png", type: "image/png", sizes: "32x32" },
       { url: "/brand/icon-192.png", type: "image/png", sizes: "192x192" },
     ],

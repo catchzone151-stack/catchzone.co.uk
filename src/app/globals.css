@@ -39,9 +39,10 @@
 
 /* Light theme: premium off-white surfaces, dark ink, deeper teal for legible accents. */
 [data-theme="light"] {
-  --void-rgb: 246 245 241;
-  --surface-rgb: 238 237 232;
-  --surface-raised-rgb: 255 255 255;
+  /* pearl white / soft blue-grey */
+  --void-rgb: 247 248 246;
+  --surface-rgb: 242 245 246;
+  --surface-raised-rgb: 252 253 252;
   --ink-rgb: 14 17 22;
   --ink-muted-rgb: 70 78 92;
   --ink-faint-rgb: 98 106 120;
@@ -87,31 +88,10 @@
   display: none !important;
 }
 
-/* Light-mode-only dusk seam between a dark cinematic section and the light page. */
-.theme-seam {
-  display: none;
-}
-[data-theme="light"] .theme-seam {
-  display: block;
-  height: clamp(5rem, 12vw, 9rem);
-  background: linear-gradient(180deg, #040406 0%, rgb(var(--void-rgb) / 0) 100%);
-}
-[data-theme="light"] .theme-seam[data-direction="up"] {
-  background: linear-gradient(0deg, #040406 0%, rgb(var(--void-rgb) / 0) 100%);
-}
-
-/* The company logo has white lettering: in light mode it sits on a dark brand plate. */
-[data-theme="light"] .logo-plate {
-  background: radial-gradient(120% 140% at 30% 0%, #14161d 0%, #07080b 70%);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
-    0 10px 24px -14px rgba(7, 8, 11, 0.55);
-}
-
 /* Light mode: the header is always a frosted off-white bar, so the nav stays legible
    even over the deliberately dark cinematic hero. */
 [data-theme="light"] .site-header-bar {
-  background-color: rgb(var(--void-rgb) / 0.84);
+  background-color: rgb(var(--void-rgb) / 0.94);
   border-bottom-color: var(--line);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);

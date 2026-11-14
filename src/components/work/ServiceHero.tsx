@@ -27,7 +27,7 @@ export function ServiceHero({ service, coreState }: ServiceHeroProps) {
 
   return (
     <>
-    <section ref={sectionRef} className="theme-dark relative overflow-hidden border-b border-line bg-void pb-16 pt-32 md:min-h-[70vh] md:pb-24">
+    <section ref={sectionRef} className="relative overflow-hidden border-b border-line bg-void pb-16 pt-32 md:min-h-[70vh] md:pb-24">
       <div className="absolute inset-0 z-0">
         {showCanvas ? (
           <ServicesCanvas state={coreState} frameloop={inView && documentVisible ? "always" : "never"} quality={tier === "high" ? "high" : "balanced"} />
@@ -36,7 +36,7 @@ export function ServiceHero({ service, coreState }: ServiceHeroProps) {
             className="h-full w-full"
             style={{
               background:
-                "radial-gradient(50% 45% at 70% 40%, rgba(94,234,212,0.10), transparent 65%), #040406",
+                "radial-gradient(50% 45% at 70% 40%, rgba(94,234,212,0.10), transparent 65%), rgb(var(--void-rgb))",
             }}
           />
         )}
@@ -45,7 +45,7 @@ export function ServiceHero({ service, coreState }: ServiceHeroProps) {
         className="pointer-events-none absolute inset-0 z-[1]"
         style={{
           background:
-            "linear-gradient(100deg, rgba(4,4,6,0.72) 0%, rgba(4,4,6,0.4) 26%, transparent 54%)",
+            "linear-gradient(100deg, rgb(var(--void-rgb) / 0.72) 0%, rgb(var(--void-rgb) / 0.4) 26%, transparent 54%)",
         }}
         aria-hidden="true"
       />
@@ -72,8 +72,6 @@ export function ServiceHero({ service, coreState }: ServiceHeroProps) {
         </p>
       </div>
     </section>
-    {/* light mode only: soft dusk from the dark hero into the light page */}
-    <div className="theme-seam" aria-hidden="true" />
     </>
   );
 }

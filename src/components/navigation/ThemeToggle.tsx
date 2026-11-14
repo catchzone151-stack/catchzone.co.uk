@@ -39,6 +39,18 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
   const suppressClick = useRef(false);
 
   useEffect(() => {
+    // The inline <head> script normally sets the theme before paint. Some
+    // client-rendered error shells (e.g. notFound() inside a dynamic route)
+    // skip it, so re-sync from storage here as a fallback.
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem(STORAGE_KEY);
+    } catch {
+      /* storage unavailable — keep whatever the page has */
+    }
+    if (stored === "light" || stored === "dark") {
+      if (currentTheme() !== stored) document.documentElement.setAttribute("data-theme", stored);
+    }
     setTheme(currentTheme());
     const onStorage = (e: StorageEvent) => {
       if (e.key !== STORAGE_KEY) return;
