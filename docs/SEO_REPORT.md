@@ -112,6 +112,18 @@ visible content and does not guarantee rich results.
   variant stays lazy. No other proven bottleneck was found; the cinematic homepage was not
   altered.
 
+## E2. Accessibility (WCAG 2.2 AA practical target)
+
+Verified with axe-core (wcag2a/aa, 21aa, 22aa; serious + critical) on all 27 indexable
+routes in both themes, after scroll-reveal fades complete: **0 violations**. Owner-approved
+minimal fixes: dark faint grey `#747d8c → #7e8694`; violet text variant `#8076e8` on dark
+(decorative violet unchanged); showcase case-study accent text adjusted per theme only where
+it failed (e.g. light `#5b9bd5 → #416e97`, dark `#2856d8 → #5f81e2`; decorative uses
+unchanged); light-mode teal `#0d8076 → #0b7067`; breadcrumb/inline links subtly underlined
+(WCAG 1.4.1). Lighthouse Accessibility 100 on the pages measured. Keyboard, focus, reduced
+motion, no horizontal overflow at 360–1920 px and no theme flash are covered by
+`scripts/site/qa-site.mjs` (106/106).
+
 ## F. Outstanding external actions (need deployment or account access)
 
 1. **Fix `www.catchzone.co.uk` (HTTP 525).** In Cloudflare either add a Redirect Rule

@@ -123,3 +123,11 @@ orbit arcs are separate clean shapes; gradients sampled from the artwork).
 The icon reuses the identical approved "Z" vector from the company icon (in the
 School HR artwork the "Z" touches the "o", so it can't be isolated cleanly) and
 adds the School HR orbit and ball. Component: `src/components/brand/ProductLogo.tsx`.
+
+## Accessible text colours (final review pass, owner-approved)
+
+Minimal changes so all text meets WCAG AA (4.5:1): dark `--ink-faint-rgb` 126 134 148
+(was 116 125 140); light `--accent-cyan-rgb` 11 112 103; `--accent-iris-text-rgb` — a
+lighter violet used only by `.text-accent-iris` text on dark (borders, rings, glows and
+the 3D scenes keep `--accent-iris-rgb`); showcase accent text via `accentTextVars()`
+(`src/lib/accessibleColor.ts`), which leaves passing brand colours untouched.
