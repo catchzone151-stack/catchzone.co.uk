@@ -5,6 +5,7 @@ import type { ShowcaseProject, ShowcaseSection } from "@/data/showcase";
 import type { DeviceKind } from "@/components/showcase/DeviceFrame";
 import { DeviceFrame } from "@/components/showcase/DeviceFrame";
 import { viewport as viewportToken } from "@/lib/motion/tokens";
+import { accentTextVars } from "@/lib/accessibleColor";
 
 interface BlockProps {
   project: ShowcaseProject;
@@ -47,7 +48,7 @@ function SectionCopy({
   return (
     <div className={align === "center" ? "text-center" : ""}>
       {eyebrow && (
-        <p className="mono text-xs uppercase tracking-[0.25em]" style={{ color: accent }}>
+        <p className="sc-accent-text mono text-xs uppercase tracking-[0.25em]" style={accentTextVars(accent)}>
           {eyebrow}
         </p>
       )}

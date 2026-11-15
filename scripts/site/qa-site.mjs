@@ -46,10 +46,12 @@ async function revealAll(page) {
     const w = (ms) => new Promise((r) => setTimeout(r, ms));
     for (let y = 0; y <= document.documentElement.scrollHeight; y += 600) {
       window.scrollTo({ top: y, behavior: "instant" });
-      await w(50);
+      await w(250);
     }
-    window.scrollTo({ top: 0, behavior: "instant" });
   });
+  // Let scroll-reveal fades finish, so contrast is measured on final colours.
+  await page.waitForTimeout(1500);
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
 }
 
 const sm = await (await fetch(`${BASE}/sitemap.xml`)).text();
@@ -124,12 +126,8 @@ for (const theme of ["dark", "light"]) {
         .filter((x) => x.impact === "serious" || x.impact === "critical")
         .map((x) => ({ id: x.id, nodes: x.nodes.map((n) => n.html.slice(0, 90)) })),
     );
-    // KNOWN: pre-existing, approved designs that can't change without the
-    // owner's approval (dark mode must stay identical to the live site; the
-    // showcase accents come from the supplied asset pack). Reported, not hidden.
-    const isKnown = (id, h) =>
-      (id === "color-contrast" && (h.includes("text-accent-iris") || h.includes('style="color:#') || (theme === "dark" && h.includes("text-ink-faint")))) ||
-      (id === "link-in-text-block" && theme === "dark" && /href="\/(work|services)"/.test(h));
+    // No exemptions: every serious/critical violation is a finding.
+    const isKnown = () => false;
     const real = v.map((x) => ({ ...x, nodes: x.nodes.filter((h) => !isKnown(x.id, h)) })).filter((x) => x.nodes.length);
     const known = v.reduce((n, x) => n + x.nodes.length, 0) - real.reduce((n, x) => n + x.nodes.length, 0);
     if (known) knownIssues.push(`${theme} ${r}: ${known} node(s) — ${[...new Set(v.map((x) => x.id))].join(", ")}`);

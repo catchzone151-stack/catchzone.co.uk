@@ -3,6 +3,7 @@ import { sortedShowcaseProjects, type ShowcaseProject } from "@/data/showcase";
 import { ShowcaseSectionBlock } from "@/components/showcase/ShowcaseSectionBlock";
 import { Reveal } from "@/components/ui/Reveal";
 import { MagneticLink } from "@/components/ui/MagneticLink";
+import { accentTextVars } from "@/lib/accessibleColor";
 
 /**
  * Detail page for one of the seven showcase systems, rendered by
@@ -17,7 +18,7 @@ export function ShowcaseProjectPage({ project }: { project: ShowcaseProject }) {
       <section className="border-b border-line pb-16">
         <div className="shell">
           <p className="mono text-xs">
-            <Link href="/work" className="text-ink-muted underline-offset-4 hover:text-ink light:underline light:decoration-white/30">
+            <Link href="/work" className="text-ink-muted underline decoration-white/25 underline-offset-4 hover:text-ink hover:decoration-white/60">
               Work
             </Link>
             <span className="text-ink-faint"> / </span>
@@ -27,8 +28,8 @@ export function ShowcaseProjectPage({ project }: { project: ShowcaseProject }) {
           <div className="mt-6 flex flex-wrap items-start justify-between gap-6">
             <div>
               <p
-                className="mono text-xs uppercase tracking-[0.25em]"
-                style={{ color: project.accent.accent }}
+                className="sc-accent-text mono text-xs uppercase tracking-[0.25em]"
+                style={accentTextVars(project.accent.accent)}
               >
                 {project.category}
               </p>

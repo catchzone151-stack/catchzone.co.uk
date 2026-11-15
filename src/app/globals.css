@@ -10,12 +10,13 @@
   --surface-raised-rgb: 18 20 26;
   --ink-rgb: 230 235 240;
   --ink-muted-rgb: 130 139 154;
-  --ink-faint-rgb: 116 125 140;
+  --ink-faint-rgb: 126 134 148; /* AA ≥4.5:1 on all dark surfaces (was 116 125 140) */
   /* "white" tint used for hairlines and frosted fills; flips to near-black in light mode. */
   --tint-rgb: 255 255 255;
   --line-alpha: 0.07;
   --accent-cyan-rgb: 94 234 212;
   --accent-iris-rgb: 110 98 229;
+  --accent-iris-text-rgb: 128 118 232; /* violet for TEXT only: AA on dark surfaces */
 
   --void: rgb(var(--void-rgb));
   --surface: rgb(var(--surface-rgb));
@@ -50,6 +51,7 @@
   --line-alpha: 0.1;
   --accent-cyan-rgb: 11 112 103; /* light only: AA (≥4.5:1) for small teal text on pearl surfaces */
   --accent-iris-rgb: 98 84 214;
+  --accent-iris-text-rgb: 98 84 214;
 
   --void: rgb(var(--void-rgb));
   --surface: rgb(var(--surface-rgb));
@@ -74,11 +76,12 @@
   --surface-raised-rgb: 18 20 26;
   --ink-rgb: 230 235 240;
   --ink-muted-rgb: 130 139 154;
-  --ink-faint-rgb: 116 125 140;
+  --ink-faint-rgb: 126 134 148; /* AA ≥4.5:1 on all dark surfaces (was 116 125 140) */
   --tint-rgb: 255 255 255;
   --line-alpha: 0.07;
   --accent-cyan-rgb: 94 234 212;
   --accent-iris-rgb: 110 98 229;
+  --accent-iris-text-rgb: 128 118 232; /* violet for TEXT only: AA on dark surfaces */
   color: var(--ink);
 }
 
@@ -449,4 +452,22 @@ canvas {
 }
 [data-theme="light"] .product-contrast .text-accent-cyan {
   color: #0a6a61;
+}
+
+/* Accessible TEXT colours (WCAG AA). Decorative uses of the same colours
+   (borders, rings, glows, fills, 3D) are unchanged.
+   - Violet text uses a slightly lighter variant on dark surfaces.
+   - Showcase case-study accents: components pass the brand colour adjusted
+     per theme (only where the original fails 4.5:1) as --sc-d / --sc-l. */
+html .text-accent-iris {
+  color: rgb(var(--accent-iris-text-rgb) / var(--tw-text-opacity, 1));
+}
+.sc-accent-text {
+  color: var(--sc-d);
+}
+[data-theme="light"] .sc-accent-text {
+  color: var(--sc-l);
+}
+[data-theme="light"] .theme-dark .sc-accent-text {
+  color: var(--sc-d);
 }

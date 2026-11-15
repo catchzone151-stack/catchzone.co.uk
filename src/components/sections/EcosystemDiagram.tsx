@@ -14,6 +14,8 @@ interface EcosystemNode {
 
 const CYAN = "#5eead4";
 const IRIS = "#6e62e5";
+/** Text colour for a node accent: theme tokens (cyan is identical in dark; violet uses its AA text variant). */
+const textColor = (accent: string) => (accent === IRIS ? "rgb(var(--accent-iris-text-rgb))" : accent === CYAN ? "rgb(var(--accent-cyan-rgb))" : accent);
 
 const nodes: EcosystemNode[] = [
   { id: "website", label: "Website", angle: -90, accent: CYAN, description: "The customer-facing front door — marketing, conversion and the first impression of the product." },
@@ -259,7 +261,7 @@ export function EcosystemDiagram({
                 }`}
                 title={compact ? node.label : undefined}
               >
-                <span style={{ color: isActive ? node.accent : undefined }}>
+                <span style={{ color: isActive ? textColor(node.accent) : undefined }}>
                   <NodeGlyph id={node.id} />
                 </span>
                 {!compact && node.label}
@@ -283,7 +285,7 @@ export function EcosystemDiagram({
                   isActive ? "text-accent-cyan" : "text-ink"
                 }`}
               >
-                <span style={{ color: isActive ? node.accent : "#565f6e" }}>
+                <span style={{ color: isActive ? textColor(node.accent) : "#565f6e" }}>
                   <NodeGlyph id={node.id} />
                 </span>
                 <span className="flex-1">{node.label}</span>
@@ -308,7 +310,7 @@ export function EcosystemDiagram({
         transition={{ duration: 0.4 }}
         className={`mx-auto text-center ${compact ? "mt-4 block max-w-xs" : "mt-10 hidden max-w-lg md:block"}`}
       >
-        <p className="mono text-xs uppercase tracking-[0.25em]" style={{ color: active.accent }}>
+        <p className="mono text-xs uppercase tracking-[0.25em]" style={{ color: textColor(active.accent) }}>
           {active.label}
         </p>
         <p className="mt-3 text-base leading-relaxed text-ink-muted">{active.description}</p>

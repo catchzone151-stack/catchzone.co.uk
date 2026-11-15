@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ShowcaseProject } from "@/data/showcase";
 import { DeviceFrame } from "@/components/showcase/DeviceFrame";
 import { Reveal } from "@/components/ui/Reveal";
+import { accentTextVars } from "@/lib/accessibleColor";
 
 /**
  * Work-landing thumbnail for the six supporting product systems. The device
@@ -52,8 +53,8 @@ export function ShowcaseCard({
             {project.tagline}
           </p>
           <span
-            className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold"
-            style={{ color: project.accent.accent }}
+            className="sc-accent-text mt-4 inline-flex items-center gap-1.5 text-xs font-semibold"
+            style={accentTextVars(project.accent.accent)}
           >
             View project
             <span aria-hidden="true">→</span>

@@ -10,6 +10,7 @@ import { ShowcaseCard } from "@/components/showcase/ShowcaseCard";
 import { DeviceFrame } from "@/components/showcase/DeviceFrame";
 import { Reveal } from "@/components/ui/Reveal";
 import { pageMetadata } from "@/lib/seo";
+import { accentTextVars } from "@/lib/accessibleColor";
 
 export const metadata: Metadata = pageMetadata({
   title: "Our Work — Software Case Studies | CatchZone",
@@ -55,8 +56,8 @@ export default function WorkPage() {
 
             <div className="mt-14 md:mt-16">
               <p
-                className="mono text-xs uppercase tracking-[0.25em]"
-                style={{ color: foundryLane.accent.accent }}
+                className="sc-accent-text mono text-xs uppercase tracking-[0.25em]"
+                style={accentTextVars(foundryLane.accent.accent)}
               >
                 {foundryLane.category}
               </p>

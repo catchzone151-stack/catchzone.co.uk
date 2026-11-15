@@ -52,7 +52,7 @@ export function ServiceHero({ service, coreState }: ServiceHeroProps) {
 
       <div className="shell relative z-10">
         <p className="mono text-xs">
-          <Link href="/services" className="text-ink-muted underline-offset-4 hover:text-ink light:underline light:decoration-white/30">
+          <Link href="/services" className="text-ink-muted underline decoration-white/25 underline-offset-4 hover:text-ink hover:decoration-white/60">
             Services
           </Link>
           <span className="text-ink-faint"> / </span>
