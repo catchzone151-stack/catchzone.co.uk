@@ -92,8 +92,8 @@ export function SchoolHrHero() {
       />
       <div className="shell relative grid gap-12 pb-20 pt-8 md:pt-12 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-10 lg:pb-28">
         <div>
-          <ProductLogo product="school-hr" priority className="-ml-3 h-[120px] w-auto sm:h-[140px]" />
-          <h1 id="hr-hero-title" className="mt-6 font-display text-4xl font-bold leading-[1.04] text-ink sm:text-5xl md:text-6xl lg:text-[3.6rem]">
+          <ProductLogo product="school-hr" priority className="-ml-2 h-auto w-[170px] sm:w-[190px]" />
+          <h1 id="hr-hero-title" className="mt-5 font-display text-4xl font-bold leading-[1.04] text-ink sm:text-5xl md:text-6xl lg:text-[3.6rem]">
             School HR, without the paper chase.
           </h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">

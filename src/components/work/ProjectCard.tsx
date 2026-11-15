@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Project, ProjectStatus } from "@/data/projects";
 import { Reveal } from "@/components/ui/Reveal";
 import { BrandDeviceArt } from "@/components/work/BrandDeviceArt";
+import { StoreBadges } from "@/components/work/StoreBadges";
 
 const STATUS_STYLE: Record<ProjectStatus, string> = {
   live: "text-accent-cyan",
@@ -16,8 +17,9 @@ export function ProjectCard({ project, delay = 0 }: { project: Project; delay?: 
       delay={delay}
       className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-colors hover:border-ink/25"
     >
-      <Link href={`/work/${project.slug}`} className="flex h-full flex-col">
-        <div className="relative aspect-[4/3] overflow-hidden bg-surface-raised">
+      <Link href={`/work/${project.slug}`} className="flex flex-1 flex-col">
+        {/* Banner art is 1024×500: show it whole; other cards keep 4:3 device art. */}
+        <div className={`relative overflow-hidden bg-surface-raised ${project.heroAsset ? "aspect-[1024/500]" : "aspect-[4/3]"}`}>
           {project.heroAsset ? (
             <Image
               src={project.heroAsset}
@@ -61,6 +63,19 @@ export function ProjectCard({ project, delay = 0 }: { project: Project; delay?: 
           </p>
         </div>
       </Link>
+      {/* Store badges sit outside the case-study link (no nested links). */}
+      {project.status === "live" && (project.playStoreUrl || project.appStoreUrl) && (
+        <div className="border-t border-line px-6 py-4">
+          <StoreBadges
+            playStoreUrl={project.playStoreUrl}
+            appStoreUrl={project.appStoreUrl}
+            appName={project.title}
+            size="sm"
+            iosPlaceholder={false}
+            iosNote=""
+          />
+        </div>
+      )}
     </Reveal>
   );
 }

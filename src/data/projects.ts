@@ -69,12 +69,12 @@ export const projects: Project[] = [
       "Structured Islamic learning through quests, quizzes and global challenges.",
     type: "Mobile App",
     status: "live",
-    statusLabel: "Live on Google Play · iOS coming October 2026",
+    statusLabel: "Live on Google Play and the App Store",
     featured: true,
     heroAsset: "/assets/images/islamquest/IslamQuestBanner.png",
     // The eight approved showcase screens, in order (see islamquestShowcase.ts).
     screenshots: ISLAMQUEST_SCREENS.map((screen) => screen.src),
-    platforms: ["Android — Google Play", "iOS — coming October 2026"],
+    platforms: ["Android — Google Play", "iOS — App Store"],
     capabilities: [
       "Cross-platform mobile engineering",
       "Supabase-backed accounts, sync and premium entitlements",
@@ -91,8 +91,8 @@ export const projects: Project[] = [
       "Offline-first content so lessons and quizzes work without a connection",
       "No ads, no tracking, no third-party ad networks",
     ],
-    playStoreUrl:
-      "https://play.google.com/store/apps/details?id=com.islamquest.app&hl=en_GB",
+    playStoreUrl: "https://play.google.com/store/apps/details?id=com.islamquest.app",
+    appStoreUrl: "https://apps.apple.com/gb/app/islamquest/id6786728172",
     accent: {
       chassis: ["#2b2b2f", "#0d0d0f"],
       ring: "rgba(212,175,55,0.35)",
@@ -107,10 +107,10 @@ export const projects: Project[] = [
       "A privacy-safe period tracker designed for teenagers.",
     type: "Mobile App",
     status: "live",
-    statusLabel: "Live on Google Play · iOS coming October 2026",
+    statusLabel: "Live on Google Play · iOS planned for December 2026",
     featured: true,
     heroAsset: "/assets/images/Lumi/LumiBanner.png",
-    platforms: ["Android — Google Play", "iOS — coming October 2026"],
+    platforms: ["Android — Google Play", "iOS — planned for December 2026"],
     capabilities: [
       "Privacy-first data model — no unnecessary personal data collected",
       "Supabase-backed account and data layer",
@@ -132,10 +132,10 @@ export const projects: Project[] = [
       "Exam preparation for the CSCS / CITB Health, Safety & Environment test and CSCS card routes.",
     type: "Mobile App",
     status: "live",
-    statusLabel: "Live on Google Play · iOS coming October 2026",
+    statusLabel: "Live on Google Play · iOS planned for December 2026",
     featured: true,
     heroAsset: "/assets/images/cscs/CSCSBanner.png",
-    platforms: ["Android — Google Play", "iOS — coming October 2026"],
+    platforms: ["Android — Google Play", "iOS — planned for December 2026"],
     capabilities: [
       "520-question CSCS / CITB HS&E practice bank",
       "Timed mock exam mode simulating the real CSCS Operatives Test (50 questions / 45 minutes)",
@@ -156,13 +156,13 @@ export const projects: Project[] = [
   {
     slug: "rawdah-cycle",
     title: "Rawdah Cycle",
-    shortDescription: "A CatchZone product, live on Google Play.",
+    shortDescription: "A CatchZone cycle and wellbeing tracker, live on Google Play and the App Store.",
     type: "Mobile App",
     status: "live",
-    statusLabel: "Live on Google Play · iOS coming October 2026",
+    statusLabel: "Live on Google Play and the App Store",
     featured: true,
     heroAsset: "/assets/images/rawdah-cycle/RawdahCycleBanner.png",
-    platforms: ["Android — Google Play", "iOS — coming October 2026"],
+    platforms: ["Android — Google Play", "iOS — App Store"],
     capabilities: [
       "Cycle and phase tracking — period, ovulation and fertile window",
       "Mood, symptom and energy logging with trend charts",
@@ -170,6 +170,7 @@ export const projects: Project[] = [
       "Wider wellbeing tracking alongside cycle data (e.g. skin and hair)",
     ],
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.catchzone.rawdahcycle",
+    appStoreUrl: "https://apps.apple.com/us/app/rawdah-islamic-period-tracker/id6816722339",
     accent: {
       chassis: ["#1f3320", "#0a120a"],
       ring: "rgba(240,226,182,0.4)",

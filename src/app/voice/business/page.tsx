@@ -6,6 +6,7 @@ import { VoiceIntentButton } from "@/components/voice/VoiceIntentButton";
 import { Reveal } from "@/components/ui/Reveal";
 import { LANGUAGE_COUNT } from "@/data/voice/languages";
 import { jsonLd, pageMetadata } from "@/lib/seo";
+import { VoiceDemoCta } from "@/components/voice/VoiceDemoCta";
 
 const title = "Voice Translation for Contact Centres | CatchZone Voice";
 const description =
@@ -132,12 +133,11 @@ export default function VoiceBusinessPage() {
               >
                 Book a Demonstration
               </VoiceIntentButton>
-              <Link
-                href="/voice#studio"
-                className="inline-flex min-h-[48px] items-center rounded-full border border-white/15 px-6 text-sm font-semibold text-ink transition-colors hover:border-accent-cyan/60 hover:text-accent-cyan"
-              >
-                Try the live demo
-              </Link>
+              <VoiceDemoCta
+                bookLabel="Explore the Conversation Studio"
+                bookHref="/voice#studio"
+                className="group inline-flex min-h-[48px] items-center gap-2 rounded-full border border-white/15 px-6 text-sm font-semibold text-ink transition-colors hover:border-accent-cyan/60 hover:text-accent-cyan"
+              />
             </div>
           </div>
           <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line">

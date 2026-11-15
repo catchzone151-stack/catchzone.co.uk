@@ -5,6 +5,7 @@ import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 import { MagneticLink } from "@/components/ui/MagneticLink";
 import { projects } from "@/data/projects";
 import { pageMetadata } from "@/lib/seo";
+import { TeamSection } from "@/components/team/TeamSection";
 
 export const metadata: Metadata = pageMetadata({
   title: "About CatchZone — UK Software Engineering Company",
@@ -97,6 +98,8 @@ export default function AboutPage() {
           </Reveal>
         </div>
       </section>
+
+      <TeamSection />
 
       <section className="relative overflow-hidden border-t border-line bg-surface py-16 md:py-20">
         <AtmosphereLayer />

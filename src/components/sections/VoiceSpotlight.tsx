@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 import { VoiceWaveform } from "@/components/voice/VoiceWaveform";
+import { VoiceDemoCta } from "@/components/voice/VoiceDemoCta";
 
 const CAPABILITIES = [
   "Spoken translation in both directions",
@@ -78,15 +79,9 @@ export function VoiceSpotlight() {
               Explore CatchZone Voice
               <span aria-hidden="true">→</span>
             </Link>
-            <Link
-              href="/voice#studio"
-              className="group inline-flex min-h-[44px] items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-accent-cyan"
-            >
-              Try the live demo
-              <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">
-                →
-              </span>
-            </Link>
+            {/* "Book a Demonstration" while the public demo is paused; switches to the
+                live-trial wording only when the server reports it ready. */}
+            <VoiceDemoCta className="group inline-flex min-h-[44px] items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-accent-cyan" />
           </div>
         </Reveal>
         <Reveal delay={0.1}>

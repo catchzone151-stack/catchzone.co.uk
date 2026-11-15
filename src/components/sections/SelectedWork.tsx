@@ -6,7 +6,7 @@ import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 
 export function SelectedWork() {
   // The homepage feature is CatchZone Voice. IslamQuest stays a featured
-  // project on /work (FeaturedProjectCard) but is not shown on the homepage.
+  // Live card on /work (with its own case study) but is not shown on the homepage.
   const otherLive = featuredProjects.filter((p) => p.status === "live" && p.slug !== "islamquest");
 
   return (

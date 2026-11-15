@@ -5,6 +5,7 @@ import { SelectedWork } from "@/components/sections/SelectedWork";
 import { Ecosystem } from "@/components/sections/Ecosystem";
 import { Process } from "@/components/sections/Process";
 import { ProjectCTA } from "@/components/sections/ProjectCTA";
+import { TeamPreview } from "@/components/team/TeamPreview";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -24,6 +25,8 @@ export default function HomePage() {
       <WhatWeBuild />
       <Ecosystem />
       <Process />
+      {/* The final chapter: the people behind the work, then the call to build. */}
+      <TeamPreview />
       <ProjectCTA />
     </>
   );

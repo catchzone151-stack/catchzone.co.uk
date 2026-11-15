@@ -102,7 +102,7 @@ export default async function ProjectPage({
           </div>
 
           <div className="mt-8 flex flex-wrap items-start gap-6">
-            <StoreBadges playStoreUrl={project.playStoreUrl} appStoreUrl={project.appStoreUrl} />
+            <StoreBadges playStoreUrl={project.playStoreUrl} appStoreUrl={project.appStoreUrl} appName={project.title} />
             {project.internalUrl && (
               <Link
                 href={project.internalUrl}
@@ -145,7 +145,11 @@ export default async function ProjectPage({
             <BrandDeviceArt
               title={project.title}
               statusLabel={
-                project.status === "live" ? "Live on Google Play" : STATUS_LABEL[project.status]
+                project.status === "live"
+                  ? project.appStoreUrl
+                    ? "Live on Google Play & App Store"
+                    : "Live on Google Play"
+                  : STATUS_LABEL[project.status]
               }
               accent={project.accent}
               glyph={project.brandGlyph}

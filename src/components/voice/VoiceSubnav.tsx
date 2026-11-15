@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { jsonLd as serializeJsonLd } from "@/lib/seo";
 
@@ -44,25 +43,11 @@ export function VoiceSubnav({
         />
       )}
       <div className="flex flex-col gap-4 border-b border-line pb-4 sm:flex-row sm:items-center sm:justify-between">
-        <Link href="/voice" className="flex items-center" aria-label="CatchZone Voice overview">
-          {/* Approved CatchZone Voice logo, rendered from the vector master:
-              Logo-1 (white lettering) in dark mode, Logo-2 (dark lettering) in light mode. */}
-          <Image
-            src="/brand/voice/catchzone-voice-logo-dark.webp"
-            alt="CatchZone Voice"
-            width={1100}
-            height={201}
-            sizes="200px"
-            className="theme-only-dark h-8 w-auto sm:h-9"
-          />
-          <Image
-            src="/brand/voice/catchzone-voice-logo-light.webp"
-            alt="CatchZone Voice"
-            width={1100}
-            height={219}
-            sizes="200px"
-            className="theme-only-light h-8 w-auto sm:h-9"
-          />
+        {/* Product name as text: the Voice wordmark now lives in the /voice hero,
+            so it never stacks under the CatchZone company logo. */}
+        <Link href="/voice" className="flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-accent-cyan">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent-cyan" aria-hidden="true" />
+          CatchZone Voice
         </Link>
         <nav aria-label="CatchZone Voice" className="-mx-1 flex gap-1 overflow-x-auto">
           {LINKS.map((l) => {

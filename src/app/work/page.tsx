@@ -3,7 +3,6 @@ import Link from "next/link";
 import { featuredProjects, roadmapCategories } from "@/data/projects";
 import { clientWork } from "@/data/clientWork";
 import { sortedShowcaseProjects } from "@/data/showcase";
-import { FeaturedProjectCard } from "@/components/work/FeaturedProjectCard";
 import { ProjectCard } from "@/components/work/ProjectCard";
 import { ClientWorkCard } from "@/components/work/ClientWorkCard";
 import { ShowcaseCard } from "@/components/showcase/ShowcaseCard";
@@ -19,10 +18,13 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function WorkPage() {
-  const [heroApp, ...restApps] = featuredProjects;
-  const live = restApps.filter((p) => p.status === "live");
-  const productLab = restApps.filter((p) => p.status === "product-lab");
-  const inDevelopment = restApps.filter((p) => p.status === "in-development");
+  // Live apps in the owner-approved order (IslamQuest last; no separate featured hero).
+  const LIVE_ORDER = ["lumi", "cscs", "rawdah-cycle", "islamquest"];
+  const live = featuredProjects
+    .filter((p) => p.status === "live")
+    .sort((a, b) => LIVE_ORDER.indexOf(a.slug) - LIVE_ORDER.indexOf(b.slug));
+  const productLab = featuredProjects.filter((p) => p.status === "product-lab");
+  const inDevelopment = featuredProjects.filter((p) => p.status === "in-development");
   const sortedClientWork = [...clientWork].sort((a, b) => a.order - b.order);
 
   const [foundryLane, ...otherSystems] = sortedShowcaseProjects;
@@ -110,8 +112,8 @@ export default function WorkPage() {
         </section>
       )}
 
-      {/* 3. CatchZone-owned apps/products — the heading leads straight into
-          the IslamQuest Featured Build (one section, no divider between). */}
+      {/* 3. CatchZone-owned apps — heading, then the Live grid (IslamQuest is
+          the last Live card; its full case study stays at /work/islamquest). */}
       <section className="overflow-x-clip pb-16 pt-24 md:pb-20 md:pt-32">
         <div className="shell">
           <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
@@ -120,11 +122,6 @@ export default function WorkPage() {
           <h2 className="mt-4 max-w-2xl font-display text-2xl font-bold text-ink md:text-3xl">
             Real apps, designed, built and operated by CatchZone.
           </h2>
-          {heroApp && (
-            <div className="mt-16 md:mt-20">
-              <FeaturedProjectCard project={heroApp} />
-            </div>
-          )}
         </div>
       </section>
 
@@ -132,7 +129,7 @@ export default function WorkPage() {
         <section className="pb-16 md:pb-20">
           <div className="shell">
             <h2 className="font-display text-xl font-bold text-ink">Live</h2>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
               {live.map((project, i) => (
                 <ProjectCard key={project.slug} project={project} delay={i * 0.06} />
               ))}

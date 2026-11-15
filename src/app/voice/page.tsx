@@ -6,6 +6,7 @@ import { VoiceSubnav } from "@/components/voice/VoiceSubnav";
 import { Reveal } from "@/components/ui/Reveal";
 import { LANGUAGE_COUNT } from "@/data/voice/languages";
 import { jsonLd, pageMetadata } from "@/lib/seo";
+import { ProductLogo } from "@/components/brand/ProductLogo";
 
 const title = "CatchZone Voice — Real-Time AI Voice Translation";
 const description = `Two-way, real-time AI voice translation for customer conversations, with live captions and spoken output in ${LANGUAGE_COUNT} languages. Book a demonstration of CatchZone Voice.`;
@@ -96,10 +97,12 @@ export default function VoicePage() {
         <div className="shell relative pt-8 md:pt-12">
           <div className="grid gap-10 xl:grid-cols-[0.8fr_1.2fr] xl:items-start xl:gap-14">
             <div className="mx-auto max-w-4xl text-center xl:sticky xl:top-28 xl:mx-0 xl:pt-8 xl:text-left">
-              <p className="mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
-                CatchZone Voice · Real-time AI voice translation
+              {/* Product wordmark in the hero (secondary to the CatchZone logo in the header). */}
+              <ProductLogo product="voice" className="mx-auto h-auto w-[190px] sm:w-[220px] xl:mx-0" />
+              <p className="mt-6 mono text-xs uppercase tracking-[0.25em] text-accent-cyan">
+                Real-time AI voice translation
               </p>
-              <h1 className="mt-5 font-display text-4xl font-bold leading-[1.04] text-ink sm:text-5xl md:text-6xl xl:text-[3.4rem]">
+              <h1 className="mt-4 font-display text-4xl font-bold leading-[1.04] text-ink sm:text-5xl md:text-6xl xl:text-[3.4rem]">
                 <span className="block">Speak naturally.</span>
                 <span className="block">Understand in real time.</span>
               </h1>
