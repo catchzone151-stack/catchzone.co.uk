@@ -42,7 +42,7 @@ export default async function ProductLabCategoryPage({
       <section className="border-b border-line pb-16">
         <div className="shell">
           <p className="mono text-xs">
-            <Link href="/work" className="text-ink-muted hover:text-ink">
+            <Link href="/work" className="text-ink-muted underline-offset-4 hover:text-ink light:underline light:decoration-white/30">
               Work
             </Link>
             <span className="text-ink-faint"> / </span>

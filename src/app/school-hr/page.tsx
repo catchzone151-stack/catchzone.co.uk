@@ -125,7 +125,7 @@ export default function SchoolHrPage() {
       <SchoolHrHero />
 
       {/* B — Interactive workflow studio */}
-      <section id="workflows" aria-labelledby="workflows-title" className="scroll-mt-24 border-t border-line py-16 md:py-24">
+      <section id="workflows" aria-labelledby="workflows-title" className="scroll-mt-24 overflow-x-clip border-t border-line py-16 md:py-24">
         <div className="shell">
           <SectionHead eyebrow="Interactive product preview" title="Step through the workflows." id="workflows-title">
             Move a request from submission to record and see each stage from the right person’s view.

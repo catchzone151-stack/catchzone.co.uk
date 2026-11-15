@@ -244,7 +244,7 @@ export function RolePerspectives() {
         role="tabpanel"
         aria-labelledby={`role-tab-${role}`}
         tabIndex={0}
-        className="mt-6 grid gap-6 focus:outline-none lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-10"
+        className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 focus:outline-none lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-10"
       >
         <div className="lg:pt-4">
           <p className={`mono text-[11px] uppercase tracking-[0.2em] ${ROLE_TONE[role].text}`}>{ROLES[role].label}</p>

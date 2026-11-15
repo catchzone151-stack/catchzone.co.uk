@@ -48,7 +48,7 @@
   --ink-faint-rgb: 98 106 120;
   --tint-rgb: 14 17 22;
   --line-alpha: 0.1;
-  --accent-cyan-rgb: 13 128 118;
+  --accent-cyan-rgb: 11 112 103; /* light only: AA (≥4.5:1) for small teal text on pearl surfaces */
   --accent-iris-rgb: 98 84 214;
 
   --void: rgb(var(--void-rgb));

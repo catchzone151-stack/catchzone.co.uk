@@ -809,7 +809,7 @@ export function WorkflowStudio() {
 
   return (
     // Mobile order: choose → next hint → app → progress. Desktop: controls left, app right.
-    <div className="grid gap-5 lg:grid-cols-[300px_1fr] lg:grid-rows-[auto_auto_1fr] lg:gap-x-8">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[300px_1fr] lg:grid-rows-[auto_auto_1fr] lg:gap-x-8">
       <div className="lg:col-start-1 lg:row-start-1">
         <p className="mono text-[11px] uppercase tracking-[0.2em] text-ink-faint" id="studio-choose">
           Choose a workflow

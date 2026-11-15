@@ -114,7 +114,7 @@ export function SchoolHrEnquiryForm() {
         <p className="font-display text-2xl font-bold text-ink">Thank you — request received.</p>
         <p className="mt-3 text-sm leading-relaxed text-ink-muted">
           We’ll reply to the email address you provided to arrange a demonstration. If it’s urgent, email{" "}
-          <a href={`mailto:${CONTACT_EMAIL}`} className="text-accent-cyan hover:underline">
+          <a href={`mailto:${CONTACT_EMAIL}`} className="text-accent-cyan underline decoration-accent-cyan/40 underline-offset-2 hover:decoration-accent-cyan">
             {CONTACT_EMAIL}
           </a>
           .

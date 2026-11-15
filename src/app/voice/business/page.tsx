@@ -266,7 +266,7 @@ export default function VoiceBusinessPage() {
             </h2>
             <p className="mt-5 text-sm leading-relaxed text-ink-muted">
               Can’t find your answer?{" "}
-              <a href="mailto:info@catchzone.co.uk" className="text-accent-cyan hover:underline">
+              <a href="mailto:info@catchzone.co.uk" className="text-accent-cyan underline decoration-accent-cyan/40 underline-offset-2 hover:decoration-accent-cyan">
                 info@catchzone.co.uk
               </a>
             </p>
@@ -288,7 +288,7 @@ export default function VoiceBusinessPage() {
                   {f.q.startsWith("Which languages") && (
                     <>
                       {" "}
-                      <Link href="/voice/languages" className="text-accent-cyan hover:underline">
+                      <Link href="/voice/languages" className="text-accent-cyan underline decoration-accent-cyan/40 underline-offset-2 hover:decoration-accent-cyan">
                         See all supported languages
                       </Link>
                       .

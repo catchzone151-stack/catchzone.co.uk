@@ -116,7 +116,7 @@ export default function VoicePage() {
               </ul>
               <p className="mt-7 hidden text-sm text-ink-muted sm:block">
                 Starts in English ⇄ Spanish. Choose any two of{" "}
-                <Link href="/voice/languages" className="text-accent-cyan hover:underline">
+                <Link href="/voice/languages" className="text-accent-cyan underline decoration-accent-cyan/40 underline-offset-2 hover:decoration-accent-cyan">
                   {LANGUAGE_COUNT} supported languages
                 </Link>
                 .
