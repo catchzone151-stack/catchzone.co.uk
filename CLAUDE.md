@@ -15,6 +15,8 @@ For the production launch dependency/security pass, read `docs/CATCHZONE_LAUNCH_
 
 For CatchZone Voice work (`/voice*`, the homepage Voice spotlight, the public demo), read `docs/CATCHZONE_VOICE.md` and `docs/VOICE_DEMO_OPERATIONS.md`. Never enable paid Soniox processing or expose `SONIOX_DEMO_API_KEY` client-side; the demo must stay fail-closed until its documented prerequisites are met.
 
+For CatchZone School HR (`/school-hr`), the Products navigation and `/products`, read `docs/CATCHZONE_SCHOOL_HR.md`. The website preview uses fictional browser-side data only; never connect it to the School HR application, and never present planned modules or proposed prices as live.
+
 For logos, the light/dark theme system or the pull-string switch, read `docs/THEME_AND_BRANDING.md`. Dark mode is the default and must remain visually identical to the live site; never alter the approved logo artwork.
 
 ## Working rules

@@ -19,7 +19,8 @@ The Voice waveform is a dense multi-strand photographic texture that cannot
 be faithfully expressed as a handful of vector paths, so it is kept as a
 cleaned raster (haze/speckle removed) embedded under the vector lettering.
 
-Usage: python3 scripts/brand/vectorise_logo.py <references dir> <output dir>
+Usage: python3 scripts/brand/vectorise_logo.py <references dir> <output dir> [all|company|voice|school-hr]
+(School HR: the output dir must already contain catchzone-icon.svg for the product icon.)
 Requires: numpy, Pillow, potracer (pure-Python potrace port).
 """
 import base64
@@ -358,6 +359,160 @@ def voice(ref_dark, ref_light, out_dir):
         print("voice", variant, "viewBox", vb, "shift", (dx, dy), "wave bytes", len(buf.getvalue()))
 
 
+# --------------------------------------------------------------------------
+# CatchZone School HR product logo
+# --------------------------------------------------------------------------
+
+def inscribed_circle(m):
+    """Centre/radius of the largest disc inside boolean mask m (coarse brute force)."""
+    ys, xs = np.nonzero(m)
+    y0, x0 = max(0, ys.min() - 60), max(0, xs.min() - 60)
+    F = np.argwhere(~m[y0:ys.max() + 60, x0:xs.max() + 60]) + [y0, x0]
+    best = (0.0, 0.0, 0.0)
+    for y, x in zip(ys[::5], xs[::5]):
+        d = float(np.sqrt(((F[:, 0] - y) ** 2 + (F[:, 1] - x) ** 2).min()))
+        if d > best[2]:
+            best = (float(x), float(y), d)
+    return best
+
+
+def school_hr_variant(ref, variant):
+    """Trace one approved School HR reference (each file is traced from itself:
+    the dark and light renders differ slightly in geometry)."""
+    dark = variant == "dark"
+    A = load(ref)
+    r, g, b, a, lum, sat = channels(A)
+    H, W = a.shape
+    yy = np.arange(H)[:, None] * np.ones((1, W))
+    xx = np.ones((H, 1)) * np.arange(W)[None, :]
+
+    # Orbit ball: largest neutral disc in the top-right (white on dark, near-black on light)
+    ballm = (a > 0.6) & (sat < 50) & ((lum > 225) if dark else (lum < 80)) & (xx > 1500) & (yy < 260)
+    bx, by, br = inscribed_circle(ballm)
+    br += 1.5  # the inscribed disc sits just inside the anti-aliased edge
+    near_ball = np.hypot(xx - bx, yy - by) < br * 1.75
+
+    # Lettering: neutral pixels that contrast with the intended background.
+    # (The dark file's soft black halo is excluded by the luminance test.)
+    if dark:
+        ink = a * np.clip((lum - 150) / 60, 0, 1) * (sat < 60)
+    else:
+        ink = a * np.clip((150 - lum) / 70, 0, 1) * (sat < 70)
+    ink = ink * (yy > 190) * (yy < 600) * ~near_ball
+    split = 455 if dark else 462  # gap row between "CatchZone" and "School HR"
+    catch_soft = ink * (yy < split)
+    school_soft = ink * (yy >= split)
+
+    colour = (a > 0.35) & (sat > 60) & ~(ink > 0.5)
+    comps = components(colour, 400)
+    zone, rest = [], []
+    for ys, xs in comps:
+        if 200 < ys.mean() < 450 and xs.mean() > 1040 and len(ys) > 6000:
+            zone.append((ys, xs))
+        else:
+            rest.append((ys, xs))
+    zone_m = comp_mask(a.shape, zone)
+    orbit_m = comp_mask(a.shape, rest)
+    if dark:
+        # the upper arc has a white-hot core near the ball: keep it in the arc shape
+        orbit_m |= (a > 0.5) & (lum > 200) & (sat < 60) & (yy < 200) & (xx > 600)
+    orbit_m &= ~near_ball
+    oc = components(orbit_m, 300)
+    up_m = comp_mask(a.shape, [c for c in oc if c[0].mean() < 330])
+    lo_m = comp_mask(a.shape, [c for c in oc if c[0].mean() >= 330])
+
+    paths = {
+        "catch": smooth_trace(catch_soft),
+        "school": smooth_trace(school_soft, blur=1.8, turd=20),
+        "zone": smooth_trace(zone_m.astype(np.float32) * a),
+        "orbitUpper": smooth_trace(up_m.astype(np.float32) * a, blur=3.0),
+        "orbitLower": smooth_trace(lo_m.astype(np.float32) * a, blur=3.0),
+    }
+    z = gradient_stops(A, zone_m & (sat > 100), 0, 6, 100)
+    ou = gradient_stops(A, up_m & (a > 0.6), 1, 8, 25 if dark else 60)
+    ol = gradient_stops(A, lo_m & (a > 0.6), 1, 8, 60)
+
+    allm = (ink > 0.5) | zone_m | up_m | lo_m | near_ball
+    ys, xs = np.nonzero(allm)
+    pad = 24
+    vb = (int(xs.min() - pad), int(ys.min() - pad), int(xs.max() - xs.min() + 2 * pad), int(ys.max() - ys.min() + 2 * pad))
+    return dict(paths=paths, z=z, ou=ou, ol=ol, ball=(bx, by, br), vb=vb, zone_m=zone_m, catch=catch_soft)
+
+
+def school_hr(ref_dark, ref_light, out_dir):
+    for variant, ref in (("dark", ref_dark), ("light", ref_light)):
+        t = school_hr_variant(ref, variant)
+        p, (bx, by, br), vb = t["paths"], t["ball"], t["vb"]
+        ink_col = "#ffffff" if variant == "dark" else "#14181d"
+        if variant == "dark":
+            ball = (
+                f'<circle cx="{bx:.1f}" cy="{by:.1f}" r="{br * 2.3:.1f}" fill="url(#hr-ballglow-dark)"/>'
+                f'<circle cx="{bx:.1f}" cy="{by:.1f}" r="{br:.1f}" fill="url(#hr-ball-dark)"/>'
+            )
+            defs_ball = (
+                '<radialGradient id="hr-ball-dark" cx="0.42" cy="0.4" r="0.62"><stop offset="0" stop-color="#ffffff"/>'
+                '<stop offset="0.6" stop-color="#f1fffb"/><stop offset="1" stop-color="#bff8ea"/></radialGradient>'
+                '<radialGradient id="hr-ballglow-dark" cx="0.5" cy="0.5" r="0.5"><stop offset="0.38" stop-color="#5ff2d2" stop-opacity="0.85"/>'
+                '<stop offset="0.6" stop-color="#3cf0c0" stop-opacity="0.32"/><stop offset="1" stop-color="#3cf0c0" stop-opacity="0"/></radialGradient>'
+            )
+        else:
+            # approved light artwork: near-black ball inside a mint ring
+            ball = (
+                f'<circle cx="{bx:.1f}" cy="{by:.1f}" r="{br * 1.4:.1f}" fill="url(#hr-ring-light)"/>'
+                f'<circle cx="{bx:.1f}" cy="{by:.1f}" r="{br:.1f}" fill="#16191d"/>'
+            )
+            defs_ball = (
+                '<radialGradient id="hr-ring-light" cx="0.5" cy="0.5" r="0.5"><stop offset="0.68" stop-color="#7ff3d2"/>'
+                '<stop offset="0.86" stop-color="#3fe3b8"/><stop offset="1" stop-color="#3fe3b8" stop-opacity="0.6"/></radialGradient>'
+            )
+        svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb[0]} {vb[1]} {vb[2]} {vb[3]}" width="{vb[2]}" height="{vb[3]}" role="img" aria-label="CatchZone School HR">
+<title>CatchZone School HR</title>
+<defs>
+{grad_def("hr-zone-" + variant, 0, *t["z"])}
+{grad_def("hr-orbit-u-" + variant, 1, *t["ou"])}
+{grad_def("hr-orbit-l-" + variant, 1, *t["ol"])}
+{defs_ball}
+</defs>
+<path fill="url(#hr-orbit-u-{variant})" d="{p["orbitUpper"]}"/>
+<path fill="url(#hr-orbit-l-{variant})" d="{p["orbitLower"]}"/>
+<path fill="{ink_col}" fill-rule="evenodd" d="{p["catch"]}"/>
+<path fill="url(#hr-zone-{variant})" fill-rule="evenodd" d="{p["zone"]}"/>
+<path fill="{ink_col}" fill-rule="evenodd" d="{p["school"]}"/>
+{ball}
+</svg>
+'''
+        with open(f"{out_dir}/catchzone-school-hr-logo-{variant}.svg", "w") as fh:
+            fh.write(svg)
+        print("school-hr", variant, "viewBox", vb, "ball", tuple(round(v) for v in (bx, by, br)), "zone", t["z"][2])
+    school_hr_icon(f"{out_dir}/catchzone-icon.svg", f"{out_dir}/catchzone-school-hr-icon.svg")
+
+
+def school_hr_icon(company_icon, out):
+    """Compact School HR app icon. The "Z" in the School HR artwork touches the
+    "o", so the icon reuses the identical approved "Z" vector from the company
+    icon and adds the School HR orbit arc and ball."""
+    import re
+    src = open(company_icon).read()
+    vx, vy, vw, vh = (float(v) for v in re.search(r'viewBox="([^"]+)"', src).group(1).split())
+    grad = re.search(r"<linearGradient.*?</linearGradient>", src, re.S).group(0).replace("czi-zone", "hri-zone")
+    zpath = re.search(r'<path fill="url\(#czi-zone\)" d="([^"]+)"', src).group(1)
+    half = vw / 2
+    cx, cy = vx + half, vy + half
+    bx, by, r = cx + half * 0.6, cy - half * 0.6, half * 0.1
+    icon = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vx} {vy} {vw} {vh}" role="img" aria-label="CatchZone School HR">
+<title>CatchZone School HR</title>
+<defs>{grad}<linearGradient id="hri-orbit" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#2563eb"/><stop offset="0.45" stop-color="#14e3e0"/><stop offset="1" stop-color="#3cf0c0"/></linearGradient></defs>
+<rect x="{vx}" y="{vy}" width="{vw}" height="{vh}" rx="{half * 0.44:.1f}" fill="#040406"/>
+<path d="M{cx - half * 0.82:.1f} {cy + half * 0.38:.1f}C{cx - half * 0.35:.1f} {cy + half * 0.95:.1f} {cx + half * 0.55:.1f} {cy + half * 0.25:.1f} {bx:.1f} {by:.1f}" fill="none" stroke="url(#hri-orbit)" stroke-width="{half * 0.06:.1f}" stroke-linecap="round"/>
+<path fill="url(#hri-zone)" d="{zpath}"/>
+<circle cx="{bx:.1f}" cy="{by:.1f}" r="{r * 2:.1f}" fill="#3cf0c0" fill-opacity="0.3"/>
+<circle cx="{bx:.1f}" cy="{by:.1f}" r="{r:.1f}" fill="#f1fffb"/>
+</svg>
+'''
+    with open(out, "w") as fh:
+        fh.write(icon)
+
+
 if __name__ == "__main__":
     refs, out = sys.argv[1], sys.argv[2]
     which = sys.argv[3] if len(sys.argv) > 3 else "all"
@@ -365,3 +520,5 @@ if __name__ == "__main__":
         company(f"{refs}/8.webp", f"{refs}/9.webp", out)
     if which in ("all", "voice"):
         voice(f"{refs}/10.webp", f"{refs}/11.webp", out)
+    if which in ("all", "school-hr"):
+        school_hr(f"{refs}/12.webp", f"{refs}/13.webp", out)

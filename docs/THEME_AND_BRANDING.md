@@ -104,3 +104,22 @@ photographic glow (thousands of soft, blended strands) that can't be traced
 faithfully, so it is kept as a cleaned, transparent raster embedded in the SVG.
 The small sub-navigation uses lighter WebP exports of the same files.
 The earlier `BrandMatched` cinematic/minimal Voice files are retired.
+
+## CatchZone School HR logos
+
+Approved artwork: `School HR Dark.png` (white "Catch" and "School HR", white
+orbit ball, for dark backgrounds) and `School HR Light.png` (dark lettering,
+dark ball in a mint ring, for light backgrounds).
+
+| Use | Dark theme | Light theme |
+| --- | --- | --- |
+| Product logo (navigation menu, cards, `/products`, `/school-hr`) | `school-hr/catchzone-school-hr-logo-dark.svg` | `school-hr/catchzone-school-hr-logo-light.svg` |
+| Compact app icon (future use) | `school-hr/catchzone-school-hr-icon.svg` | — |
+
+Both logos are full SVG masters (transparent, no tile), traced from each
+approved file separately by `scripts/brand/vectorise_logo.py school-hr`
+(the dark file's soft black halo is removed; lettering, "Zone" gradient and
+orbit arcs are separate clean shapes; gradients sampled from the artwork).
+The icon reuses the identical approved "Z" vector from the company icon (in the
+School HR artwork the "Z" touches the "o", so it can't be isolated cleanly) and
+adds the School HR orbit and ball. Component: `src/components/brand/ProductLogo.tsx`.

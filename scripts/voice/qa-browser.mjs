@@ -118,7 +118,9 @@ ok(`responsive pass: ${ROUTES.length} routes × ${WIDTHS.length} widths × 2 the
   await page.reload({ waitUntil: "networkidle" });
   if ((await page.evaluate(() => document.documentElement.dataset.theme)) === "light") ok("light theme persists after refresh");
   else bad("theme not persisted after refresh");
-  await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Voice" }).click();
+  // Voice is reached through the Products menu (main nav: Services | Products | Work | About).
+  await page.getByRole("button", { name: "Show products" }).click();
+  await page.locator('#products-menu a[href="/voice"]').click();
   await page.waitForURL("**/voice");
   if ((await page.evaluate(() => document.documentElement.dataset.theme)) === "light") ok("light theme persists across navigation");
   else bad("theme lost on navigation");
@@ -218,10 +220,12 @@ ok(`responsive pass: ${ROUTES.length} routes × ${WIDTHS.length} widths × 2 the
   const cta = section.getByRole("link", { name: /Explore CatchZone Voice/ });
   if ((await cta.getAttribute("href")) === "/voice") ok("spotlight primary CTA → /voice");
   else bad("spotlight CTA href wrong");
-  const navVoice = page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Voice" });
-  if ((await navVoice.count()) === 1) ok("primary nav has Voice entry");
-  else bad("primary nav missing Voice");
-  const footerVoice = page.getByRole("navigation", { name: "Footer" }).getByRole("link", { name: "CatchZone Voice" });
+  await page.getByRole("button", { name: "Show products" }).click();
+  const navVoice = page.locator('#products-menu a[href="/voice"]');
+  if ((await navVoice.count()) === 1) ok("primary nav Products menu has CatchZone Voice");
+  else bad("Products menu missing Voice");
+  await page.keyboard.press("Escape");
+  const footerVoice = page.getByRole("navigation", { name: "Footer — Products" }).getByRole("link", { name: "CatchZone Voice" });
   if ((await footerVoice.count()) === 1) ok("footer has CatchZone Voice link");
   else bad("footer missing Voice link");
   await page.close();
@@ -229,7 +233,8 @@ ok(`responsive pass: ${ROUTES.length} routes × ${WIDTHS.length} widths × 2 the
   const mobile = await browser.newPage({ viewport: { width: 390, height: 860 } });
   await mobile.goto(BASE + "/", { waitUntil: "networkidle" });
   await mobile.getByRole("button", { name: "Open menu" }).click();
-  const mobileVoice = mobile.getByRole("dialog", { name: "Mobile navigation" }).getByRole("link", { name: "Voice" });
+  await mobile.getByRole("button", { name: "Show products" }).click();
+  const mobileVoice = mobile.getByRole("dialog", { name: "Mobile navigation" }).locator('a[href="/voice"]');
   if ((await mobileVoice.count()) === 1) ok("mobile navigation has Voice entry");
   else bad("mobile navigation missing Voice");
   await shot(mobile, "home-mobile-nav-390");
@@ -587,10 +592,10 @@ for (const scenario of [
   else bad("contact CTA did not focus form");
   if (await page.getByRole("radio", { name: /Discuss our requirements/ }).isChecked()) ok("CTA preselects intent");
   else bad("intent not preselected");
-  await page.getByLabel("Name").fill("QA Test");
-  await page.getByLabel("Business email").fill("qa@example.com");
-  await page.getByLabel("Company").fill("QA Ltd");
-  await page.getByLabel("Message").fill("Browser QA — please ignore.");
+  await page.getByLabel("Name", { exact: true }).fill("QA Test");
+  await page.getByLabel("Business email", { exact: true }).fill("qa@example.com");
+  await page.getByLabel("Company", { exact: true }).fill("QA Ltd");
+  await page.getByLabel("Message", { exact: true }).fill("Browser QA — please ignore.");
   const resp = page.waitForResponse("**/api/voice/enquiry");
   await page.getByRole("button", { name: "Send message" }).click();
   const json = await (await resp).json();

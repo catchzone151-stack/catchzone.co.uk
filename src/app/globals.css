@@ -390,3 +390,63 @@ canvas {
     animation: scroll-cue 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
   }
 }
+
+/* School HR: miniature request → approval → record flow (products cards).
+   Each step lights up in turn; static (all steps settled) with reduced motion. */
+@keyframes hr-step {
+  0%,
+  8% {
+    border-color: rgb(var(--tint-rgb) / 0.08);
+    box-shadow: none;
+  }
+  14%,
+  30% {
+    border-color: rgb(var(--accent-cyan-rgb) / 0.55);
+    box-shadow: 0 0 0 3px rgb(var(--accent-cyan-rgb) / 0.08), 0 10px 30px -12px rgb(var(--accent-cyan-rgb) / 0.45);
+  }
+  40%,
+  100% {
+    border-color: rgb(var(--tint-rgb) / 0.08);
+    box-shadow: none;
+  }
+}
+@keyframes hr-pulse-travel {
+  0% {
+    left: 0%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hr-step {
+    animation: hr-step 6s var(--ease-precise, ease) infinite;
+  }
+  .hr-pulse {
+    animation: hr-pulse-travel 3s ease-in-out infinite;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hr-pulse {
+    display: none;
+  }
+}
+
+/* Product pages & components (Products menu, /products, /school-hr, product
+   cards): small secondary text and teal labels meet WCAG AA (4.5:1) on the
+   raised and tinted surfaces these components use. Scoped, so the approved
+   site palette elsewhere is unchanged. */
+.product-contrast .text-ink-faint {
+  color: rgb(var(--ink-muted-rgb));
+}
+[data-theme="light"] .product-contrast .text-accent-cyan {
+  color: #0a6a61;
+}

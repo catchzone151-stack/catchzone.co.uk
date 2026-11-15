@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "node scripts/voice/test-voice-api.mjs",
+    "test": "node scripts/voice/test-voice-api.mjs && node scripts/school-hr/test-school-hr-api.mjs",
+    "test:school-hr": "node scripts/school-hr/test-school-hr-api.mjs",
     "test:voice": "node scripts/voice/test-voice-api.mjs",
     "voice:sync-languages": "node scripts/voice/sync-soniox-languages.mjs"
   },

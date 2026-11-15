@@ -1,12 +1,12 @@
 import { CompanyLogo } from "@/components/brand/CompanyLogo";
 import Link from "next/link";
-import { footerNav } from "@/data/navigation";
+import { footerColumns, primaryCta } from "@/data/navigation";
 
 export function Footer() {
   return (
     <footer className="border-t border-line bg-surface">
-      <div className="shell grid gap-10 py-16 md:grid-cols-[1.2fr_1fr_1fr]">
-        <div>
+      <div className="shell grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-[1.35fr_1fr_1fr_0.8fr_1fr] lg:gap-8">
+        <div className="sm:col-span-2 lg:col-span-1">
           {/* Full logo: the slogan is legible at this size. */}
           <CompanyLogo className="h-auto w-[280px]" />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-ink-muted">
@@ -15,33 +15,25 @@ export function Footer() {
           </p>
         </div>
 
-        <nav aria-label="Footer">
-          <p className="mono text-xs uppercase tracking-wider text-ink-faint">
-            Site
-          </p>
-          <ul className="mt-4 space-y-2.5">
-            {footerNav.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="text-sm text-ink-muted transition-colors hover:text-ink"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        {footerColumns.map((col) => (
+          <nav key={col.title} aria-label={`Footer — ${col.title}`}>
+            <p className="mono text-xs uppercase tracking-wider text-ink-faint">{col.title}</p>
+            <ul className="mt-4 space-y-2.5">
+              {col.links.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-sm text-ink-muted transition-colors hover:text-ink">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))}
 
         <div>
-          <p className="mono text-xs uppercase tracking-wider text-ink-faint">
-            Contact
-          </p>
+          <p className="mono text-xs uppercase tracking-wider text-ink-faint">Contact</p>
           <p className="mt-4 text-sm text-ink-muted">
-            <a
-              href="mailto:info@catchzone.co.uk"
-              className="transition-colors hover:text-ink"
-            >
+            <a href="mailto:info@catchzone.co.uk" className="transition-colors hover:text-ink">
               info@catchzone.co.uk
             </a>
           </p>
@@ -54,6 +46,13 @@ export function Footer() {
             <br />
             United Kingdom
           </p>
+          <Link
+            href={primaryCta.href}
+            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-accent-cyan"
+          >
+            {primaryCta.label}
+            <span aria-hidden="true">→</span>
+          </Link>
         </div>
       </div>
 

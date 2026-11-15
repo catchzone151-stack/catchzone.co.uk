@@ -243,6 +243,20 @@ what a real modelling pass would add on top of what code can already do.
   (from the `BrandMatched` files). Historic files under
   `public/assets/images/CatchZone/` are left untouched (legacy `/apps` pages may use them).
 
+## ASSET-014 — CatchZone School HR logos
+
+- **Status: SUPPLIED and in use.** Two owner-approved files:
+  - `School HR Dark.png` → `public/brand/school-hr/catchzone-school-hr-logo-dark.svg`
+  - `School HR Light.png` → `public/brand/school-hr/catchzone-school-hr-logo-light.svg`
+  - Compact icon: `public/brand/school-hr/catchzone-school-hr-icon.svg`
+- SVG masters traced from the approved artwork (`scripts/brand/vectorise_logo.py school-hr`);
+  see `docs/THEME_AND_BRANDING.md`.
+- Not supplied (and not fabricated): real School HR application screenshots.
+  The website uses illustrative interface previews with fictional data; if
+  approved screenshots become available they can replace or complement them.
+- No dedicated social preview image was created for `/school-hr` or
+  `/products`; they use the site default `/og/catchzone.png`. Optional future asset.
+
 ## ASSET-013 — Optional future Voice assets (not required)
 
 - Real product photography or screen recordings of the private two-person

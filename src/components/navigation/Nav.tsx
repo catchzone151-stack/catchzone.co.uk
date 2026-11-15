@@ -8,6 +8,8 @@ import { primaryNav, primaryCta } from "@/data/navigation";
 import { MobileNav } from "@/components/navigation/MobileNav";
 import { ThemeToggle } from "@/components/navigation/ThemeToggle";
 import { CompanyLogo } from "@/components/brand/CompanyLogo";
+import { ProductsMenu } from "@/components/navigation/ProductsMenu";
+import { isProductsPath } from "@/data/products";
 
 export function Nav() {
   const pathname = usePathname();
@@ -48,6 +50,9 @@ export function Nav() {
           aria-label="Primary"
         >
           {primaryNav.map((link) => {
+            if (link.menu === "products") {
+              return <ProductsMenu key={link.href} active={isProductsPath(pathname)} pathname={pathname} />;
+            }
             const active =
               pathname === link.href || pathname.startsWith(`${link.href}/`);
             return (
