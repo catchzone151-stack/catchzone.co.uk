@@ -18,7 +18,7 @@ export function ProductCards({ headingLevel = 3 }: { headingLevel?: 2 | 3 }) {
         <div className="relative flex items-start justify-between gap-4">
           <ProductLogo product="voice" size="small" className="h-auto w-[200px] sm:w-[230px]" />
           <span className="mono shrink-0 rounded-full border border-white/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-ink-muted">
-            Private demos
+            Voice translation
           </span>
         </div>
         <div className="relative mt-6 h-16 overflow-hidden rounded-2xl border border-white/[0.06] bg-void/60">
@@ -49,14 +49,14 @@ export function ProductCards({ headingLevel = 3 }: { headingLevel?: 2 | 3 }) {
         <div className="relative flex items-start justify-between gap-4">
           <ProductLogo product="school-hr" className="-my-2 h-[84px] w-auto sm:h-[92px]" />
           <span className="mono shrink-0 rounded-full border border-white/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-ink-muted">
-            In development
+            School HR software
           </span>
         </div>
         <SchoolHrMiniFlow className="relative mt-4" />
         <H className="relative mt-6 font-display text-xl font-bold text-ink">Staff self-service and HR workflows for schools</H>
         <p className="relative mt-2 max-w-md text-sm leading-relaxed text-ink-muted">
-          Additional hours, leave, TOIL and return-to-work forms, routed to the right approver and kept on record —
-          currently in development ahead of a first school pilot.
+          Additional hours, leave, TOIL and return-to-work forms, routed to the right approver and kept on record in
+          one straightforward platform.
         </p>
         <Link
           href="/school-hr"

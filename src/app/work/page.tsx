@@ -9,13 +9,13 @@ import { ClientWorkCard } from "@/components/work/ClientWorkCard";
 import { ShowcaseCard } from "@/components/showcase/ShowcaseCard";
 import { DeviceFrame } from "@/components/showcase/DeviceFrame";
 import { Reveal } from "@/components/ui/Reveal";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Work",
-  description:
-    "CatchZone's range — business systems, CatchZone's own products, and real client work.",
-  alternates: { canonical: "/work" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Our Work — Software Case Studies | CatchZone",
+  description: "Business systems, platforms and apps designed and built by CatchZone — from operational systems and client websites to CatchZone’s own products.",
+  path: "/work",
+});
 
 export default function WorkPage() {
   const [heroApp, ...restApps] = featuredProjects;

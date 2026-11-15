@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description:
-    "How CatchZone Ltd collects, uses and protects personal data in its apps, website enquiries and the CatchZone Voice live demo.",
-  alternates: { canonical: "/privacy" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Privacy Policy | CatchZone",
+  description: "How CatchZone Ltd collects, uses and protects personal data in its apps, website enquiries, careers enquiries and the CatchZone Voice live demo.",
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (
@@ -15,7 +15,7 @@ export default function PrivacyPage() {
           CatchZone – Privacy Policy
         </h1>
         <p className="mt-3 text-sm text-ink-muted">
-          Effective Date: 1 January 2026 · Last updated: 14 November 2026
+          Effective Date: 1 January 2026 · Last updated: 15 November 2026
         </p>
 
         <div className="prose-privacy mt-10 space-y-6 text-sm leading-relaxed text-ink-muted [&_h2]:mt-10 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-ink [&_li]:ml-5 [&_li]:list-disc [&_strong]:text-ink">
@@ -84,8 +84,25 @@ export default function PrivacyPage() {
           <p>
             When you submit the CatchZone Voice enquiry form, we collect your
             name, business email address, company name, your message and
-            whether you asked for a private demonstration or to discuss your
+            whether you asked for a demonstration or to discuss your
             requirements.
+          </p>
+          <p>
+            When you submit the CatchZone School HR demonstration form, we
+            collect your name, school or organisation, business email
+            address, the package or area you are interested in and your
+            optional message. The School HR product previews on this website
+            run entirely in your browser: nothing you enter in them is sent
+            or saved.
+          </p>
+          <p>
+            When you register your interest on our Careers page, we collect
+            your name, email address, the area of work you are interested in,
+            your message and any optional profile or portfolio link you
+            provide. We do not ask for CVs through the website. Registering
+            interest does not mean a vacancy exists. We keep these details
+            only as long as needed to reply and, if you agree, to contact you
+            about relevant opportunities — and delete them on request.
           </p>
           <p>
             We use this information solely to respond to your enquiry and
@@ -93,7 +110,7 @@ export default function PrivacyPage() {
             not sell, rent or trade it.
           </p>
           <p>
-            To deliver enquiries to our inbox, this form may send your
+            To deliver enquiries to our inbox, these forms may send your
             submission through a transactional email provider (Resend). The
             provider processes the message only to deliver it to CatchZone
             and does not use it for any other purpose.

@@ -2,7 +2,7 @@ import { ProductLogo } from "@/components/brand/ProductLogo";
 import { HrInterestLink } from "@/components/school-hr/HrInterestLink";
 import { AppWindow, Avatar, StatusPill, btnPrimary, btnSecondary } from "@/components/school-hr/ui";
 
-/** Decorative staff-portal composition (fictional data), hidden from assistive tech. */
+/** Decorative staff-portal composition (sample data), hidden from assistive tech. */
 function PortalPreview() {
   return (
     <div className="relative mx-auto w-full max-w-[600px] pb-[4.5rem] pt-6 lg:pb-20" aria-hidden="true">
@@ -52,7 +52,7 @@ function PortalPreview() {
         </div>
       </AppWindow>
 
-      <p className="absolute bottom-1 right-2 text-[10.5px] text-ink-faint">Illustrative preview · fictional data</p>
+      <p className="absolute bottom-1 right-2 text-[10.5px] text-ink-faint">Interactive product preview</p>
 
       {/* Floating approval + finance cards, connected to the portal */}
       <div className="absolute -left-2 bottom-0 w-[230px] rounded-2xl border border-white/10 bg-surface-raised/95 p-3.5 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.75)] backdrop-blur sm:-left-10 lg:-left-14 light:shadow-[0_30px_60px_-35px_rgba(14,17,22,0.4)] motion-safe:animate-[screen-float_8s_ease-in-out_infinite_-2s]">
@@ -92,21 +92,21 @@ export function SchoolHrHero() {
       />
       <div className="shell relative grid gap-12 pb-20 pt-8 md:pt-12 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-10 lg:pb-28">
         <div>
-          <ProductLogo product="school-hr" className="-ml-3 h-[120px] w-auto sm:h-[140px]" />
+          <ProductLogo product="school-hr" priority className="-ml-3 h-[120px] w-auto sm:h-[140px]" />
           <h1 id="hr-hero-title" className="mt-6 font-display text-4xl font-bold leading-[1.04] text-ink sm:text-5xl md:text-6xl lg:text-[3.6rem]">
             School HR, without the paper chase.
           </h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
-            Bring everyday staff requests, approvals and HR administration into one connected place, designed around
-            how schools work.
+            Bring everyday staff requests, approvals and HR administration together in one straightforward platform
+            designed around how schools work.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-2 text-xs">
-            <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/[0.07] px-3 py-1.5 font-semibold text-amber-300 light:text-amber-800">
+            <span className="inline-flex items-center gap-2 rounded-full border border-accent-cyan/30 bg-accent-cyan/[0.07] px-3 py-1.5 font-semibold text-accent-cyan">
               <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />
-              In development · Pilot stage
+              School HR software
             </span>
             <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-ink-muted">
-              Proposed licences from £1,800 per school / year
+              Packages from £1,800 per school / year
             </span>
           </div>
           <div className="mt-9 flex flex-wrap gap-3">

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "node scripts/voice/test-voice-api.mjs && node scripts/school-hr/test-school-hr-api.mjs",
+    "test": "node scripts/voice/test-voice-api.mjs && node scripts/school-hr/test-school-hr-api.mjs && node scripts/careers/test-careers-api.mjs",
+    "test:careers": "node scripts/careers/test-careers-api.mjs",
     "test:school-hr": "node scripts/school-hr/test-school-hr-api.mjs",
     "test:voice": "node scripts/voice/test-voice-api.mjs",
     "voice:sync-languages": "node scripts/voice/sync-soniox-languages.mjs"
@@ -19,10 +20,10 @@
     "@soniox/client": "2.4.0",
     "gsap": "^3.12.5",
     "motion": "^12.43.0",
-    "next": "^15.5.24",
+    "next": "^15.5.29",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "sharp": "^0.35.4",
+    "sharp": "^0.35.5",
     "three": "^0.170.0"
   },
   "devDependencies": {
@@ -32,7 +33,7 @@
     "@types/three": "^0.170.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.1",
-    "eslint-config-next": "^15.5.24",
+    "eslint-config-next": "^15.5.29",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
     "typescript": "^5.7.2"

@@ -6,6 +6,7 @@ import { IntroProvider } from "@/lib/intro/IntroContext";
 import { Nav } from "@/components/navigation/Nav";
 import { Footer } from "@/components/navigation/Footer";
 import { IntroAwareMain } from "@/components/ui/IntroAwareMain";
+import { jsonLd } from "@/lib/seo";
 
 const display = Syne({
   subsets: ["latin"],
@@ -82,10 +83,13 @@ export const viewport: Viewport = {
  */
 const themeInitScript = `(function(){try{var t=localStorage.getItem("cz-theme");if(t!=="light")t="dark";var d=document.documentElement;d.setAttribute("data-theme",t);}catch(e){}})();`;
 
+// Organization + WebSite (site name) — matches the visible footer details.
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": `${siteUrl}/#organization`,
   name: "CatchZone",
+  legalName: "CatchZone Ltd",
   url: siteUrl,
   logo: `${siteUrl}/brand/catchzone-logo-schema.png`,
   slogan: "Built for what's next",
@@ -97,6 +101,15 @@ const organizationJsonLd = {
     postalCode: "EC1V 2NX",
     addressCountry: "GB",
   },
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${siteUrl}/#website`,
+  name: "CatchZone",
+  url: siteUrl,
+  publisher: { "@id": `${siteUrl}/#organization` },
 };
 
 export default function RootLayout({
@@ -119,7 +132,12 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(organizationJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: jsonLd(websiteJsonLd) }}
         />
         <a href="#main-content" className="skip-link">
           Skip to content

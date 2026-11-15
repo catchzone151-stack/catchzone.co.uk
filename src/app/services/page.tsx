@@ -4,13 +4,13 @@ import { services, flagshipService } from "@/data/services";
 import { Reveal } from "@/components/ui/Reveal";
 import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 import { ProductCards } from "@/components/products/ProductCards";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Services",
-  description:
-    "Mobile & digital products, premium web platforms, business systems, and complete connected digital ecosystems.",
-  alternates: { canonical: "/services" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Software Development Services — Apps, Web & Business Systems | CatchZone",
+  description: "Bespoke mobile apps, premium web platforms and custom business systems — or a complete connected digital ecosystem, designed and built by CatchZone.",
+  path: "/services",
+});
 
 export default function ServicesPage() {
   return (
@@ -22,7 +22,7 @@ export default function ServicesPage() {
             Services
           </p>
           <h1 className="mt-4 max-w-2xl font-display text-4xl font-bold text-ink md:text-5xl">
-            Capabilities
+            Software development services
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted">
             Three build disciplines, and one flagship service that brings

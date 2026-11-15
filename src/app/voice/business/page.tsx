@@ -5,24 +5,18 @@ import { VoiceSubnav } from "@/components/voice/VoiceSubnav";
 import { VoiceIntentButton } from "@/components/voice/VoiceIntentButton";
 import { Reveal } from "@/components/ui/Reveal";
 import { LANGUAGE_COUNT } from "@/data/voice/languages";
+import { jsonLd, pageMetadata } from "@/lib/seo";
 
 const title = "Voice Translation for Contact Centres | CatchZone Voice";
 const description =
   "Real-time voice translation for contact centres, travel, booking and hospitality teams. Help advisers support customers in their preferred language.";
 
-export const metadata: Metadata = {
-  title: { absolute: title },
+export const metadata: Metadata = pageMetadata({
+  title,
   description,
-  alternates: { canonical: "/voice/business" },
-  openGraph: {
-    type: "website",
-    url: "/voice/business",
-    title,
-    description,
-    images: [{ url: "/og/catchzone-voice.png", width: 1200, height: 630, alt: "CatchZone Voice" }],
-  },
-  twitter: { card: "summary_large_image", title, description, images: ["/og/catchzone-voice.png"] },
-};
+  path: "/voice/business",
+  image: { url: "/og/catchzone-voice.png", width: 1200, height: 630, alt: "CatchZone Voice" },
+});
 
 const AUDIENCES = [
   {
@@ -78,7 +72,7 @@ const FAQS = [
   },
   {
     q: "Is the live demo the full product?",
-    a: "No. The public demo is a short, single-person trial of live translation in your browser. A private demonstration shows CatchZone Voice in a realistic two-person adviser and customer conversation, using your languages and scenarios.",
+    a: "No. The public demo is a short, single-person trial of live translation in your browser. A guided demonstration shows CatchZone Voice in a realistic two-person adviser and customer conversation, using your languages and scenarios.",
   },
 ];
 
@@ -98,7 +92,7 @@ export default function VoiceBusinessPage() {
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(faqJsonLd) }}
       />
       <VoiceSubnav
         current="/voice/business"
@@ -136,7 +130,7 @@ export default function VoiceBusinessPage() {
                 intent="demonstration"
                 className="min-h-[48px] rounded-full bg-ink px-6 text-sm font-semibold text-void transition-colors hover:bg-accent-cyan"
               >
-                Request a Private Demonstration
+                Book a Demonstration
               </VoiceIntentButton>
               <Link
                 href="/voice#studio"
@@ -244,7 +238,7 @@ export default function VoiceBusinessPage() {
           </div>
           <ol className="mt-12 grid gap-6 border-t border-line pt-10 md:grid-cols-3">
             {[
-              { t: "Private demonstration", d: "See it working with your languages and typical calls." },
+              { t: "Demonstration", d: "See it working with your languages and typical calls." },
               { t: "Technical assessment", d: "We review your systems, audio routing, data and security requirements." },
               { t: "Implementation", d: "An agreed integration scope, tested with your team before go-live." },
             ].map((s, i) => (

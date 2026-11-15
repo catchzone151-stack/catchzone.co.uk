@@ -179,11 +179,19 @@ await test("proposed prices are exactly £1,800 and £3,600 per school / year", 
 await test("optional modules are never labelled as included or available", () => {
   const optional = data.MODULES.filter((m) => m.tier === "optional");
   assert.ok(optional.length >= 8);
-  for (const m of optional) assert.ok(["Planned", "Requirements discussion"].includes(m.status), m.name);
+  for (const m of optional) assert.ok(["Planned", "Scoped on request"].includes(m.status), m.name);
 });
 
-await test("sensitive modules (absence, casework, SCR) carry a scoping caution", () => {
-  for (const id of ["absence", "casework", "scr"]) assert.ok(data.MODULES.find((m) => m.id === id)?.caution, id);
+await test("sensitive and integration modules carry an implementation note", () => {
+  for (const id of ["absence", "casework", "scr", "integrations"]) assert.ok(data.MODULES.find((m) => m.id === id)?.note, id);
+  assert.match(data.OPTIONAL_MODULES_NOTE, /scoped individually/);
+});
+
+await test("public product copy has no development-stage labels", () => {
+  const text = JSON.stringify([data.PACKAGES, data.MODULES, data.FAQS, products.products]).toLowerCase();
+  for (const bad of ["in development", "pilot stage", "proposed", "planned broader scope", "private demonstration", "fictional"]) {
+    assert.ok(!text.includes(bad), `found "${bad}"`);
+  }
 });
 
 await test("no forbidden claims in School HR content (payroll engine, EPM/IRIS, certification, client names)", () => {
@@ -208,7 +216,7 @@ await test("footer columns: Services (3 + flagship), Products, Company", () => {
   assert.equal(svc.links[3].label, "Complete Digital Ecosystems");
   assert.equal(prod.title, "Products");
   assert.deepEqual(prod.links.slice(0, 2).map((l) => l.href), ["/voice", "/school-hr"]);
-  assert.deepEqual(company.links.map((l) => l.href), ["/work", "/about", "/privacy"]);
+  assert.deepEqual(company.links.map((l) => l.href), ["/work", "/about", "/careers", "/privacy"]);
 });
 
 globalThis.fetch = realFetch;

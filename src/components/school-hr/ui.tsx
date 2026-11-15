@@ -1,6 +1,6 @@
 /**
- * Small shared building blocks for the illustrative School HR product previews.
- * Everything shown inside them is fictional. Colours use theme tokens (or a
+ * Small shared building blocks for the School HR product previews.
+ * Everything shown inside them is sample data. Colours use theme tokens (or a
  * dark/light pair), so every preview reads correctly in both site themes.
  */
 
@@ -88,7 +88,7 @@ export function AppWindow({
   role,
   children,
   className = "",
-  label = "Illustrative preview · fictional data",
+  label = "Product preview",
 }: {
   title: string;
   role?: RoleId;

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { buildSchoolHrEnquiryEmail, type SchoolHrEnquiry } from "@/lib/email/schoolHrEnquiryEmail";
-import { EMAIL_RE, cleanLine, clientIp, createRateLimiter, deliverToInbox } from "@/lib/email/inboxDelivery";
+import { EMAIL_RE, cleanLine, clientIp, createRateLimiter, deliverToInbox, formRequestGuard } from "@/lib/email/inboxDelivery";
 import type { Interest } from "@/data/schoolHr";
 
 /**
@@ -21,6 +21,8 @@ function fail(reason: string, status: number) {
 }
 
 export async function POST(request: Request) {
+  const blocked = formRequestGuard(request);
+  if (blocked) return blocked;
   if (isRateLimited(clientIp(request))) return fail("rate_limited", 429);
 
   let raw: Record<string, unknown>;

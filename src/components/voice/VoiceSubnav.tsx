@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { jsonLd as serializeJsonLd } from "@/lib/seo";
 
 const LINKS = [
   { href: "/voice", label: "Overview" },
@@ -39,7 +40,7 @@ export function VoiceSubnav({
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
       )}
       <div className="flex flex-col gap-4 border-b border-line pb-4 sm:flex-row sm:items-center sm:justify-between">

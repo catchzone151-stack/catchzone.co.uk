@@ -49,11 +49,11 @@ function errorMessage(error: EngineError): string {
     case "refused":
       switch (error.reason) {
         case "visitor_limit":
-          return "You’ve used today’s free live trials. Request a private demonstration to explore CatchZone Voice in depth.";
+          return "You’ve used today’s free live trials. Book a demonstration to explore CatchZone Voice in depth.";
         case "busy":
           return "The live demo is at capacity right now. Please try again in a minute.";
         case "daily_limit":
-          return "Today’s public demo allowance has been used. Please try again tomorrow, or request a private demonstration.";
+          return "Today’s public demo allowance has been used. Please try again tomorrow, or book a demonstration.";
         case "rate_limited":
           return "Too many attempts in a short time. Please wait a minute and try again.";
         case "disabled":
@@ -360,7 +360,7 @@ export function ConversationStudio() {
             {errorMessage(snapshot.error)}
             {snapshot.error.kind === "refused" && (
               <Link href="#voice-contact" className="ml-1 font-semibold text-accent-cyan hover:underline">
-                Request a private demonstration
+                Book a demonstration
               </Link>
             )}
           </div>
@@ -369,7 +369,7 @@ export function ConversationStudio() {
           <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-ink-muted">
             The public live demo is not running at the moment. You can still explore the supported languages, or{" "}
             <Link href="#voice-contact" className="font-semibold text-accent-cyan hover:underline">
-              request a private demonstration
+              book a demonstration
             </Link>
             .
           </div>

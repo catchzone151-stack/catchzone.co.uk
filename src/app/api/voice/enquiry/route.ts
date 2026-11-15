@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { buildVoiceEnquiryEmail, type VoiceEnquiry, type VoiceEnquiryIntent } from "@/lib/email/voiceEnquiryEmail";
-import { EMAIL_RE, cleanLine, clientIp, createRateLimiter, deliverToInbox } from "@/lib/email/inboxDelivery";
+import { EMAIL_RE, cleanLine, clientIp, createRateLimiter, deliverToInbox, formRequestGuard } from "@/lib/email/inboxDelivery";
 
 /**
  * CatchZone Voice enquiries → the CatchZone inbox via Resend, through the
@@ -20,6 +20,8 @@ function fail(reason: string, status: number) {
 }
 
 export async function POST(request: Request) {
+  const blocked = formRequestGuard(request);
+  if (blocked) return blocked;
   if (isRateLimited(clientIp(request))) return fail("rate_limited", 429);
 
   let raw: Record<string, unknown>;

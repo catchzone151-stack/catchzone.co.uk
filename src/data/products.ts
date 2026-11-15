@@ -3,8 +3,8 @@
  * to Services (bespoke builds for clients). Used by the navigation, footer,
  * the Services page Products section and /products.
  *
- * Status wording must stay factual: Voice has been demonstrated in a separate
- * private evaluation app; School HR is in development ahead of a first pilot.
+ * `status` is a short category chip. Marketing stays confident but factual: no
+ * invented deployments, customers or integrations (see docs/CATCHZONE_SCHOOL_HR.md).
  */
 export type ProductSlug = "voice" | "school-hr";
 
@@ -24,14 +24,14 @@ export const products: Product[] = [
     name: "CatchZone Voice",
     href: "/voice",
     summary: "Real-time AI voice translation for multilingual customer conversations.",
-    status: "Private demonstrations",
+    status: "AI voice translation",
   },
   {
     slug: "school-hr",
     name: "CatchZone School HR",
     href: "/school-hr",
     summary: "Staff requests, approvals and HR workflows for schools.",
-    status: "In development · Pilot stage",
+    status: "School HR software",
   },
 ];
 

@@ -4,13 +4,13 @@ import { Reveal } from "@/components/ui/Reveal";
 import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 import { MagneticLink } from "@/components/ui/MagneticLink";
 import { projects } from "@/data/projects";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "About",
-  description:
-    "CatchZone is a digital product and engineering studio building apps, platforms and business systems.",
-  alternates: { canonical: "/about" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "About CatchZone — UK Software Engineering Company",
+  description: "CatchZone Ltd is a UK software engineering company that designs and builds apps, web platforms and business systems, alongside its own products CatchZone Voice and CatchZone School HR.",
+  path: "/about",
+});
 
 const themes = [
   {
@@ -142,6 +142,21 @@ export default function AboutPage() {
                 </Link>
               ))}
             </div>
+            <p className="mt-8 max-w-2xl text-sm leading-relaxed text-ink-muted">
+              We also build and license our own software for organisations —{" "}
+              <Link href="/voice" className="font-semibold text-ink hover:text-accent-cyan">
+                CatchZone Voice
+              </Link>{" "}
+              and{" "}
+              <Link href="/school-hr" className="font-semibold text-ink hover:text-accent-cyan">
+                CatchZone School HR
+              </Link>
+              . Interested in working with us? See{" "}
+              <Link href="/careers" className="font-semibold text-ink hover:text-accent-cyan">
+                Careers
+              </Link>
+              .
+            </p>
           </div>
         </section>
       )}

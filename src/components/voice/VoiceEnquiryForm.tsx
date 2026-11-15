@@ -15,7 +15,7 @@ const CONTACT_EMAIL = "info@catchzone.co.uk";
 function buildMailto(intent: Intent, fields: Record<string, string>): string {
   const subject =
     intent === "demonstration"
-      ? "CatchZone Voice — private demonstration request"
+      ? "CatchZone Voice — demonstration request"
       : "CatchZone Voice — requirements";
   const body = [
     `Name: ${fields.name ?? ""}`,
@@ -153,7 +153,7 @@ export function VoiceEnquiryForm() {
         <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
           {(
             [
-              ["demonstration", "Request a private demonstration"],
+              ["demonstration", "Book a demonstration"],
               ["requirements", "Discuss our requirements"],
             ] as const
           ).map(([value, label]) => (

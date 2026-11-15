@@ -50,15 +50,28 @@ content in `src/data/schoolHr.ts`.
 
 ### Content rules (enforced in `scripts/school-hr/test-school-hr-api.mjs`)
 
-- In development, pilot stage. Never imply commercial deployment.
-- Do not name the pilot school publicly without written permission.
-- No payroll engine; no claimed EPM/IRIS or other integration; finance
-  exports depend on agreed requirements.
+Positioning (final review pass): CatchZone School HR is presented as a
+professional CatchZone software product — confident, factual sales copy, no
+development-stage labels ("in development", "pilot stage", "proposed") in
+product cards, dropdowns, heroes or pricing.
+
+- Never claim a school uses it, multi-school deployment, or that every module
+  is operational; never name the pilot school publicly.
+- Prices: Essentials £1,800 and Standard £3,600 per school / year. One pricing
+  qualification only (final pricing, feature availability and timescales are
+  confirmed in each school's agreed scope before any commitment).
+- Optional modules are "Planned" or "Scoped on request", with one shared note
+  (`OPTIONAL_MODULES_NOTE`) and short neutral implementation notes for
+  sensitive/safeguarding/integration modules — no yellow warning boxes.
+- No payroll engine; no claimed EPM/IRIS or other integration; finance exports
+  depend on agreed requirements.
 - No certifications, testimonials, customer counts, savings or time metrics.
-- Optional modules are planned or for discussion; safeguarding / sensitive
-  modules (absence, HR casework, SCR) carry explicit scoping cautions.
 - TOIL rules are configured per school — no fixed rates.
-- All people and numbers in previews are fictional.
+- Previews use sample data; one disclosure next to the workflow studio.
+- Workflow routes: additional hours staff → headteacher → finance record (head
+  can return a claim with a comment); leave and TOIL staff → line manager →
+  balance (line manager can decline, balance unchanged); return to work staff →
+  manager review → restricted record in the manager's view.
 
 ## Enquiries
 
@@ -66,7 +79,7 @@ content in `src/data/schoolHr.ts`.
 path `src/lib/email/inboxDelivery.ts` (also used by the Voice route):
 `RESEND_API_KEY` only, fixed recipient, `brief@catchzone.co.uk` sender (or
 `RESEND_FROM_EMAIL`), visitor Reply-To, Idempotency-Key, `cz_hp` honeypot,
-5 requests / 10 min per IP. Subject:
+5 requests / 10 min per IP, and the shared cross-site guard (`formRequestGuard`: JSON only; same-origin browser requests only). Subject:
 `CatchZone School HR — Demonstration request (<package>) — <name> (<organisation>)`.
 Success is only shown after Resend accepts the email; otherwise a mailto
 fallback is offered. Real delivery must be verified once on the deployed site.

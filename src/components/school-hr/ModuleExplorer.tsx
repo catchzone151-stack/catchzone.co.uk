@@ -2,28 +2,28 @@
 
 import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { MODULES, type Module } from "@/data/schoolHr";
+import { MODULES, OPTIONAL_MODULES_NOTE, type Module } from "@/data/schoolHr";
 import { AppWindow, StatusPill, btnSecondary } from "@/components/school-hr/ui";
 import { HrInterestLink } from "@/components/school-hr/HrInterestLink";
 
 /**
  * Module explorer: browse what Essentials, Standard and the optional modules
  * cover. Purely informational — choosing a module here never activates
- * anything; each preview is illustrative with fictional data.
+ * anything; previews use sample data.
  */
 
 type Tier = Module["tier"];
 const TIERS: { id: Tier; label: string; sub: string }[] = [
-  { id: "essentials", label: "Essentials", sub: "Pilot package" },
-  { id: "standard", label: "Standard", sub: "Adds staff management" },
-  { id: "optional", label: "Optional modules", sub: "Planned / scoped" },
+  { id: "essentials", label: "Essentials", sub: "Core package" },
+  { id: "standard", label: "Standard", sub: "Extended HR features" },
+  { id: "optional", label: "Optional modules", sub: "Scoped individually" },
 ];
 
 const STATUS_TONE: Record<Module["status"], "info" | "muted" | "wait"> = {
   Essentials: "info",
   Standard: "info",
   Planned: "muted",
-  "Requirements discussion": "wait",
+  "Scoped on request": "muted",
 };
 
 export function ModuleExplorer() {
@@ -143,13 +143,13 @@ export function ModuleExplorer() {
                   </li>
                 ))}
               </ul>
-              {current.caution && (
-                <p className="mt-4 rounded-xl border border-amber-400/25 bg-amber-400/[0.06] px-3.5 py-2.5 text-[13px] leading-relaxed text-ink">
-                  {current.caution}
+              {(current.note || current.tier === "optional") && (
+                <p className="mt-4 border-l-2 border-white/15 pl-3 text-[13px] leading-relaxed text-ink-muted">
+                  {current.note ?? OPTIONAL_MODULES_NOTE}
                 </p>
               )}
               <div className="mt-5" aria-hidden="true">
-                <AppWindow title={current.preview.title} label={tier === "optional" ? "Concept only · not available today" : "Illustrative preview · fictional data"}>
+                <AppWindow title={current.preview.title} label={tier === "optional" ? "Module concept · scoped individually" : "Product preview"}>
                   <ul className="divide-y divide-white/[0.06]">
                     {current.preview.rows.map((r) => (
                       <li key={r.label} className="flex items-center justify-between gap-3 px-4 py-2.5 text-[13px]">
@@ -165,7 +165,7 @@ export function ModuleExplorer() {
                 </AppWindow>
               </div>
               <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-                <p className="text-xs text-ink-faint">Exploring a module here doesn’t switch anything on.</p>
+                <span aria-hidden="true" />
                 <HrInterestLink interest={interest} className={btnSecondary}>
                   Discuss this {tier === "optional" ? "module" : "package"}
                 </HrInterestLink>

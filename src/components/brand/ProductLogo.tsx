@@ -41,12 +41,19 @@ export function ProductLogo({
   size = "large",
   className = "",
   decorative = false,
+  priority = false,
 }: {
   product: ProductSlug;
   size?: "large" | "small";
   className?: string;
   /** When the product name is already given as text next to the logo. */
   decorative?: boolean;
+  /**
+   * Above-the-fold hero logo (often the LCP element): the dark variant — the
+   * default theme — loads eagerly at high priority; the light variant stays
+   * lazy so a hidden logo is never downloaded up front.
+   */
+  priority?: boolean;
 }) {
   const f = FILES[product];
   const set = f[size];
@@ -59,6 +66,8 @@ export function ProductLogo({
         height={set.dark.h}
         alt={alt}
         unoptimized
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : undefined}
         className={`theme-only-dark ${className}`}
       />
       <Image

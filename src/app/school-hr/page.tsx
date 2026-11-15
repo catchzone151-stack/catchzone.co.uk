@@ -9,25 +9,17 @@ import { ModuleExplorer } from "@/components/school-hr/ModuleExplorer";
 import { SchoolHrEnquiryForm } from "@/components/school-hr/SchoolHrEnquiryForm";
 import { Reveal } from "@/components/ui/Reveal";
 import { CAPABILITIES, FAQS } from "@/data/schoolHr";
+import { jsonLd, pageMetadata } from "@/lib/seo";
 
-const title = "CatchZone School HR — Staff Requests & Approvals for Schools";
+const title = "CatchZone School HR — School HR Software for Staff Requests & Approvals";
 const description =
-  "CatchZone School HR brings additional-hours claims, leave, TOIL and return-to-work forms into one place for schools, with approvals and finance-ready records. In development — try the interactive workflow preview.";
+  "School HR software for staff self-service: additional-hours claims, leave, TOIL and return-to-work forms with line-manager and headteacher approvals. Packages from £1,800 per school per year.";
 
-export const metadata: Metadata = {
-  title: { absolute: title },
+export const metadata: Metadata = pageMetadata({
+  title,
   description,
-  alternates: { canonical: "/school-hr" },
-  openGraph: {
-    type: "website",
-    siteName: "CatchZone",
-    url: "/school-hr",
-    title,
-    description,
-    // Site default social image (page-level openGraph replaces the layout's).
-    images: [{ url: "/og/catchzone.png", width: 1200, height: 630, alt: "CatchZone — Built for what's next" }],
-  },
-};
+  path: "/school-hr",
+});
 
 const breadcrumbJsonLd = {
   "@context": "https://schema.org",
@@ -37,6 +29,31 @@ const breadcrumbJsonLd = {
     { "@type": "ListItem", position: 2, name: "Products", item: "https://catchzone.co.uk/products" },
     { "@type": "ListItem", position: 3, name: "CatchZone School HR", item: "https://catchzone.co.uk/school-hr" },
   ],
+};
+
+// Matches visible page content: name, description and the two published
+// package prices. No ratings, reviews or availability claims.
+const softwareJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "CatchZone School HR",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web browser",
+  url: "https://catchzone.co.uk/school-hr",
+  description,
+  featureList: [
+    "Staff self-service",
+    "Additional-hours claims with headteacher approval",
+    "Leave requests and balances",
+    "TOIL requests and balances",
+    "Return-to-work forms",
+    "Finance-ready records and agreed exports",
+  ],
+  offers: [
+    { "@type": "Offer", name: "Essentials", price: "1800", priceCurrency: "GBP", description: "Annual licence per school" },
+    { "@type": "Offer", name: "Standard", price: "3600", priceCurrency: "GBP", description: "Annual licence per school" },
+  ],
+  publisher: { "@type": "Organization", name: "CatchZone Ltd", url: "https://catchzone.co.uk" },
 };
 
 const SECTIONS = [
@@ -65,7 +82,12 @@ export default function SchoolHrPage() {
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: jsonLd(softwareJsonLd) }}
       />
 
       {/* Product sub-navigation */}
@@ -103,12 +125,12 @@ export default function SchoolHrPage() {
       <SchoolHrHero />
 
       {/* B — Interactive workflow studio */}
-      <section id="workflows" aria-labelledby="workflows-title" className="scroll-mt-24 border-t border-line py-20 md:py-28">
+      <section id="workflows" aria-labelledby="workflows-title" className="scroll-mt-24 border-t border-line py-16 md:py-24">
         <div className="shell">
-          <SectionHead eyebrow="Interactive preview" title="Step through the workflows." id="workflows-title">
-            Choose a workflow and move it from request to record, seeing each stage from the right person’s view. It runs
-            entirely in your browser with fictional data — nothing you choose is sent or saved.
+          <SectionHead eyebrow="Interactive product preview" title="Step through the workflows." id="workflows-title">
+            Move a request from submission to record and see each stage from the right person’s view.
           </SectionHead>
+          <p className="mt-3 text-sm text-ink-faint">Runs in your browser with sample data — nothing you enter is sent or saved.</p>
           <div className="mt-12">
             <WorkflowStudio />
           </div>
@@ -116,7 +138,7 @@ export default function SchoolHrPage() {
       </section>
 
       {/* C — Role perspectives */}
-      <section id="roles" aria-labelledby="roles-title" className="scroll-mt-24 border-t border-line bg-surface/40 py-20 md:py-28">
+      <section id="roles" aria-labelledby="roles-title" className="scroll-mt-24 border-t border-line bg-surface/40 py-16 md:py-24">
         <div className="shell">
           <SectionHead eyebrow="Role-based perspectives" title="One school. Four perspectives." id="roles-title">
             Everyone sees what their role needs — and work moves from one person to the next without chasing.
@@ -128,14 +150,13 @@ export default function SchoolHrPage() {
       </section>
 
       {/* D — School-specific workflows */}
-      <section id="capabilities" aria-labelledby="capabilities-title" className="scroll-mt-24 border-t border-line py-20 md:py-28">
+      <section id="capabilities" aria-labelledby="capabilities-title" className="scroll-mt-24 border-t border-line py-16 md:py-24">
         <div className="shell">
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
             <div>
               <SectionHead eyebrow="Built for schools" title="Designed around how schools actually work." id="capabilities-title" />
               <p className="mt-5 text-base leading-relaxed text-ink-muted">
-                These are configurable capabilities, agreed with each school during implementation. We don’t assume one
-                school’s policies apply to every school.
+                Configured to your school’s own policies, roles and deadlines during implementation.
               </p>
             </div>
             <ul className="grid gap-px overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.07] sm:grid-cols-2">
@@ -152,11 +173,10 @@ export default function SchoolHrPage() {
       </section>
 
       {/* Packages and pricing */}
-      <section id="packages" aria-labelledby="packages-title" className="scroll-mt-24 border-t border-line bg-surface/40 py-20 md:py-28">
+      <section id="packages" aria-labelledby="packages-title" className="scroll-mt-24 border-t border-line bg-surface/40 py-16 md:py-24">
         <div className="shell">
-          <SectionHead eyebrow="Packages" title="Clear packages. Proposed pricing." id="packages-title">
-            Annual licences per school. These are proposed prices for the pilot and development phase, subject to final
-            scope and commercial terms.
+          <SectionHead eyebrow="Packages" title="Two clear packages." id="packages-title">
+            Annual licences per school, with optional modules when you need them.
           </SectionHead>
           <div className="mt-12">
             <SchoolHrPricing />
@@ -165,10 +185,10 @@ export default function SchoolHrPage() {
       </section>
 
       {/* Module explorer */}
-      <section id="modules" aria-labelledby="modules-title" className="scroll-mt-24 border-t border-line py-20 md:py-28">
+      <section id="modules" aria-labelledby="modules-title" className="scroll-mt-24 border-t border-line py-16 md:py-24">
         <div className="shell">
           <SectionHead eyebrow="Module explorer" title="Explore what each package covers." id="modules-title">
-            Browse the modules in Essentials and Standard, and the optional modules being planned.
+            Browse the modules in each package, and the optional modules available to scope.
           </SectionHead>
           <div className="mt-12">
             <ModuleExplorer />
@@ -177,10 +197,10 @@ export default function SchoolHrPage() {
       </section>
 
       {/* Adoption */}
-      <section id="adoption" aria-labelledby="adoption-title" className="scroll-mt-24 border-t border-line bg-surface/40 py-20 md:py-28">
+      <section id="adoption" aria-labelledby="adoption-title" className="scroll-mt-24 border-t border-line bg-surface/40 py-16 md:py-24">
         <div className="shell">
-          <SectionHead eyebrow="Adoption" title="From first conversation to pilot." id="adoption-title">
-            A careful, school-by-school approach. Timelines are agreed with you rather than promised in advance.
+          <SectionHead eyebrow="Adoption" title="From first conversation to rollout." id="adoption-title">
+            A careful, school-by-school approach, with timelines agreed with you.
           </SectionHead>
           <ol className="mt-12 grid gap-5 md:grid-cols-3">
             {[
@@ -195,15 +215,11 @@ export default function SchoolHrPage() {
               </Reveal>
             ))}
           </ol>
-          <p className="mt-6 text-sm text-ink-faint">
-            CatchZone School HR is designed to be reusable across schools; each school’s rules are configured
-            separately.
-          </p>
         </div>
       </section>
 
       {/* FAQ */}
-      <section id="faq" aria-labelledby="faq-title" className="scroll-mt-24 border-t border-line py-20 md:py-28">
+      <section id="faq" aria-labelledby="faq-title" className="scroll-mt-24 border-t border-line py-16 md:py-24">
         <div className="shell grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-16">
           <SectionHead eyebrow="FAQ" title="Questions schools ask." id="faq-title" />
           <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
@@ -246,8 +262,8 @@ export default function SchoolHrPage() {
               See it with your school’s workflows.
             </h2>
             <p className="mt-5 max-w-md text-base leading-relaxed text-ink-muted md:text-lg">
-              Request a demonstration and tell us how your school handles staff requests today. We’ll walk through the
-              workflows and talk about what a pilot could look like.
+              Book a demonstration or discuss your requirements. Tell us how your school handles staff requests today and
+              we’ll walk through how CatchZone School HR would fit.
             </p>
             <dl className="mt-10 space-y-4 border-t border-line pt-8 text-sm">
               <div>

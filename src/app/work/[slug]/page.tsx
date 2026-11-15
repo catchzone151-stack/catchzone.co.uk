@@ -15,6 +15,7 @@ import {
   IslamQuestScreenGrid,
 } from "@/components/work/IslamQuestShowcase";
 import { StoreBadges } from "@/components/work/StoreBadges";
+import { pageMetadata } from "@/lib/seo";
 
 const STATUS_BADGE_STYLE: Record<ProjectStatus, string> = {
   live: "border-accent-cyan/30 text-accent-cyan",
@@ -37,19 +38,19 @@ export async function generateMetadata({
   const { slug } = await params;
   const showcase = showcaseProjects.find((p) => p.slug === slug);
   if (showcase) {
-    return {
-      title: showcase.name,
+    return pageMetadata({
+      title: `${showcase.name} — ${showcase.category} | CatchZone`,
       description: showcase.tagline,
-      alternates: { canonical: `/work/${showcase.slug}` },
-    };
+      path: `/work/${showcase.slug}`,
+    });
   }
   const project = projects.find((p) => p.slug === slug);
   if (!project) return {};
-  return {
-    title: project.title,
+  return pageMetadata({
+    title: `${project.title} | CatchZone`,
     description: project.shortDescription,
-    alternates: { canonical: `/work/${project.slug}` },
-  };
+    path: `/work/${project.slug}`,
+  });
 }
 
 export default async function ProjectPage({

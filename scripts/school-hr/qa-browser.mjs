@@ -190,7 +190,12 @@ for (const theme of ["dark", "light"]) {
     await studio.getByRole("button", { name: /Switch to headteacher view/ }).click();
     await page.waitForTimeout(400);
     await studio.getByRole("button", { name: "Return with comment" }).click();
-    check(await studio.getByText(/approve the claim to continue/).first().isVisible(), `${theme}: 'Return with comment' explains the preview`);
+    await page.waitForTimeout(450);
+    check(await studio.getByText("Returned by Dr Erin Morgan").first().isVisible(), `${theme}: headteacher can return a claim to staff with a comment`);
+    await studio.getByRole("button", { name: "Resubmit claim" }).click();
+    await page.waitForTimeout(400);
+    await studio.getByRole("button", { name: /Switch to headteacher view/ }).click();
+    await page.waitForTimeout(400);
     await studio.getByRole("button", { name: "Approve claim" }).click();
     await page.waitForTimeout(500);
     check(await studio.getByText("Ready for export").first().isVisible(), `${theme}: approved claim becomes a finance-ready record`);
@@ -202,8 +207,17 @@ for (const theme of ["dark", "light"]) {
     await page.waitForTimeout(400);
     check(await studio.getByRole("button", { name: "Submit claim" }).isVisible(), `${theme}: Replay resets the workflow`);
 
-    // Leave
+    // Leave — decline path first (balance unchanged), then approval path
     await studio.getByRole("button", { name: /^Leave request/ }).click();
+    await page.waitForTimeout(350);
+    await studio.getByRole("button", { name: "Submit request" }).click();
+    await page.waitForTimeout(350);
+    await studio.getByRole("button", { name: "Decline" }).click();
+    await page.waitForTimeout(1300);
+    check(await studio.getByText("Declined by Jordan Reid").first().isVisible(), `${theme}: line manager can decline leave with a reason`);
+    check(await studio.getByText("Balance unchanged").first().isVisible(), `${theme}: declined leave leaves the balance unchanged`);
+    check(await studio.getByText("Request declined").first().isVisible(), `${theme}: progress shows the declined outcome`);
+    await studio.getByRole("button", { name: "Replay" }).click();
     await page.waitForTimeout(350);
     await studio.getByRole("button", { name: "Submit request" }).click();
     await page.waitForTimeout(350);
@@ -236,6 +250,8 @@ for (const theme of ["dark", "light"]) {
     await complete.click();
     await page.waitForTimeout(400);
     check(await studio.getByText("Restricted record").first().isVisible(), `${theme}: RTW ends as a restricted record with audit trail`);
+    check((await studio.locator("[aria-current='step']").textContent()).includes("Line Manager"), `${theme}: RTW record stays in the manager's view (no finance role)`);
+
     check(requests.filter((u) => !u.includes("/_next/")).length === 0, `${theme}: workflow studio made no network requests (${requests.length})`);
 
     // Roles
@@ -267,8 +283,9 @@ for (const theme of ["dark", "light"]) {
     await mods.getByRole("tab", { name: /Optional modules/ }).click();
     await mods.getByRole("button", { name: "Single Central Record support" }).click();
     await page.waitForTimeout(350);
-    check(await mods.getByText("Requirements discussion").first().isVisible(), `${theme}: optional modules are labelled as not available`);
-    check(await mods.getByText(/Safeguarding and statutory requirements apply/).first().isVisible(), `${theme}: sensitive module shows its caution`);
+    check(await mods.getByText("Scoped on request").first().isVisible(), `${theme}: optional modules are labelled as individually scoped`);
+    check(await mods.getByText(/Safeguarding requirements and validation/).first().isVisible(), `${theme}: SCR module shows its implementation note`);
+    check((await mods.locator(".border-amber-400\\/25").count()) === 0, `${theme}: no yellow warning boxes in the module explorer`);
     await shot(page, `school-hr-modules-${theme}`);
 
     // Pricing + package hand-off
@@ -276,7 +293,11 @@ for (const theme of ["dark", "light"]) {
     await pkgs.scrollIntoViewIfNeeded();
     const pkgText = await pkgs.textContent();
     check(pkgText.includes("£1,800") && pkgText.includes("£3,600") && pkgText.includes("per school / year"), `${theme}: prices £1,800 and £3,600 per school / year`);
-    check(pkgText.includes("Proposed licence price"), `${theme}: prices are marked as proposed`);
+    check(pkgText.includes("final pricing") && !/proposed|pilot and development/i.test(pkgText), `${theme}: one clear pricing qualification, no development-stage labels`);
+    check(
+      (await pkgs.locator("details").evaluateAll((ds) => ds.every((d) => !d.open))) === true,
+      `${theme}: comparison and optional-modules sections start collapsed`,
+    );
     await pkgs.getByText("Compare Essentials and Standard").click();
     check(await pkgs.getByRole("table").isVisible(), `${theme}: comparison table expands`);
     await page.waitForTimeout(300);

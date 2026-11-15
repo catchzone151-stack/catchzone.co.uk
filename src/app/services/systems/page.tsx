@@ -3,18 +3,26 @@ import Link from "next/link";
 import { services } from "@/data/services";
 import { ServiceHero } from "@/components/work/ServiceHero";
 import { ServiceBody } from "@/components/work/ServiceBody";
+import { jsonLd, pageMetadata, serviceJsonLd } from "@/lib/seo";
 
 const service = services.find((s) => s.slug === "systems")!;
 
-export const metadata: Metadata = {
-  title: service.shortName,
-  description: service.description,
-  alternates: { canonical: "/services/systems" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Custom Business Systems & Workflow Automation | CatchZone",
+  description: "Bespoke business software — admin systems, client portals, booking and workflow automation that replace spreadsheets and disconnected tools.",
+  path: "/services/systems",
+});
 
 export default function SystemsServicePage() {
   return (
     <div>
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(serviceJsonLd({ name: service.name, description: service.description, path: "/services/systems", outputs: service.outputs })),
+        }}
+      />
       <ServiceHero service={service} coreState="systems" />
       <ServiceBody service={service} accent="iris" />
 
@@ -38,6 +46,13 @@ export default function SystemsServicePage() {
             See the ecosystem model
             <span aria-hidden="true">→</span>
           </Link>
+          <p className="mx-auto mt-6 max-w-lg text-sm text-ink-muted">
+            See this discipline in one of our own products:{" "}
+            <Link href="/school-hr" className="font-semibold text-ink hover:text-accent-cyan">
+              CatchZone School HR
+            </Link>
+            .
+          </p>
         </div>
       </section>
     </div>

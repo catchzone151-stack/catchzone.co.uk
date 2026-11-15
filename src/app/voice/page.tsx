@@ -5,23 +5,17 @@ import { VoiceContact } from "@/components/voice/VoiceContact";
 import { VoiceSubnav } from "@/components/voice/VoiceSubnav";
 import { Reveal } from "@/components/ui/Reveal";
 import { LANGUAGE_COUNT } from "@/data/voice/languages";
+import { jsonLd, pageMetadata } from "@/lib/seo";
 
 const title = "CatchZone Voice — Real-Time AI Voice Translation";
-const description = `Two-way, real-time AI voice translation with live captions and spoken output in ${LANGUAGE_COUNT} languages. Try the live English–Spanish demo of CatchZone Voice.`;
+const description = `Two-way, real-time AI voice translation for customer conversations, with live captions and spoken output in ${LANGUAGE_COUNT} languages. Book a demonstration of CatchZone Voice.`;
 
-export const metadata: Metadata = {
-  title: { absolute: title },
+export const metadata: Metadata = pageMetadata({
+  title,
   description,
-  alternates: { canonical: "/voice" },
-  openGraph: {
-    type: "website",
-    url: "/voice",
-    title,
-    description,
-    images: [{ url: "/og/catchzone-voice.png", width: 1200, height: 630, alt: "CatchZone Voice" }],
-  },
-  twitter: { card: "summary_large_image", title, description, images: ["/og/catchzone-voice.png"] },
-};
+  path: "/voice",
+  image: { url: "/og/catchzone-voice.png", width: 1200, height: 630, alt: "CatchZone Voice" },
+});
 
 const FEATURES = [
   {
@@ -79,7 +73,7 @@ export default function VoicePage() {
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(softwareJsonLd) }}
       />
       <VoiceSubnav
         current="/voice"

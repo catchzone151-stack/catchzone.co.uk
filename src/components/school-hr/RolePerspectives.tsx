@@ -138,7 +138,7 @@ function Dashboard({ role }: { role: RoleId }) {
       </div>
       <div className="overflow-x-auto rounded-xl border border-white/[0.08]">
         <table className="w-full min-w-[420px] text-left text-[12.5px]">
-          <caption className="sr-only">Fictional approved claims ready for export</caption>
+          <caption className="sr-only">Sample approved claims ready for export</caption>
           <thead className="bg-white/[0.02] text-[10.5px] uppercase tracking-[0.1em] text-ink-faint">
             <tr>
               <th scope="col" className="px-3 py-2 font-medium">Staff ref</th>
@@ -252,10 +252,6 @@ export function RolePerspectives() {
           <p className="mt-4 flex items-start gap-2 text-sm text-ink-muted">
             <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-cyan" aria-hidden="true" />
             {INTRO[role].hands}
-          </p>
-          <p className="mt-6 text-xs leading-relaxed text-ink-faint">
-            Illustrative screens with fictional people and numbers, showing the intended experience. They are not
-            evidence that a feature is already live.
           </p>
         </div>
         <AnimatePresence mode="wait" initial={false}>

@@ -7,6 +7,7 @@ import {
   type ProjectBrief,
 } from "@/data/project-config";
 import { buildProjectBriefEmail } from "@/lib/email/projectBriefEmail";
+import { clientIp, formRequestGuard } from "@/lib/email/inboxDelivery";
 
 /**
  * Start a Project submissions → an email to the CatchZone inbox via Resend.
@@ -84,17 +85,17 @@ function isRateLimited(ip: string): boolean {
   return timestamps.length > RATE_LIMIT_MAX;
 }
 
-function getClientIp(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]!.trim();
-  return request.headers.get("x-real-ip") ?? "unknown";
-}
+// Right-most X-Forwarded-For entry (added by our proxy); the left-most can be
+// set by the client and would let it dodge the rate limit.
+const getClientIp = clientIp;
 
 function fail(reason: string, status: number) {
   return NextResponse.json({ ok: false, reason }, { status });
 }
 
 export async function POST(request: Request) {
+  const blocked = formRequestGuard(request);
+  if (blocked) return blocked;
   if (isRateLimited(getClientIp(request))) return fail("rate_limited", 429);
 
   let raw: RawBody;

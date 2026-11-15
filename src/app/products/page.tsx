@@ -5,25 +5,17 @@ import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 import { Reveal } from "@/components/ui/Reveal";
 import { VoiceWaveform } from "@/components/voice/VoiceWaveform";
 import { SchoolHrMiniFlow } from "@/components/products/SchoolHrMiniFlow";
+import { pageMetadata } from "@/lib/seo";
 
-const title = "Products — Specialist Software by CatchZone";
+const title = "Software Products for Organisations | CatchZone";
 const description =
-  "CatchZone designs, builds and licenses specialist software for organisations: CatchZone Voice for real-time voice translation, and CatchZone School HR for school staff requests and approvals.";
+  "CatchZone Voice for real-time AI voice translation in customer conversations, and CatchZone School HR for staff requests, approvals and HR administration in schools.";
 
-export const metadata: Metadata = {
-  title: { absolute: title },
+export const metadata: Metadata = pageMetadata({
+  title,
   description,
-  alternates: { canonical: "/products" },
-  openGraph: {
-    type: "website",
-    siteName: "CatchZone",
-    url: "/products",
-    title,
-    description,
-    // Site default social image (page-level openGraph replaces the layout's).
-    images: [{ url: "/og/catchzone.png", width: 1200, height: 630, alt: "CatchZone — Built for what's next" }],
-  },
-};
+  path: "/products",
+});
 
 function Audience({ items }: { items: string[] }) {
   return (
@@ -98,8 +90,8 @@ export default function ProductsPage() {
                 <p className="mono mt-8 text-[11px] uppercase tracking-[0.2em] text-ink-faint">Designed for</p>
                 <Audience items={["Customer-service teams", "Contact centres", "Booking & travel support", "Multilingual front desks"]} />
                 <p className="mt-6 text-sm text-ink-muted">
-                  <span className="font-semibold text-ink">Status:</span> two-way translation has been demonstrated in
-                  a separate private evaluation application. Private demonstrations are available on request.
+                  Book a demonstration to see two-way translation working with your languages and typical customer
+                  conversations.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link
@@ -112,7 +104,7 @@ export default function ProductsPage() {
                     href="/voice#voice-contact"
                     className="min-h-[48px] rounded-full border border-white/15 px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:border-accent-cyan/60 hover:text-accent-cyan"
                   >
-                    Request a Demonstration
+                    Book a Demonstration
                   </Link>
                 </div>
               </div>
@@ -158,12 +150,12 @@ export default function ProductsPage() {
               aria-hidden="true"
             />
             <div className="relative grid gap-10 p-6 sm:p-10 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:p-14">
-              {/* Illustrative staff portal (fictional) */}
+              {/* Product preview (sample data) */}
               <div className="order-2 flex flex-col justify-center lg:order-1" aria-hidden="true">
                 <div className="rounded-3xl border border-white/10 bg-void/70 p-5 sm:p-7 light:bg-surface-raised">
                   <div className="flex items-center justify-between">
-                    <span className="mono text-[10px] uppercase tracking-[0.2em] text-ink-faint">Illustrative preview</span>
-                    <span className="rounded-full bg-accent-cyan/10 px-2 py-0.5 text-[10px] font-semibold text-accent-cyan">Fictional data</span>
+                    <span className="mono text-[10px] uppercase tracking-[0.2em] text-ink-faint">Product preview</span>
+                    <span className="rounded-full bg-accent-cyan/10 px-2 py-0.5 text-[10px] font-semibold text-accent-cyan">Sample data</span>
                   </div>
                   <div className="mt-5 grid grid-cols-3 gap-2 text-center">
                     {[
@@ -197,15 +189,15 @@ export default function ProductsPage() {
                 <p className="mono mt-8 text-[11px] uppercase tracking-[0.2em] text-ink-faint">Designed for</p>
                 <Audience items={["School staff", "Line managers", "Headteachers", "Finance & administration"]} />
                 <p className="mt-6 text-sm text-ink-muted">
-                  <span className="font-semibold text-ink">Status:</span> in development, at pilot stage. Proposed
-                  licences from £1,800 per school per year, subject to final scope and terms.
+                  <span className="font-semibold text-ink">Packages from £1,800 per school / year.</span> Try the
+                  interactive workflows, then book a demonstration for your school.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link
                     href="/school-hr"
                     className="min-h-[48px] rounded-full bg-ink px-6 py-3.5 text-sm font-semibold text-void transition-colors hover:bg-accent-cyan"
                   >
-                    Explore School HR
+                    Explore CatchZone School HR
                   </Link>
                   <Link
                     href="/school-hr#school-hr-contact"

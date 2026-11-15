@@ -118,3 +118,37 @@ export async function deliverToInbox(options: {
     return { ok: false, reason: "send_failed", status: 502 };
   }
 }
+
+const FORM_ORIGINS = ["https://catchzone.co.uk", "https://www.catchzone.co.uk"];
+
+/**
+ * Cross-site abuse guard for the website's form endpoints (not
+ * authentication — non-browser clients can forge headers; rate limits and the
+ * honeypot handle those). Blocks other websites from making visitors'
+ * browsers submit forms here:
+ * - the body must be JSON (a cross-site HTML form can't send that without a
+ *   CORS preflight, which these routes never grant);
+ * - when the browser reports Sec-Fetch-Site it must be "same-origin";
+ * - otherwise an Origin header, if present, must be the site itself (or one
+ *   listed in FORM_ALLOWED_ORIGINS, e.g. a preview domain).
+ * Returns a response to send, or null when the request may proceed.
+ */
+export function formRequestGuard(request: Request): Response | null {
+  const json = (reason: string, status: number) =>
+    new Response(JSON.stringify({ ok: false, reason }), { status, headers: { "Content-Type": "application/json" } });
+  if (!request.headers.get("content-type")?.toLowerCase().includes("application/json")) return json("invalid_request", 415);
+  const site = request.headers.get("sec-fetch-site");
+  if (site) return site === "same-origin" ? null : json("forbidden_origin", 403);
+  const origin = request.headers.get("origin");
+  if (!origin) return null;
+  const normalised = origin.replace(/\/$/, "");
+  const extra = (process.env.FORM_ALLOWED_ORIGINS ?? "").split(",").map((o) => o.trim().replace(/\/$/, "")).filter(Boolean);
+  if ([...FORM_ORIGINS, ...extra].includes(normalised)) return null;
+  const host = (request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "").split(",")[0]!.trim();
+  try {
+    if (host && new URL(normalised).host === host) return null;
+  } catch {
+    /* malformed origin */
+  }
+  return json("forbidden_origin", 403);
+}

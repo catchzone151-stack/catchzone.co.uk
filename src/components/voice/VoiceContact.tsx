@@ -32,7 +32,7 @@ export function VoiceContact() {
               intent="demonstration"
               className="min-h-[48px] rounded-full bg-ink px-6 text-sm font-semibold text-void transition-colors hover:bg-accent-cyan"
             >
-              Request a Private Demonstration
+              Book a Demonstration
             </VoiceIntentButton>
             <VoiceIntentButton
               intent="requirements"

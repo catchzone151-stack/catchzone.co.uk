@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { roadmapCategories } from "@/data/projects";
 import { Reveal } from "@/components/ui/Reveal";
 import { MagneticLink } from "@/components/ui/MagneticLink";
+import { pageMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
   return roadmapCategories.map((category) => ({ slug: category.slug }));
@@ -17,11 +18,14 @@ export async function generateMetadata({
   const { slug } = await params;
   const category = roadmapCategories.find((c) => c.slug === slug);
   if (!category) return {};
-  return {
-    title: category.name,
+  // Thin Product Lab concept pages: kept reachable, but not indexed (and not in
+  // the sitemap) so they don't dilute CatchZone's commercial pages.
+  return pageMetadata({
+    title: `${category.name} — Product Lab | CatchZone`,
     description: category.description,
-    alternates: { canonical: `/work/product-lab/${category.slug}` },
-  };
+    path: `/work/product-lab/${category.slug}`,
+    noindex: true,
+  });
 }
 
 export default async function ProductLabCategoryPage({

@@ -63,7 +63,7 @@ const FLOWS: Record<FlowId, { label: string; blurb: string; steps: Step[] }> = {
     steps: [
       { role: "staff", label: "Staff completes the form", hint: "Answer the two questions, confirm, then submit the form." },
       { role: "manager", label: "Manager review", hint: "Record that the conversation took place, then mark the review complete." },
-      { role: "finance", label: "Secure record", hint: "The completed record is stored with restricted access and a full audit trail." },
+      { role: "manager", label: "Completed restricted record", hint: "The completed record is stored with restricted access and a full audit trail." },
     ],
   },
 };
@@ -85,8 +85,11 @@ interface FlowState {
   confirmed: boolean;
   talked: boolean;
   supportRecorded: boolean;
-  note: string | null;
   exportOpen: boolean;
+  /** Leave / TOIL: the line manager declined the request. */
+  declined: boolean;
+  /** Additional hours: the headteacher returned the claim with a comment. */
+  returned: boolean;
 }
 
 const INITIAL: FlowState = {
@@ -100,8 +103,15 @@ const INITIAL: FlowState = {
   confirmed: false,
   talked: false,
   supportRecorded: false,
-  note: null,
   exportOpen: false,
+  declined: false,
+  returned: false,
+};
+
+/** Outcome-specific labels for the final step when a request is declined. */
+const DECLINED_STEP: Record<"leave" | "toil", Step> = {
+  leave: { role: "staff", label: "Request declined", hint: "The line manager declined the request with a reason. Alex’s balance is unchanged." },
+  toil: { role: "staff", label: "Request declined", hint: "The line manager declined the request with a reason. Sam’s TOIL balance is unchanged." },
 };
 
 function fmtHours(h: number) {
@@ -236,14 +246,6 @@ function Toast({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Note({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-[13px] leading-relaxed text-ink-muted">
-      {children}
-    </p>
-  );
-}
-
 export function WorkflowStudio() {
   const [flow, setFlow] = useState<FlowId>("hours");
   const [s, setS] = useState<FlowState>(INITIAL);
@@ -251,13 +253,23 @@ export function WorkflowStudio() {
   const screenRef = useRef<HTMLDivElement>(null);
   const firstRender = useRef(true);
 
-  const def = FLOWS[flow];
+  const base = FLOWS[flow];
+  const steps =
+    s.declined && (flow === "leave" || flow === "toil")
+      ? [...base.steps.slice(0, -1), DECLINED_STEP[flow]]
+      : flow === "hours" && s.returned && s.step === 0
+        ? [
+            { ...base.steps[0]!, label: "Claim returned to staff", hint: "The headteacher returned the claim with a comment. Adjust it, then resubmit." },
+            ...base.steps.slice(1),
+          ]
+        : base.steps;
+  const def = { ...base, steps };
   const step = def.steps[s.step] ?? def.steps[0]!;
   const done = s.step === def.steps.length - 1;
 
   const patch = (p: Partial<FlowState>) => setS((prev) => ({ ...prev, ...p }));
   const go = (next: number, message: string) => {
-    setS((prev) => ({ ...prev, step: next, note: null }));
+    setS((prev) => ({ ...prev, step: next }));
     setAnnounce(message);
   };
 
@@ -309,14 +321,17 @@ export function WorkflowStudio() {
               onChange={(v) => patch({ activity: v })}
             />
             <Stepper label="Hours" value={s.hours} onChange={(v) => patch({ hours: v })} min={0.5} max={8} step={0.5} format={fmtHours} />
+            {s.returned && (
+              <Returned by="Dr Erin Morgan">Please confirm the finish time — I have 18:30 in the diary.</Returned>
+            )}
             <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
               <p className="text-xs text-ink-faint">Submitted claims are routed to the headteacher.</p>
               <button
                 type="button"
                 className={btnPrimary}
-                onClick={() => go(1, `Claim for ${fmtHours(s.hours)} submitted. Status: awaiting headteacher approval.`)}
+                onClick={() => go(1, `Claim for ${fmtHours(s.hours)} ${s.returned ? "resubmitted" : "submitted"}. Status: awaiting headteacher approval.`)}
               >
-                Submit claim
+                {s.returned ? "Resubmit claim" : "Submit claim"}
               </button>
             </div>
           </div>
@@ -385,14 +400,14 @@ export function WorkflowStudio() {
               </Field>
               <Field label="Month cut-off">20 November (example)</Field>
             </div>
-            {s.note && <Note>{s.note}</Note>}
             <div className="flex flex-wrap justify-end gap-2">
               <button
                 type="button"
                 className={btnSecondary}
-                onClick={() =>
-                  patch({ note: "In the product, a returned claim goes back to Sam with your comment. For this preview, approve the claim to continue." })
-                }
+                onClick={() => {
+                  setS((prev) => ({ ...prev, step: 0, returned: true }));
+                  setAnnounce("Claim returned to Sam with a comment. Now viewing as staff: adjust the claim and resubmit.");
+                }}
               >
                 Return with comment
               </button>
@@ -412,7 +427,7 @@ export function WorkflowStudio() {
           <Toast>Approved by Dr Erin Morgan · Sam has been notified</Toast>
           <div className="overflow-hidden rounded-xl border border-white/[0.08]">
             <table className="w-full text-left text-[13px]">
-              <caption className="sr-only">Fictional finance-ready record</caption>
+              <caption className="sr-only">Sample finance-ready record</caption>
               <tbody className="divide-y divide-white/[0.06]">
                 {[
                   ["Staff", "Sam Patel (ref. ST-0412)"],
@@ -517,12 +532,14 @@ export function WorkflowStudio() {
               </div>
               <p className="mt-2 text-xs text-ink-faint">Office cover: at least one person in each day ✓</p>
             </div>
-            {s.note && <Note>{s.note}</Note>}
             <div className="flex flex-wrap justify-end gap-2">
               <button
                 type="button"
                 className={btnSecondary}
-                onClick={() => patch({ note: "In the product, a declined request goes back to Alex with a reason. For this preview, approve to continue." })}
+                onClick={() => {
+                  setS((prev) => ({ ...prev, step: 2, declined: true }));
+                  setAnnounce("Leave request declined with a reason. Alex’s balance is unchanged.");
+                }}
               >
                 Decline
               </button>
@@ -530,6 +547,23 @@ export function WorkflowStudio() {
                 Approve leave
               </button>
             </div>
+          </div>
+        );
+      if (s.declined)
+        return (
+          <div className="space-y-4 p-4 sm:p-5">
+            <Header title="My leave" sub={`${person.name} · ${person.title}`} role="staff" />
+            <Returned by="Jordan Reid" tone="declined">
+              Office cover is short that week — could you look at the following week instead?
+            </Returned>
+            <Balance label="Annual leave remaining" from={LEAVE_BALANCE} to={LEAVE_BALANCE} unit="days" />
+            <Timeline
+              items={[
+                { label: "Requested", meta: `${s.days} ${s.days === 1 ? "day" : "days"} · ${range}`, state: "done" },
+                { label: "Declined by line manager", meta: "Reason shared with Alex", state: "done" },
+                { label: "Balance unchanged", meta: `${LEAVE_BALANCE.toFixed(1)} days`, state: "done" },
+              ]}
+            />
           </div>
         );
       return (
@@ -557,7 +591,7 @@ export function WorkflowStudio() {
             <Header title="Use TOIL" sub={`${person.name} · ${person.title}`} role="staff" />
             <div className="overflow-hidden rounded-xl border border-white/[0.08]">
               <p className="border-b border-white/[0.06] px-3.5 py-2 text-[10.5px] uppercase tracking-[0.12em] text-ink-faint">
-                Approved TOIL · illustrative
+                Approved TOIL
               </p>
               {[
                 ["Residential trip (weekend)", "+4.0 hrs"],
@@ -599,14 +633,16 @@ export function WorkflowStudio() {
             <div className="space-y-2">
               <CheckRow ok>Within available balance ({fmtHours(TOIL_BALANCE)})</CheckRow>
               <CheckRow ok>Cover arranged for the afternoon (example)</CheckRow>
-              <p className="pl-7 text-xs text-ink-faint">Checks shown here are examples — the rules are configured with each school.</p>
+              <p className="pl-7 text-xs text-ink-faint">Checks follow your school’s own TOIL rules.</p>
             </div>
-            {s.note && <Note>{s.note}</Note>}
             <div className="flex flex-wrap justify-end gap-2">
               <button
                 type="button"
                 className={btnSecondary}
-                onClick={() => patch({ note: "In the product, a declined request goes back to Sam with a reason. For this preview, approve to continue." })}
+                onClick={() => {
+                  setS((prev) => ({ ...prev, step: 2, declined: true }));
+                  setAnnounce("TOIL request declined with a reason. Sam’s balance is unchanged.");
+                }}
               >
                 Decline
               </button>
@@ -614,6 +650,23 @@ export function WorkflowStudio() {
                 Approve TOIL
               </button>
             </div>
+          </div>
+        );
+      if (s.declined)
+        return (
+          <div className="space-y-4 p-4 sm:p-5">
+            <Header title="My TOIL" sub={`${person.name} · ${person.title}`} role="staff" />
+            <Returned by="Jordan Reid" tone="declined">
+              Friday afternoon has the Year 4 assembly — could you take it the following week?
+            </Returned>
+            <Balance label="TOIL available" from={TOIL_BALANCE} to={TOIL_BALANCE} unit="hrs" />
+            <Timeline
+              items={[
+                { label: "Requested", meta: fmtHours(s.toil), state: "done" },
+                { label: "Declined by line manager", meta: "Reason shared with Sam", state: "done" },
+                { label: "Balance unchanged", meta: fmtHours(TOIL_BALANCE), state: "done" },
+              ]}
+            />
           </div>
         );
       return (
@@ -717,8 +770,8 @@ export function WorkflowStudio() {
       );
     return (
       <div className="space-y-4 p-4 sm:p-5">
-        <Header title="Records · Return to work" sub="Priya Shah · HR administration" role="finance" />
-        <Toast>Review completed by Jordan Reid</Toast>
+        <Header title="Return to work · Sam Patel" sub="Jordan Reid · Line Manager" role="manager" />
+        <Toast>Review completed · record stored</Toast>
         <div className="flex items-start gap-3 rounded-xl border border-white/[0.08] bg-white/[0.025] p-3.5">
           <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent-cyan/10 text-accent-cyan" aria-hidden="true">
             <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -728,7 +781,7 @@ export function WorkflowStudio() {
           </span>
           <div>
             <p className="text-sm font-semibold text-ink">Restricted record</p>
-            <p className="text-xs leading-relaxed text-ink-muted">Visible only to Sam Patel, the line manager and HR administration.</p>
+            <p className="text-xs leading-relaxed text-ink-muted">Visible only to Sam Patel, the line manager and authorised HR administrators.</p>
           </div>
           <span className="ml-auto">
             <StatusPill tone="ok">Completed</StatusPill>
@@ -898,6 +951,18 @@ function Row({ name, off, cls }: { name: string; off: (i: number) => boolean; cl
         <span key={i} className={`h-5 rounded ${off(i) ? cls : "bg-white/[0.04]"}`} aria-hidden="true" />
       ))}
     </>
+  );
+}
+
+function Returned({ by, tone = "returned", children }: { by: string; tone?: "returned" | "declined"; children: React.ReactNode }) {
+  return (
+    <div className="rounded-xl border border-rose-400/25 bg-rose-400/[0.06] px-3.5 py-2.5">
+      <p className="flex items-center gap-2 text-[12px] font-semibold text-rose-300 light:text-rose-700">
+        <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />
+        {tone === "declined" ? `Declined by ${by}` : `Returned by ${by}`}
+      </p>
+      <p className="mt-1 text-[13px] leading-relaxed text-ink">“{children}”</p>
+    </div>
   );
 }
 

@@ -1,4 +1,4 @@
-import { COMPARISON, MODULES, PACKAGES } from "@/data/schoolHr";
+import { COMPARISON, MODULES, OPTIONAL_MODULES_NOTE, PACKAGES } from "@/data/schoolHr";
 import { HrInterestLink } from "@/components/school-hr/HrInterestLink";
 import { btnPrimary, btnSecondary } from "@/components/school-hr/ui";
 
@@ -22,7 +22,7 @@ const chevron = (
   </svg>
 );
 
-/** Proposed School HR packages, comparison and optional-module catalogue. */
+/** School HR packages, comparison and optional-module catalogue (both expanders start collapsed). */
 export function SchoolHrPricing() {
   const optional = MODULES.filter((m) => m.tier === "optional");
   return (
@@ -63,8 +63,7 @@ export function SchoolHrPricing() {
                 <span className="font-display text-5xl font-bold tracking-tight text-ink">{p.price}</span>
                 <span className="text-sm text-ink-muted">{p.period}</span>
               </p>
-              <p className="relative mt-1 text-xs text-ink-faint">Proposed licence price · pilot and development phase</p>
-              <p className="relative mt-5 text-sm leading-relaxed text-ink-muted">{p.positioning}</p>
+              <p className="relative mt-5 text-base leading-relaxed text-ink">{p.positioning}</p>
               <div className="relative mt-6 border-t border-white/[0.08] pt-6">
                 {p.inherits && <p className="mb-3 text-sm font-semibold text-ink">{p.inherits}</p>}
                 <ul className="grid gap-2.5 sm:grid-cols-2">
@@ -83,19 +82,13 @@ export function SchoolHrPricing() {
                     charged features.
                   </p>
                 )}
-                {p.id === "standard" && (
-                  <p className="mt-5 text-xs leading-relaxed text-ink-faint">
-                    Standard’s additional features are planned and in development; their final scope is confirmed with
-                    each school.
-                  </p>
-                )}
               </div>
               <div className="relative mt-auto flex flex-wrap gap-3 pt-8">
                 <HrInterestLink interest={p.id} className={highlight ? btnPrimary : btnSecondary}>
                   Discuss {p.name}
                 </HrInterestLink>
                 <HrInterestLink interest={p.id} className="inline-flex min-h-[44px] items-center text-sm font-semibold text-accent-cyan hover:text-ink">
-                  Request a demonstration <span aria-hidden="true" className="ml-1">→</span>
+                  Book a demonstration <span aria-hidden="true" className="ml-1">→</span>
                 </HrInterestLink>
               </div>
             </article>
@@ -106,7 +99,7 @@ export function SchoolHrPricing() {
       {/* What the licence covers */}
       <div className="mt-5 grid gap-5 rounded-[1.75rem] border border-white/10 bg-white/[0.02] p-6 sm:p-8 md:grid-cols-2">
         <div>
-          <h3 className="font-display text-lg font-bold text-ink">The annual licence is intended to include</h3>
+          <h3 className="font-display text-lg font-bold text-ink">Every annual licence includes</h3>
           <ul className="mt-3 grid grid-cols-2 gap-2 text-sm text-ink-muted">
             {["Hosting", "Routine maintenance", "Standard software updates", "Backups", "A defined level of support"].map((x) => (
               <li key={x} className="flex items-center gap-2">
@@ -119,9 +112,9 @@ export function SchoolHrPricing() {
         <div>
           <h3 className="font-display text-lg font-bold text-ink">Quoted separately where needed</h3>
           <p className="mt-3 text-sm leading-relaxed text-ink-muted">
-            Significant data migration, bespoke development, additional training and special integration work. Prices
-            shown are proposed for the pilot and development phase and are subject to final scope and commercial terms.
-            There is no online checkout — every school starts with a conversation.
+            Significant data migration, bespoke development, additional training and special integration work. Prices are
+            per school per year; final pricing, feature availability and timescales are confirmed in your school’s agreed
+            scope and terms before any commitment.
           </p>
         </div>
       </div>
@@ -138,7 +131,7 @@ export function SchoolHrPricing() {
         </summary>
         <div className="overflow-x-auto border-t border-white/[0.08] px-2 pb-4 sm:px-4">
           <table className="w-full min-w-[480px] text-left text-sm">
-            <caption className="sr-only">Feature comparison of the proposed Essentials and Standard packages</caption>
+            <caption className="sr-only">Feature comparison of the Essentials and Standard packages</caption>
             <thead>
               <tr className="text-xs text-ink-faint">
                 <th scope="col" className="px-4 py-3 font-medium">Feature</th>
@@ -177,7 +170,7 @@ export function SchoolHrPricing() {
         <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 sm:px-8 [&::-webkit-details-marker]:hidden">
           <span>
             <span className="block font-display text-lg font-bold text-ink">Optional modules</span>
-            <span className="block text-xs text-ink-faint">Planned, or available for a requirements discussion — none is active today</span>
+            <span className="block text-xs text-ink-faint">Scoped and quoted individually</span>
           </span>
           <span className="flex shrink-0 items-center gap-2 text-sm font-semibold text-accent-cyan">
             <span className="hidden sm:inline">{optional.length} modules</span>
@@ -194,12 +187,12 @@ export function SchoolHrPricing() {
                 </span>
               </div>
               <p className="mt-1 text-[13px] leading-relaxed text-ink-muted">{m.summary}</p>
-              {m.caution && <p className="mt-2 text-xs leading-relaxed text-amber-300/90 light:text-amber-800">{m.caution}</p>}
+              {m.note && <p className="mt-2 text-xs leading-relaxed text-ink-faint">{m.note}</p>}
             </li>
           ))}
         </ul>
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.08] px-6 py-4 sm:px-8">
-          <p className="text-xs text-ink-faint">Optional modules are scoped and quoted separately. No payroll engine is offered.</p>
+          <p className="max-w-xl text-xs leading-relaxed text-ink-faint">{OPTIONAL_MODULES_NOTE}</p>
           <HrInterestLink interest="optional" className={btnSecondary}>
             Discuss optional modules
           </HrInterestLink>

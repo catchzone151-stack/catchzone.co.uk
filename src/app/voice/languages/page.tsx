@@ -4,25 +4,19 @@ import { LanguageExplorer } from "@/components/voice/LanguageExplorer";
 import { VoiceContact } from "@/components/voice/VoiceContact";
 import { VoiceSubnav } from "@/components/voice/VoiceSubnav";
 import { CATALOGUE_META, LANGUAGE_COUNT, LANGUAGE_GROUPS } from "@/data/voice/languages";
+import { pageMetadata } from "@/lib/seo";
 
 const title = `Live Voice Translation Languages (${LANGUAGE_COUNT}) | CatchZone Voice`;
 const description = `See all ${LANGUAGE_COUNT} languages CatchZone Voice can recognise, translate and speak — including ${
   LANGUAGE_GROUPS.find((g) => g.id === "europe")!.codes.length
 } European languages plus Arabic, Hebrew, Persian and Urdu.`;
 
-export const metadata: Metadata = {
-  title: { absolute: title },
+export const metadata: Metadata = pageMetadata({
+  title,
   description,
-  alternates: { canonical: "/voice/languages" },
-  openGraph: {
-    type: "website",
-    url: "/voice/languages",
-    title,
-    description,
-    images: [{ url: "/og/catchzone-voice.png", width: 1200, height: 630, alt: "CatchZone Voice" }],
-  },
-  twitter: { card: "summary_large_image", title, description, images: ["/og/catchzone-voice.png"] },
-};
+  path: "/voice/languages",
+  image: { url: "/og/catchzone-voice.png", width: 1200, height: 630, alt: "CatchZone Voice" },
+});
 
 function formatDate(iso: string): string {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {

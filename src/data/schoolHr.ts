@@ -1,13 +1,16 @@
 /**
  * CatchZone School HR — marketing content for /school-hr.
  *
- * Accuracy rules (see docs/CATCHZONE_SCHOOL_HR.md):
- * - The product is in development at pilot stage. Nothing here may imply it is
- *   deployed commercially, or that a planned module is available today.
- * - Prices are PROPOSED licence prices for the pilot/development phase.
+ * Positioning: a professional CatchZone software product, marketed with
+ * confident, factual language (see docs/CATCHZONE_SCHOOL_HR.md).
+ * Accuracy rules:
+ * - Never claim a school uses it, multi-school deployment, or that every
+ *   module is operational. Optional modules are "Planned" or "Scoped on request".
+ * - Prices: Essentials £1,800 and Standard £3,600 per school / year; final
+ *   pricing follows each school's agreed scope and terms (stated once).
  * - No payroll engine, no claimed EPM/IRIS integration, no certifications,
  *   no customer names, no invented metrics.
- * - All people, numbers and records shown in previews are fictional.
+ * - People, numbers and records shown in the product previews are sample data.
  */
 
 export type PackageId = "essentials" | "standard";
@@ -37,8 +40,8 @@ export const PACKAGES: Package[] = [
     name: "Essentials",
     price: "£1,800",
     period: "per school / year",
-    positioning: "The everyday requests and approvals a school runs on. The intended package for the first school pilot.",
-    note: "Intended starting package",
+    positioning: "Everyday staff requests, approvals and essential school HR administration.",
+    note: "Recommended start",
     features: [
       "Staff self-service",
       "Additional-hours claims",
@@ -58,8 +61,8 @@ export const PACKAGES: Package[] = [
     name: "Standard",
     price: "£3,600",
     period: "per school / year",
-    positioning: "Essentials plus the planned broader staff-management features, for schools that want one place for staff administration.",
-    note: "Planned broader scope",
+    positioning: "Everything in Essentials, plus staff records, documents, training, onboarding and enhanced administration.",
+    note: "Extended HR features",
     inherits: "Everything in Essentials, plus",
     features: [
       "Staff directory",
@@ -114,7 +117,7 @@ export const COMPARISON: { group: string; rows: { feature: string; essentials: b
   },
 ];
 
-export type ModuleStatus = "Essentials" | "Standard" | "Planned" | "Requirements discussion";
+export type ModuleStatus = "Essentials" | "Standard" | "Planned" | "Scoped on request";
 
 export interface Module {
   id: string;
@@ -123,8 +126,8 @@ export interface Module {
   summary: string;
   points: string[];
   status: ModuleStatus;
-  /** Extra caution for sensitive / statutory areas. */
-  caution?: string;
+  /** Short implementation note for sensitive / statutory / integration areas (shown in module details). */
+  note?: string;
   preview: { title: string; rows: { label: string; value: string; tag?: string }[] };
 }
 
@@ -323,85 +326,88 @@ export const MODULES: Module[] = [
       ],
     },
   },
-  // Optional (future / separately scoped)
+  // Optional modules (scoped individually)
   {
     id: "appraisal",
     tier: "optional",
     name: "Performance and appraisal",
-    summary: "Structured appraisal cycles and objectives, designed with the school’s own process.",
-    points: ["Appraisal cycles and objectives", "Review meetings and sign-off", "Scoped with each school"],
+    summary: "Appraisal cycles, objectives and review meetings, structured around your school’s own process.",
+    points: ["Appraisal cycles and objectives", "Review meetings and sign-off", "Shaped to the school’s process"],
     status: "Planned",
-    preview: { title: "Appraisal cycle", rows: [{ label: "Objectives set", value: "Planned module" }, { label: "Mid-year review", value: "Planned module" }] },
+    preview: { title: "Appraisal cycle", rows: [{ label: "Objectives set", value: "Autumn term" }, { label: "Mid-year review", value: "Spring term" }] },
   },
   {
     id: "absence",
     tier: "optional",
     name: "Enhanced sickness and absence",
-    summary: "Fuller absence administration beyond return-to-work forms.",
-    points: ["Absence recording and patterns", "Trigger points set by policy", "Restricted access throughout"],
-    status: "Requirements discussion",
-    caution: "Handles sensitive personnel information, so it needs detailed scoping, data-protection review and testing before any use.",
-    preview: { title: "Absence administration", rows: [{ label: "Scope", value: "To be agreed" }, { label: "Access", value: "Restricted" }] },
+    summary: "Fuller absence administration, building on the return-to-work process in Essentials.",
+    points: ["Absence recording and history", "Trigger points set by school policy", "Restricted access throughout"],
+    status: "Scoped on request",
+    note: "Includes a data-protection assessment as part of scoping.",
+    preview: { title: "Absence administration", rows: [{ label: "Trigger points", value: "School policy" }, { label: "Access", value: "Restricted" }] },
   },
   {
     id: "advanced-reporting",
     tier: "optional",
     name: "Advanced reporting",
-    summary: "Custom reports and analysis built around the questions your leadership asks.",
-    points: ["Bespoke report definitions", "Scheduled report delivery", "Scoped per school or trust"],
-    status: "Requirements discussion",
-    preview: { title: "Custom reports", rows: [{ label: "Definitions", value: "Agreed with you" }, { label: "Delivery", value: "To be scoped" }] },
+    summary: "Configurable reports built around the questions your leadership team asks.",
+    points: ["Report definitions agreed with you", "Scheduled report delivery", "For a school or a group of schools"],
+    status: "Scoped on request",
+    preview: { title: "Custom reports", rows: [{ label: "Definitions", value: "Agreed with you" }, { label: "Delivery", value: "Scheduled" }] },
   },
   {
     id: "recruitment",
     tier: "optional",
     name: "Recruitment workflows",
-    summary: "Vacancy approvals and recruitment steps managed in the same place as staff records.",
-    points: ["Vacancy approval route", "Recruitment stages", "Hand-over to onboarding"],
+    summary: "Vacancy administration, applications and recruitment tasks, alongside your staff records.",
+    points: ["Vacancy approval route", "Applications and recruitment tasks", "Hand-over to onboarding"],
     status: "Planned",
-    preview: { title: "Recruitment", rows: [{ label: "Vacancy approval", value: "Planned module" }, { label: "Stages", value: "Planned module" }] },
+    preview: { title: "Recruitment", rows: [{ label: "Vacancy approval", value: "Route set by school" }, { label: "Next step", value: "Onboarding" }] },
   },
   {
     id: "casework",
     tier: "optional",
     name: "HR case management",
-    summary: "Confidential case records with strict access, scoped carefully with each school.",
+    summary: "Controlled handling of confidential HR cases, with strictly limited access and a full audit history.",
     points: ["Confidential case records", "Strictly limited access", "Full audit history"],
-    status: "Requirements discussion",
-    caution: "Involves confidential personnel matters and legal obligations; it would need detailed requirements, security review and testing — it is not a ready-made add-on.",
-    preview: { title: "Case records", rows: [{ label: "Scope", value: "To be agreed" }, { label: "Access", value: "Strictly limited" }] },
+    status: "Scoped on request",
+    note: "Scoped with a security and data-protection review.",
+    preview: { title: "Case records", rows: [{ label: "Access", value: "Named staff only" }, { label: "Audit", value: "Every change" }] },
   },
   {
     id: "scr",
     tier: "optional",
     name: "Single Central Record support",
-    summary: "Support for maintaining recruitment-check information that schools are required to keep.",
-    points: ["Structured check records", "Reminders and gaps highlighted", "Designed with safeguarding leads"],
-    status: "Requirements discussion",
-    caution: "Safeguarding and statutory requirements apply. This would only be built with the school’s safeguarding leads and validated thoroughly before any use.",
-    preview: { title: "Single Central Record", rows: [{ label: "Scope", value: "To be agreed" }, { label: "Validation", value: "Required before use" }] },
+    summary: "Administrative support for keeping recruitment-check information organised, with reminders for gaps.",
+    points: ["Structured check records", "Reminders and gaps highlighted", "Designed with your safeguarding lead"],
+    status: "Scoped on request",
+    note: "Safeguarding requirements and validation with your safeguarding lead form part of implementation.",
+    preview: { title: "Single Central Record", rows: [{ label: "Check records", value: "Structured" }, { label: "Reminders", value: "Before expiry" }] },
   },
   {
     id: "trust",
     tier: "optional",
     name: "Multi-school trust management",
-    summary: "Trust-level oversight across several schools, each keeping its own policies.",
-    points: ["Trust-level dashboards", "School-specific policies", "Central administration"],
+    summary: "Oversight across a group of schools, with each school’s staff, data and policies kept separate.",
+    points: ["Group-level oversight", "School-specific policies", "Separation between schools"],
     status: "Planned",
-    caution: "The product is designed to be reusable across schools; running several schools together has not yet been verified in live use.",
-    preview: { title: "Trust overview", rows: [{ label: "Schools", value: "Planned module" }, { label: "Policies", value: "Per school" }] },
+    preview: { title: "Trust overview", rows: [{ label: "Schools", value: "Kept separate" }, { label: "Policies", value: "Per school" }] },
   },
   {
     id: "integrations",
     tier: "optional",
     name: "Integrations and bespoke workflows",
-    summary: "Additional integrations or workflows specific to your school, quoted separately.",
-    points: ["Requirements agreed first", "Technical validation before commitment", "Quoted separately"],
-    status: "Requirements discussion",
-    caution: "No payroll or HR system integration is claimed as available today; any integration depends on agreed requirements and technical validation.",
-    preview: { title: "Integration", rows: [{ label: "Requirements", value: "Discussed first" }, { label: "Validation", value: "Before commitment" }] },
+    summary: "Connections to other systems and workflows specific to your school, assessed and quoted individually.",
+    points: ["Assessed against your requirements", "Depends on third-party technical access", "Quoted separately"],
+    status: "Scoped on request",
+    note: "Each integration is assessed against your requirements and the third party’s technical access.",
+    preview: { title: "Integration", rows: [{ label: "Requirements", value: "Assessed first" }, { label: "Quote", value: "Individual" }] },
   },
 ];
+
+/** One shared explanation for optional modules (used by the catalogue and explorer). */
+export const OPTIONAL_MODULES_NOTE =
+  "Additional modules are scoped individually. Features involving sensitive information, safeguarding or third-party integrations require appropriate technical and security assessment.";
 
 export const CAPABILITIES: { title: string; body: string }[] = [
   { title: "Staff groups and permissions", body: "Teaching and support staff, office and leadership roles — each sees only what their role allows." },
@@ -419,51 +425,51 @@ export const CAPABILITIES: { title: string; body: string }[] = [
 export const FAQS: { q: string; a: string }[] = [
   {
     q: "What is CatchZone School HR?",
-    a: "A school-focused HR administration product being developed by CatchZone Ltd. It brings everyday staff requests — additional hours, leave, TOIL and return-to-work — and their approvals into one connected place. It is currently in development, at pilot stage.",
+    a: "A school HR platform from CatchZone Ltd. It brings everyday staff requests — additional hours, leave, TOIL and return-to-work — and their approvals into one straightforward place, with clear statuses and finance-ready records.",
   },
   {
     q: "What is included in Essentials?",
-    a: "Staff self-service, additional-hours claims, leave and TOIL requests with balances, return-to-work forms, line-manager and headteacher approvals, notifications and reminders, role-based access, basic administration dashboards, audit history, and finance-ready records with agreed exports. Essentials is the intended package for the first school pilot.",
+    a: "Staff self-service, additional-hours claims, leave and TOIL requests with balances, return-to-work forms, line-manager and headteacher approvals, notifications and reminders, role-based access, basic administration dashboards, audit history, and finance-ready records with agreed exports.",
   },
   {
     q: "What does Standard add?",
-    a: "The planned broader staff-management features: staff directory, employment information, document storage, policies and acknowledgements, training and CPD tracking with reminders, onboarding and leaver checklists, enhanced administration and more detailed reporting. These features are planned; their final scope is confirmed with each school.",
+    a: "Staff directory, employment information, document storage, policies and acknowledgements, training and CPD tracking with reminders, onboarding and leaver checklists, enhanced administration and more detailed reporting. Feature availability and timescales are confirmed with your school during scoping, before any commitment.",
   },
   {
-    q: "Can we purchase additional modules?",
-    a: "Optional modules — such as appraisal, recruitment workflows or trust-level management — are planned or available for a requirements discussion. None is presented as ready to switch on today. Each is scoped and quoted separately, and modules involving sensitive or statutory information need careful scoping and validation first.",
+    q: "Can we add further modules?",
+    a: "Yes — optional modules such as appraisal, recruitment workflows or trust-level oversight are scoped and quoted individually. Modules involving sensitive information, safeguarding or third-party integrations include an appropriate technical and security assessment.",
   },
   {
     q: "Can staff use it from their phone?",
-    a: "That is the intention: it is being designed for use in a web browser on phones, tablets and computers, so staff can submit requests and approvers can respond without being at a desk. Device support is confirmed with each school during the pilot.",
+    a: "Yes. It is designed for use in a web browser on phones, tablets and computers, so staff can submit requests and approvers can respond without being at a desk. We confirm device requirements with your school during setup.",
   },
   {
     q: "How do approvals work?",
-    a: "Each request type has an agreed approval route — for example, leave and TOIL to the line manager, and additional hours to the headteacher. Approvers are notified, the requester can see the status, and every decision is recorded in the audit history.",
+    a: "Each request type has its own approval route — for example, leave and TOIL to the line manager, and additional hours to the headteacher. Approvers are notified, the requester can see the status, and every decision is recorded in the audit history. Routes are configured to your school’s rules.",
   },
   {
     q: "Can schools configure their own policies?",
-    a: "The product is designed around configurable rules — leave types, entitlements, TOIL rules, approval routes and deadlines — agreed with each school during implementation. We don’t assume one school’s policies apply to every school.",
+    a: "Yes. Leave types, entitlements, TOIL rules, approval routes and deadlines are configured with each school during implementation. We don’t assume one school’s policies apply to every school.",
   },
   {
     q: "Does it replace payroll software?",
-    a: "No. CatchZone School HR is not a payroll system. It produces finance-ready records of approved items; how those reach payroll depends on the school’s arrangements and an export format agreed during implementation.",
+    a: "No. CatchZone School HR is not a payroll system. It produces finance-ready records of approved items; how those reach payroll depends on your school’s arrangements and an export format agreed during implementation.",
   },
   {
     q: "Can it work alongside our existing HR and payroll arrangements?",
-    a: "That is the intention: it handles the requests and approvals, and provides agreed exports for your existing finance or payroll process. Any direct integration with another system would depend on agreed requirements and technical validation — we don’t claim compatibility with specific payroll products.",
+    a: "Yes — it handles the requests and approvals and provides agreed exports for your existing finance or payroll process. A direct integration with another system is assessed against your requirements and the supplier’s technical access; we don’t claim compatibility with specific payroll products.",
   },
   {
     q: "How is staff information protected?",
-    a: "The approach is role-based access so people only see what their role needs, sign-in for every user, restricted access to sensitive records such as return-to-work forms, audit history, and regular backups. We will walk through the security and data-protection arrangements in detail with any school before a pilot; we don’t claim certifications we don’t hold.",
+    a: "Role-based access so people only see what their role needs, sign-in for every user, restricted access to sensitive records such as return-to-work forms, audit history and regular backups. We walk through the security and data-protection arrangements in detail with your school before any commitment.",
   },
   {
     q: "What happens during implementation?",
-    a: "We start by understanding your current processes, roles and approval rules; then configure and test the workflows with you; then run an agreed pilot before wider use. Timelines depend on your school and are agreed together rather than promised in advance.",
+    a: "We start by understanding your current processes, roles and approval rules; then configure and test the workflows with you; then run an agreed pilot period before wider use. Timelines are agreed with your school rather than fixed in advance.",
   },
   {
     q: "Is support included?",
-    a: "The annual licence is intended to include hosting, routine maintenance, standard software updates, backups and a defined level of support. Significant data migration, bespoke development, additional training or special integration work may be quoted separately.",
+    a: "The annual licence includes hosting, routine maintenance, standard software updates, backups and a defined level of support. Significant data migration, bespoke development, additional training or special integration work is quoted separately.",
   },
   {
     q: "How can a school request a demonstration?",

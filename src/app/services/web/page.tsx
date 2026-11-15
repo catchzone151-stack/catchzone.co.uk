@@ -2,18 +2,26 @@ import type { Metadata } from "next";
 import { services } from "@/data/services";
 import { ServiceHero } from "@/components/work/ServiceHero";
 import { ServiceBody } from "@/components/work/ServiceBody";
+import { jsonLd, pageMetadata, serviceJsonLd } from "@/lib/seo";
 
 const service = services.find((s) => s.slug === "web")!;
 
-export const metadata: Metadata = {
-  title: service.shortName,
-  description: service.description,
-  alternates: { canonical: "/services/web" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Premium Website & Web Platform Development | CatchZone",
+  description: "Bespoke websites and interactive web platforms, designed and engineered to look and perform like the category leader — fast, accessible and built around your brand.",
+  path: "/services/web",
+});
 
 export default function WebServicePage() {
   return (
     <div>
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(serviceJsonLd({ name: service.name, description: service.description, path: "/services/web", outputs: service.outputs })),
+        }}
+      />
       <ServiceHero service={service} coreState="web" />
       <ServiceBody service={service} accent="cyan" />
 

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { ProjectConfigurator } from "@/components/forms/ProjectConfigurator";
 import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Start a Project",
-  description:
-    "Tell CatchZone what you're building — a short configurator, not a corporate contact form.",
-  alternates: { canonical: "/start-a-project" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Start a Project — Tell Us What You’re Building | CatchZone",
+  description: "Tell CatchZone about the app, platform or business system you need. A short project brief instead of a long contact form — we’ll be in touch to discuss it.",
+  path: "/start-a-project",
+});
 
 export default function StartAProjectPage() {
   return (
