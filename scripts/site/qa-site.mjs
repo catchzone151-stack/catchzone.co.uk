@@ -201,8 +201,8 @@ for (const theme of ["dark", "light"]) {
   await c.close();
 }
 
-/* ---- Screenshots for owner review ---- */
-if (SHOTS) {
+/* ---- Screenshots for owner review (failures here never discard results) ---- */
+if (SHOTS) try {
   for (const theme of ["dark", "light"]) {
     const c = await ctx(theme, { width: 1440, height: 900 });
     const page = await c.newPage();
@@ -228,10 +228,15 @@ if (SHOTS) {
       const m = await ctx(theme, { width, height: width === 390 ? 844 : 1024 }, { isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
       const mp = await m.newPage();
       await mp.goto(BASE + "/", { waitUntil: "networkidle" });
-      await mp.getByRole("button", { name: "Open menu" }).tap();
-      await mp.getByRole("button", { name: "Show products" }).tap();
+      // < 768px: mobile menu; from 768px (tablet) the desktop navigation is shown.
+      if (width < 768) {
+        await mp.getByRole("button", { name: "Open menu" }).tap();
+        await mp.getByRole("button", { name: "Show products" }).tap();
+      } else {
+        await mp.getByRole("button", { name: "Show products" }).tap();
+      }
       await mp.waitForTimeout(500);
-      await shot(mp, `mobile-nav-${width}-${theme}`);
+      await shot(mp, `nav-${width}-${theme}`);
       for (const [r, name] of [["/school-hr", "school-hr"], ["/careers", "careers"], ["/services", "services"]]) {
         await mp.goto(BASE + r, { waitUntil: "networkidle" });
         await mp.waitForTimeout(600);
@@ -240,6 +245,10 @@ if (SHOTS) {
       await m.close();
     }
   }
+}
+
+catch (e) {
+  notVerified.push(`screenshot phase stopped: ${String(e).split("\n")[0].slice(0, 120)}`);
 }
 
 await browser.close();
