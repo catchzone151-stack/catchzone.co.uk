@@ -95,3 +95,17 @@ or ranking data was available or measured. Titles ≤ 60 characters and
 descriptions ≤ 160 characters. Each page targets a distinct intent to avoid
 cannibalisation (product / languages / business). Existing routes, canonicals
 and redirects are unchanged.
+
+## Demonstration CTAs and wordmark placement (final finishing touches)
+
+- Demonstration CTAs use `src/components/voice/VoiceDemoCta.tsx`, driven by the
+  server's `GET /api/voice/status` (kill switch, credentials, durable limits,
+  spend-control confirmation). While the public demo is paused — or status can't
+  be confirmed — they read "Book a Demonstration" (→ `/voice#voice-contact`);
+  once the owner activates the demo and all prerequisites pass, they switch to
+  "Try the live demo" (→ `/voice#studio`) automatically. The Conversation
+  Studio's paused/live messages are driven by the same status, so activation
+  needs no copy changes. Nothing here enables the demo.
+- The Voice wordmark lives in the `/voice` hero (190–220 px wide); the Voice
+  sub-navigation shows the product name as text so it never stacks under the
+  CatchZone company logo.

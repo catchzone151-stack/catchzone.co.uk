@@ -19,6 +19,8 @@ For CatchZone School HR (`/school-hr`), the Products navigation and `/products`,
 
 For `/careers`, read `docs/CAREERS.md` (role profiles only — no salaries, no live-vacancy claims, no JobPosting schema). For SEO conventions and the latest audit, read `docs/SEO_REPORT.md` and use `pageMetadata()` from `src/lib/seo.ts` for every page.
 
+For the "people behind CatchZone" team experience (About `#team`, homepage preview), read `docs/TEAM.md` — use only the supplied artwork; no invented personal details or Person schema.
+
 For logos, the light/dark theme system or the pull-string switch, read `docs/THEME_AND_BRANDING.md`. Dark mode is the default and must remain visually identical to the live site; never alter the approved logo artwork.
 
 ## Working rules

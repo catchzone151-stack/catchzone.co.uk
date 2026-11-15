@@ -257,6 +257,20 @@ what a real modelling pass would add on top of what code can already do.
 - No dedicated social preview image was created for `/school-hr` or
   `/products`; they use the site default `/og/catchzone.png`. Optional future asset.
 
+## ASSET-015 — Team artwork (supplied)
+
+- **Status: SUPPLIED and in use.** Two owner-approved archives: five chrome
+  character portraits and five abstract chrome sculptures, each in dark and
+  light (20 images) → `public/team/*.webp`. Mapping and processing:
+  `docs/TEAM.md`. The original ZIP files are not stored in the repository.
+- Limitation: portraits are ~700×880 px, sharp up to ~420 CSS px wide on 2×
+  screens. Larger presentations would need higher-resolution source artwork.
+
+## ASSET-016 — Rawdah Cycle screenshots (deferred by owner)
+
+- Some Rawdah case-study images need updating; explicitly deferred to a
+  future update. Availability, store badges and links were updated only.
+
 ## ASSET-013 — Optional future Voice assets (not required)
 
 - Real product photography or screen recordings of the private two-person
