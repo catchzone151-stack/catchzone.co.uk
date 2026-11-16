@@ -15,7 +15,7 @@ export function ProductCards({ headingLevel = 3 }: { headingLevel?: 2 | 3 }) {
           style={{ background: "radial-gradient(60% 50% at 85% 0%, rgb(var(--accent-iris-rgb) / 0.12), transparent 70%)" }}
           aria-hidden="true"
         />
-        <div className="relative flex items-start justify-between gap-4">
+        <div className="relative flex flex-wrap items-start justify-between gap-4">
           <ProductLogo product="voice" size="small" className="h-auto w-[200px] sm:w-[230px]" />
           <span className="mono shrink-0 rounded-full border border-white/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-ink-muted">
             Voice translation
@@ -46,7 +46,7 @@ export function ProductCards({ headingLevel = 3 }: { headingLevel?: 2 | 3 }) {
           style={{ background: "radial-gradient(60% 50% at 85% 0%, rgb(var(--accent-cyan-rgb) / 0.12), transparent 70%)" }}
           aria-hidden="true"
         />
-        <div className="relative flex items-start justify-between gap-4">
+        <div className="relative flex flex-wrap items-start justify-between gap-4">
           <ProductLogo product="school-hr" className="-my-2 h-[84px] w-auto sm:h-[92px]" />
           <span className="mono shrink-0 rounded-full border border-white/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-ink-muted">
             School HR software

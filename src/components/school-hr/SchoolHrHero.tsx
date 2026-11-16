@@ -5,7 +5,7 @@ import { AppWindow, Avatar, StatusPill, btnPrimary, btnSecondary } from "@/compo
 /** Decorative staff-portal composition (sample data), hidden from assistive tech. */
 function PortalPreview() {
   return (
-    <div className="relative mx-auto w-full max-w-[600px] pb-[4.5rem] pt-6 lg:pb-20" aria-hidden="true">
+    <div className="relative mx-auto w-full max-w-[600px] pb-24 pt-6 sm:pb-[4.5rem] lg:pb-20" aria-hidden="true">
       <div
         className="pointer-events-none absolute -inset-10 -z-10"
         style={{
@@ -55,7 +55,7 @@ function PortalPreview() {
       <p className="absolute bottom-1 right-2 text-[10.5px] text-ink-faint">Interactive product preview</p>
 
       {/* Floating approval + finance cards, connected to the portal */}
-      <div className="absolute -left-2 bottom-0 w-[230px] rounded-2xl border border-white/10 bg-surface-raised/95 p-3.5 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.75)] backdrop-blur sm:-left-10 lg:-left-14 light:shadow-[0_30px_60px_-35px_rgba(14,17,22,0.4)] motion-safe:animate-[screen-float_8s_ease-in-out_infinite_-2s]">
+      <div className="absolute -left-2 bottom-6 w-[230px] rounded-2xl border border-white/10 bg-surface-raised/95 p-3.5 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.75)] backdrop-blur sm:-left-10 sm:bottom-0 lg:-left-14 light:shadow-[0_30px_60px_-35px_rgba(14,17,22,0.4)] motion-safe:animate-[screen-float_8s_ease-in-out_infinite_-2s]">
         <div className="flex items-center gap-2.5">
           <Avatar role="head" size="sm" />
           <p className="text-[12px] font-semibold text-ink">Headteacher approved</p>
@@ -90,7 +90,7 @@ export function SchoolHrHero() {
         }}
         aria-hidden="true"
       />
-      <div className="shell relative grid gap-12 pb-20 pt-8 md:pt-12 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-10 lg:pb-28">
+      <div className="shell relative grid grid-cols-[minmax(0,1fr)] gap-12 pb-20 pt-8 md:pt-12 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-10 lg:pb-28">
         <div>
           <ProductLogo product="school-hr" priority className="-ml-2 h-auto w-[170px] sm:w-[190px]" />
           <h1 id="hr-hero-title" className="mt-5 font-display text-4xl font-bold leading-[1.04] text-ink sm:text-5xl md:text-6xl lg:text-[3.6rem]">
