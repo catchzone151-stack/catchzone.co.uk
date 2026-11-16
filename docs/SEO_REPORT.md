@@ -138,3 +138,40 @@ motion, no horizontal overflow at 360–1920 px and no theme flash are covered b
 5. Monitor Core Web Vitals (CrUX / Search Console) for 28 days after release.
 6. Optional: a Content-Security-Policy (needs nonce/hash work for Next's inline scripts) and a
    dedicated social image for `/school-hr`.
+
+---
+
+## G. Finalisation pass — 16 Nov 2026 (branch `claude/catchzone-website-finalisation`)
+
+Baseline: production verified to be `75a3163` (build ID `A41ZH-EDQz6Gr3as5pBT-`): all 27 sitemap
+pages' rendered text and head metadata identical to a local build of `75a3163`; JS chunks differ
+only by one entry-module id derived from the build path.
+
+**Live crawl (production, before changes):** 35 URLs, all 200; 27 indexable (= sitemap), 8 Product
+Lab pages `noindex, follow`; self-canonical HTTPS apex everywhere; 0 broken links, 0 orphans, 0
+duplicate titles/descriptions, 0 images without `alt`; `/nonexistent` → 404; robots and sitemap
+correct. Lighthouse SEO 100 on every page tested.
+
+**www (supersedes D/F item 1):** `https://www.catchzone.co.uk/<path>?<query>` → single **301** to
+`https://catchzone.co.uk/<path>?<query>` (path and query preserved, no loop), served by Cloudflare
+with a valid Let's Encrypt certificate (`*.catchzone.co.uk`, expires 24 Jan 2027). The apex
+certificate (Let's Encrypt, host-managed) expires 10 Dec 2026 and should auto-renew. **Not
+verifiable from this environment:** plain `http://www.` and `http://` (the sandbox proxy only
+carries HTTPS) — check with the commands in the release notes.
+
+**Changes:** title focus — `/` "Bespoke Software Development Company UK"; `/services/apps`
+"Mobile App Development — iOS & Android Apps"; `/services/web` "Bespoke Website & Web Platform
+Development"; `/services/systems` "Custom Business Software, Portals & Automation" (+ dashboards in
+the description); `/school-hr` "School HR Software for Leave, TOIL & Additional Hours" (71 → 65
+chars); `/services` shortened. BreadcrumbList JSON-LD on `/services`, `/services/*` and `/work/*`
+(not on noindex Product Lab pages). Organization `contactPoint` with Mon–Fri 09:00–18:00
+(matches the Business Profile; also shown in the footer). New `/services` content: "How a CatchZone
+project runs" (six stages incl. testing & security, launch) and "How quotes work".
+
+**Competitor read (Nov 2026):** GoodCore, Geeks, Magora and One Beyond all explain process,
+proposals/quotes and ongoing support; Geeks and others also state IP ownership. CatchZone's pages
+did not explain process or quoting (now added). **Owner decisions, not added (would be new
+business claims):** IP ownership terms, post-launch support/maintenance offer, typical
+engagement sizes. School-HR competitors (WhosOff, Activ People HR, ESS SIMS, SAM, iSAMS) cover
+TOIL and leave; CatchZone's distinctive angle — additional-hours claims with headteacher approval
+and finance-ready records — is already the page's focus.

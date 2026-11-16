@@ -12,7 +12,7 @@ const siteUrl = "https://catchzone.co.uk";
  */
 const staticRoutes: [route: string, lastModified: string][] = [
   ["", "2026-11-14"],
-  ["/services", "2026-11-15"],
+  ["/services", "2026-11-16"],
   ["/services/apps", "2026-09-10"],
   ["/services/web", "2026-09-10"],
   ["/services/systems", "2026-09-10"],
