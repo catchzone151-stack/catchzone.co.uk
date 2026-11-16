@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "node scripts/voice/test-voice-api.mjs && node scripts/school-hr/test-school-hr-api.mjs && node scripts/careers/test-careers-api.mjs && node scripts/team/test-team-data.mjs",
+    "test": "node scripts/voice/test-voice-api.mjs && node scripts/school-hr/test-school-hr-api.mjs && node scripts/careers/test-careers-api.mjs && node scripts/team/test-team-data.mjs && node scripts/forms/test-start-a-project-api.mjs",
+    "test:forms": "node scripts/forms/test-start-a-project-api.mjs",
     "test:team": "node scripts/team/test-team-data.mjs",
     "test:careers": "node scripts/careers/test-careers-api.mjs",
     "test:school-hr": "node scripts/school-hr/test-school-hr-api.mjs",
@@ -38,5 +39,10 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
     "typescript": "^5.7.2"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "^8.5.33"
+    }
   }
 }

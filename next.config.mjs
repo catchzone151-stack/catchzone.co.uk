@@ -10,6 +10,22 @@ import { PHASE_DEVELOPMENT_SERVER } from "next/constants.js";
  * @param {string} phase
  * @returns {import('next').NextConfig}
  */
+const CSP_REPORT_ONLY = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  // CatchZone Voice demo: Soniox real-time STT/TTS (US and regional endpoints).
+  "connect-src 'self' https://*.soniox.com wss://*.soniox.com",
+  "media-src 'self' blob: data:",
+  "worker-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'self'",
+].join("; ");
+
 const nextConfig = (phase) => ({
   distDir: phase === PHASE_DEVELOPMENT_SERVER ? ".next-dev" : ".next",
   reactStrictMode: true,
@@ -62,6 +78,11 @@ const nextConfig = (phase) => ({
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "Permissions-Policy", value: "camera=(), geolocation=(), payment=(), usb=(), microphone=(self)" },
+          // Report-only: observes, never blocks. Violations appear in the browser
+          // console; enforce only after a clean observation period (see
+          // docs/SECURITY_NOTES.md). 'unsafe-inline' is required by Next's inline
+          // bootstrap/RSC scripts, the no-flash theme script and JSON-LD.
+          { key: "Content-Security-Policy-Report-Only", value: CSP_REPORT_ONLY },
         ],
       },
       {
