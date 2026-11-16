@@ -1,5 +1,9 @@
 import "server-only";
 import type { VoiceDemoConfig } from "./config";
+import { getPostgresStore } from "./postgresStore";
+import { StoreUnavailableError, type ClaimInput, type ClaimOutcome, type VoiceDemoStore } from "./storeTypes";
+export { StoreUnavailableError } from "./storeTypes";
+export type { ClaimInput, ClaimOutcome, VoiceDemoStore } from "./storeTypes";
 
 /**
  * Durable usage store for the public demo. A claim atomically enforces:
@@ -13,28 +17,6 @@ import type { VoiceDemoConfig } from "./config";
  * Only hashed identifiers are stored (HMAC with a daily salt) — never raw IP
  * addresses, audio, transcripts or translations.
  */
-
-export interface ClaimInput {
-  sessionId: string;
-  ipHash: string;
-  visitorHash: string;
-  reservedSeconds: number;
-  leaseSeconds: number;
-  maxPerVisitor: number;
-  maxPerIp: number;
-  dailySeconds: number;
-  maxConcurrent: number;
-}
-
-export type ClaimOutcome = "ok" | "busy" | "visitor_limit" | "daily_limit";
-
-export interface VoiceDemoStore {
-  claim(input: ClaimInput): Promise<ClaimOutcome>;
-  /** refund=true deletes the attempt (keys were never issued); otherwise just ends the lease. */
-  release(sessionId: string, refund: boolean): Promise<void>;
-}
-
-export class StoreUnavailableError extends Error {}
 
 const OUTCOMES = new Set<ClaimOutcome>(["ok", "busy", "visitor_limit", "daily_limit"]);
 
@@ -145,9 +127,11 @@ class MemoryStore implements VoiceDemoStore {
 const globalForStore = globalThis as unknown as { __czVoiceMemoryStore?: MemoryStore };
 
 export function getStore(config: VoiceDemoConfig): VoiceDemoStore {
+  if (config.store === "postgres") return getPostgresStore(config.databaseUrl);
   if (config.store === "supabase") {
     return new SupabaseStore(config.supabaseUrl, config.supabaseServiceKey);
   }
+  if (config.store !== "memory") throw new StoreUnavailableError("voice store unsupported");
   globalForStore.__czVoiceMemoryStore ??= new MemoryStore();
   return globalForStore.__czVoiceMemoryStore;
 }

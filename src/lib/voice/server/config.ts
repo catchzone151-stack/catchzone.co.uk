@@ -18,7 +18,8 @@ import "server-only";
  *                                      Never reused for the private client-evaluation environment.
  *   SONIOX_DEMO_REGION                 Optional Soniox region of that project ("eu", "jp", "in"; empty = US).
  *   VOICE_DEMO_HASH_SECRET             ≥32 random characters; HMAC secret for visitor/IP hashing and session tokens.
- *   VOICE_DEMO_STORE                   "supabase" (durable, required in production) or "memory" (local dev only).
+ *   VOICE_DEMO_STORE                   "postgres" (Replit), "supabase", or "memory" (local dev only).
+ *   DATABASE_URL                       Replit-managed server-only connection (store = postgres).
  *   VOICE_DEMO_SUPABASE_URL            Supabase project URL (store = supabase).
  *   VOICE_DEMO_SUPABASE_SERVICE_ROLE_KEY Supabase service-role key (server only).
  *
@@ -39,7 +40,7 @@ export const SESSION_GRACE_SECONDS = 5;
 /** Per-utterance cap for each spoken (TTS) stream. */
 export const TTS_STREAM_MAX_SECONDS = 30;
 
-export type StoreKind = "supabase" | "memory";
+export type StoreKind = "postgres" | "supabase" | "memory";
 
 export type UnavailableReason = "disabled" | "not_configured";
 
@@ -58,6 +59,7 @@ export interface VoiceDemoConfig {
   hashSecret: string;
   supabaseUrl: string;
   supabaseServiceKey: string;
+  databaseUrl: string;
 }
 
 export type ConfigResult =
@@ -85,6 +87,7 @@ export function getVoiceDemoConfig(): ConfigResult {
   const storeRaw = process.env.VOICE_DEMO_STORE?.trim();
   const supabaseUrl = process.env.VOICE_DEMO_SUPABASE_URL?.trim() ?? "";
   const supabaseServiceKey = process.env.VOICE_DEMO_SUPABASE_SERVICE_ROLE_KEY?.trim() ?? "";
+  const databaseUrl = process.env.DATABASE_URL?.trim() ?? "";
 
   if (process.env.VOICE_DEMO_SPEND_CONTROLS_CONFIRMED !== "true") {
     missing.push("VOICE_DEMO_SPEND_CONTROLS_CONFIRMED");
@@ -93,7 +96,10 @@ export function getVoiceDemoConfig(): ConfigResult {
   if (hashSecret.length < 32) missing.push("VOICE_DEMO_HASH_SECRET (min 32 chars)");
 
   let store: StoreKind | null = null;
-  if (storeRaw === "supabase") {
+  if (storeRaw === "postgres") {
+    store = "postgres";
+    if (!/^postgres(?:ql)?:\/\//.test(databaseUrl)) missing.push("DATABASE_URL");
+  } else if (storeRaw === "supabase") {
     store = "supabase";
     if (!/^https:\/\/[a-z0-9.-]+$/i.test(supabaseUrl.replace(/\/$/, ""))) missing.push("VOICE_DEMO_SUPABASE_URL");
     if (!supabaseServiceKey) missing.push("VOICE_DEMO_SUPABASE_SERVICE_ROLE_KEY");
@@ -138,6 +144,7 @@ export function getVoiceDemoConfig(): ConfigResult {
       hashSecret,
       supabaseUrl: supabaseUrl.replace(/\/$/, ""),
       supabaseServiceKey,
+      databaseUrl,
     },
   };
 }

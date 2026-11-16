@@ -23,6 +23,7 @@
     "gsap": "^3.12.5",
     "motion": "^12.43.0",
     "next": "^15.5.29",
+    "pg": "8.23.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "sharp": "^0.35.5",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@types/three": "^0.170.0",
