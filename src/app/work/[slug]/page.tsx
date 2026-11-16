@@ -15,7 +15,17 @@ import {
   IslamQuestScreenGrid,
 } from "@/components/work/IslamQuestShowcase";
 import { StoreBadges } from "@/components/work/StoreBadges";
-import { pageMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd, jsonLd, pageMetadata } from "@/lib/seo";
+
+function WorkBreadcrumbJsonLd({ name, slug }: { name: string; slug: string }) {
+  return (
+    <script
+      type="application/ld+json"
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbJsonLd([["Work", "/work"], [name, `/work/${slug}`]])) }}
+    />
+  );
+}
 
 const STATUS_BADGE_STYLE: Record<ProjectStatus, string> = {
   live: "border-accent-cyan/30 text-accent-cyan",
@@ -60,7 +70,13 @@ export default async function ProjectPage({
 }) {
   const { slug } = await params;
   const showcase = showcaseProjects.find((p) => p.slug === slug);
-  if (showcase) return <ShowcaseProjectPage project={showcase} />;
+  if (showcase)
+    return (
+      <>
+        <WorkBreadcrumbJsonLd name={showcase.name} slug={showcase.slug} />
+        <ShowcaseProjectPage project={showcase} />
+      </>
+    );
 
   const project = projects.find((p) => p.slug === slug);
   if (!project) notFound();
@@ -75,6 +91,7 @@ export default async function ProjectPage({
 
   return (
     <div className="pt-32">
+      {project.status !== "product-lab" && <WorkBreadcrumbJsonLd name={project.title} slug={project.slug} />}
       <section className="border-b border-line pb-16">
         <div className="shell">
           <p className="mono text-xs">

@@ -3,13 +3,13 @@ import Link from "next/link";
 import { services } from "@/data/services";
 import { ServiceHero } from "@/components/work/ServiceHero";
 import { ServiceBody } from "@/components/work/ServiceBody";
-import { jsonLd, pageMetadata, serviceJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, jsonLd, pageMetadata, serviceJsonLd } from "@/lib/seo";
 
 const service = services.find((s) => s.slug === "systems")!;
 
 export const metadata: Metadata = pageMetadata({
-  title: "Custom Business Systems & Workflow Automation | CatchZone",
-  description: "Bespoke business software — admin systems, client portals, booking and workflow automation that replace spreadsheets and disconnected tools.",
+  title: "Custom Business Software, Portals & Automation | CatchZone",
+  description: "Bespoke business software — admin systems, dashboards, client portals, booking and workflow automation that replace spreadsheets and disconnected tools.",
   path: "/services/systems",
 });
 
@@ -20,7 +20,10 @@ export default function SystemsServicePage() {
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
-          __html: jsonLd(serviceJsonLd({ name: service.name, description: service.description, path: "/services/systems", outputs: service.outputs })),
+          __html: jsonLd([
+            serviceJsonLd({ name: service.name, description: service.description, path: "/services/systems", outputs: service.outputs }),
+            breadcrumbJsonLd([["Services", "/services"], [service.shortName, "/services/systems"]]),
+          ]),
         }}
       />
       <ServiceHero service={service} coreState="systems" />

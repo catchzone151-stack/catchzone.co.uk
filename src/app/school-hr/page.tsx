@@ -11,9 +11,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { CAPABILITIES, FAQS } from "@/data/schoolHr";
 import { jsonLd, pageMetadata } from "@/lib/seo";
 
-const title = "CatchZone School HR — School HR Software for Staff Requests & Approvals";
+const title = "School HR Software for Leave, TOIL & Additional Hours | CatchZone";
 const description =
-  "School HR software for staff self-service: additional-hours claims, leave, TOIL and return-to-work forms with line-manager and headteacher approvals. Packages from £1,800 per school per year.";
+  "School HR software for additional-hours claims, leave, TOIL and return-to-work forms, with line-manager and headteacher approvals. From £1,800 per school per year.";
 
 export const metadata: Metadata = pageMetadata({
   title,

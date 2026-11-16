@@ -66,3 +66,17 @@ export function serviceJsonLd({ name, description, path, outputs }: { name: stri
     },
   };
 }
+
+/** schema.org BreadcrumbList: Home → …items. Only use where the trail matches the page hierarchy. */
+export function breadcrumbJsonLd(items: [name: string, path: string][]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [["Home", "/"] as [string, string], ...items].map(([name, path], i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name,
+      item: path === "/" ? SITE_URL : `${SITE_URL}${path}`,
+    })),
+  };
+}

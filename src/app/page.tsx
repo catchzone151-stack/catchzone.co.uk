@@ -9,8 +9,8 @@ import { TeamPreview } from "@/components/team/TeamPreview";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "CatchZone — Bespoke Software Development & Digital Products",
-  description: "CatchZone Ltd is a UK software development company building bespoke apps, web platforms and business systems — and the team behind CatchZone Voice and CatchZone School HR.",
+  title: "CatchZone — Bespoke Software Development Company UK",
+  description: "CatchZone Ltd is a UK bespoke software development company building apps, web platforms and business systems — and the team behind CatchZone Voice and School HR.",
   path: "/",
 });
 

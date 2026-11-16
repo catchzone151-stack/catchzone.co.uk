@@ -37,6 +37,7 @@ export function Footer() {
               info@catchzone.co.uk
             </a>
           </p>
+          <p className="mt-2 text-sm text-ink-muted">Mon–Fri, 09:00–18:00</p>
           <p className="mt-4 text-sm leading-relaxed text-ink-muted">
             CatchZone Ltd
             <br />

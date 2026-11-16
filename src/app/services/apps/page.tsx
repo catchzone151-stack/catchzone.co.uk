@@ -5,13 +5,13 @@ import { projects } from "@/data/projects";
 import { ServiceHero } from "@/components/work/ServiceHero";
 import { ServiceBody } from "@/components/work/ServiceBody";
 import { ProjectCard } from "@/components/work/ProjectCard";
-import { jsonLd, pageMetadata, serviceJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, jsonLd, pageMetadata, serviceJsonLd } from "@/lib/seo";
 
 const service = services.find((s) => s.slug === "apps")!;
 const relatedProjects = projects.filter((p) => p.type === "Mobile App" && p.status !== "product-lab");
 
 export const metadata: Metadata = pageMetadata({
-  title: "Mobile App & Digital Product Development | CatchZone",
+  title: "Mobile App Development — iOS & Android Apps | CatchZone",
   description: "Custom mobile and web app development — iOS and Android apps, progressive web apps and SaaS platforms engineered around how your product or business actually works.",
   path: "/services/apps",
 });
@@ -23,7 +23,10 @@ export default function AppsServicePage() {
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
-          __html: jsonLd(serviceJsonLd({ name: service.name, description: service.description, path: "/services/apps", outputs: service.outputs })),
+          __html: jsonLd([
+            serviceJsonLd({ name: service.name, description: service.description, path: "/services/apps", outputs: service.outputs }),
+            breadcrumbJsonLd([["Services", "/services"], [service.shortName, "/services/apps"]]),
+          ]),
         }}
       />
       <ServiceHero service={service} coreState="mobile" />

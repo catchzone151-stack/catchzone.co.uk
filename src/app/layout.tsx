@@ -94,6 +94,19 @@ const organizationJsonLd = {
   logo: `${siteUrl}/brand/catchzone-logo-schema.png`,
   slogan: "Built for what's next",
   email: "info@catchzone.co.uk",
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer enquiries",
+    email: "info@catchzone.co.uk",
+    areaServed: "GB",
+    availableLanguage: "en-GB",
+    hoursAvailable: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "09:00",
+      closes: "18:00",
+    },
+  },
   address: {
     "@type": "PostalAddress",
     streetAddress: "124-128 City Road",
