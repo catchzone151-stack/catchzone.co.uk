@@ -4,13 +4,26 @@ export interface ConfigOption {
   description?: string;
 }
 
+/**
+ * Step 1. Ids match the service ids in `src/data/pricing.ts`, so Pricing CTAs
+ * can preselect them (`/start-a-project?service=premium-website`, or two ids
+ * for a combination). `mobile-app`, `business-system`, `complete-ecosystem`
+ * and `not-sure` are unchanged from the original form.
+ */
 export const buildTypeOptions: ConfigOption[] = [
-  { id: "mobile-app", label: "Mobile App" },
-  { id: "web-platform", label: "Web Platform" },
-  { id: "business-system", label: "Business System" },
+  { id: "premium-website", label: "Premium Website" },
+  { id: "web-application", label: "Web Application" },
+  { id: "mobile-app", label: "Android & iOS Mobile App" },
+  { id: "business-system", label: "Business Platform" },
   { id: "complete-ecosystem", label: "Complete Digital Ecosystem" },
   { id: "not-sure", label: "Not Sure Yet" },
 ];
+
+/**
+ * Retired step-1 values, still accepted by the API (and labelled in the email)
+ * so a brief started on a cached older page is never rejected.
+ */
+export const legacyBuildTypeOptions: ConfigOption[] = [{ id: "web-platform", label: "Web Platform" }];
 
 export const startingPointOptions: ConfigOption[] = [
   { id: "idea", label: "I Have An Idea" },
@@ -52,4 +65,9 @@ export interface ProjectBrief {
   company: string;
   phone?: string;
   description: string;
+  /**
+   * Optional: two service ids when the visitor chose a "Better Together"
+   * combination on /pricing. Must be an approved combination (validated server-side).
+   */
+  combination?: string[];
 }

@@ -23,6 +23,8 @@ For the "people behind CatchZone" team experience (About `#team`, homepage previ
 
 For logos, the light/dark theme system or the pull-string switch, read `docs/THEME_AND_BRANDING.md`. Dark mode is the default and must remain visually identical to the live site; never alter the approved logo artwork.
 
+For pricing (`/pricing`, `src/data/pricing.ts`), Chloe (the guided website assistant) and Cal.com booking, read `docs/BOOKING_AND_CHLOE.md`. Prices always read "From"; Chloe is deterministic (no AI API); booking buttons stay hidden until real Cal.com event links are configured.
+
 ## Working rules
 - Inspect the existing repository and assets before changing architecture.
 - Preserve real CatchZone content/assets where useful; do not invent testimonials, client logos, awards, metrics, users, revenue, downloads or other unverifiable claims.

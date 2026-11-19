@@ -6,6 +6,7 @@ import { IntroProvider } from "@/lib/intro/IntroContext";
 import { Nav } from "@/components/navigation/Nav";
 import { Footer } from "@/components/navigation/Footer";
 import { IntroAwareMain } from "@/components/ui/IntroAwareMain";
+import { ChloeAssistant } from "@/components/chloe/ChloeAssistant";
 import { jsonLd } from "@/lib/seo";
 
 const display = Syne({
@@ -162,6 +163,8 @@ export default function RootLayout({
               {children}
               <Footer />
             </IntroAwareMain>
+            {/* Chloe, the guided website assistant: a small bottom-right launcher. */}
+            <ChloeAssistant />
           </IntroProvider>
         </MotionConfig>
         <div className="grain-overlay" aria-hidden="true" />

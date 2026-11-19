@@ -10,6 +10,7 @@ import { ThemeToggle } from "@/components/navigation/ThemeToggle";
 import { CompanyLogo } from "@/components/brand/CompanyLogo";
 import { ProductsMenu } from "@/components/navigation/ProductsMenu";
 import { isProductsPath } from "@/data/products";
+import { BookCallLink } from "@/components/booking/BookCallLink";
 
 export function Nav() {
   const pathname = usePathname();
@@ -60,6 +61,8 @@ export function Nav() {
                 key={link.href}
                 href={link.href}
                 className={`relative rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 ${
+                  link.wideOnly ? "hidden lg:block" : ""
+                } ${
                   active
                     ? "text-ink"
                     : "text-ink-muted hover:text-ink"
@@ -79,6 +82,13 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-2 self-stretch md:gap-3">
+          {/* Quiet secondary action; only rendered once the Cal.com event is configured. */}
+          <BookCallLink
+            event="intro"
+            className="hidden px-2 py-2.5 text-sm font-medium text-ink-muted transition-colors hover:text-ink xl:inline-block"
+          >
+            Book a Call
+          </BookCallLink>
           <Link
             href={primaryCta.href}
             className="cta-breathe hidden rounded-full border border-accent-cyan/30 bg-white/[0.02] px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-accent-cyan hover:text-accent-cyan md:inline-block"

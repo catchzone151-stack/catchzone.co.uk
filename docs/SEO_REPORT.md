@@ -175,3 +175,11 @@ business claims):** IP ownership terms, post-launch support/maintenance offer, t
 engagement sizes. School-HR competitors (WhosOff, Activ People HR, ESS SIMS, SAM, iSAMS) cover
 TOIL and leave; CatchZone's distinctive angle — additional-hours claims with headteacher approval
 and finance-ready records — is already the page's focus.
+
+## Pricing page (19 Nov 2026)
+
+`/pricing` added with `pageMetadata()` (title "Pricing — Websites, Apps & Business Platforms |
+CatchZone", 142-character description, canonical), BreadcrumbList + FAQPage JSON-LD for the
+five visible pricing questions (no `Offer`/price schema), sitemap entry, and internal links from
+the header, footer, Services price lines, the homepage ecosystem section and Chloe. Verified with
+`scripts/seo/audit.mjs`: 0 problems, no orphan pages.

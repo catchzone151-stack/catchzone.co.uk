@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { ProjectConfigurator } from "@/components/forms/ProjectConfigurator";
 import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 import { pageMetadata } from "@/lib/seo";
+import { BookCallLink } from "@/components/booking/BookCallLink";
+import { isBookable } from "@/data/booking";
 
 export const metadata: Metadata = pageMetadata({
   title: "Start a Project — Tell Us What You’re Building | CatchZone",
@@ -23,6 +25,18 @@ export default function StartAProjectPage() {
         <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-muted">
           Five short steps. No technical specification required.
         </p>
+        {isBookable("consultation") && (
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-muted">
+            Prefer to talk it through first?{" "}
+            <BookCallLink
+              event="consultation"
+              className="font-semibold text-accent-cyan underline decoration-accent-cyan/40 underline-offset-2 hover:decoration-accent-cyan"
+            >
+              Book a 30-minute project consultation
+            </BookCallLink>
+            .
+          </p>
+        )}
 
         <div className="mt-12">
           <ProjectConfigurator />

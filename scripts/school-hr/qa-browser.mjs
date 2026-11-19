@@ -88,7 +88,7 @@ for (const theme of ["dark", "light"]) {
     const labels = await page.$$eval('nav[aria-label="Primary"] > a, nav[aria-label="Primary"] > div > div > a', (els) =>
       els.map((e) => e.textContent.trim()),
     );
-    check(JSON.stringify(labels) === JSON.stringify(["Services", "Products", "Work", "About"]), `${theme}: main nav order is Services | Products | Work | About (${labels.join(" | ")})`);
+    check(JSON.stringify(labels) === JSON.stringify(["Services", "Products", "Work", "Pricing", "About"]), `${theme}: main nav order is Services | Products | Work | Pricing | About (${labels.join(" | ")})`);
     check((await page.getAttribute('nav[aria-label="Primary"] a:text-is("Products")', "href")) === "/products", `${theme}: Products link opens /products`);
     const btn = page.getByRole("button", { name: "Show products" });
     check((await btn.getAttribute("aria-expanded")) === "false", `${theme}: products menu starts closed`);

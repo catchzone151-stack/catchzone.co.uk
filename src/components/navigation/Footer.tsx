@@ -1,6 +1,7 @@
 import { CompanyLogo } from "@/components/brand/CompanyLogo";
 import Link from "next/link";
 import { footerColumns, primaryCta } from "@/data/navigation";
+import { BookCallLink } from "@/components/booking/BookCallLink";
 
 export function Footer() {
   return (
@@ -54,12 +55,20 @@ export function Footer() {
             {primaryCta.label}
             <span aria-hidden="true">→</span>
           </Link>
+          <BookCallLink
+            event="intro"
+            className="mt-2.5 flex w-fit items-center gap-2 text-sm text-ink-muted transition-colors hover:text-ink"
+          >
+            Book a Call
+            <span aria-hidden="true">→</span>
+          </BookCallLink>
         </div>
       </div>
 
       <div className="shell flex flex-col gap-2 border-t border-line py-6 text-xs text-ink-faint sm:flex-row sm:items-center sm:justify-between">
         <p>CatchZone Ltd © {new Date().getFullYear()}</p>
-        <p>Company registered in England &amp; Wales</p>
+        {/* Right margin keeps this line clear of Chloe's bottom-right launcher. */}
+        <p className="sm:mr-14">Company registered in England &amp; Wales</p>
       </div>
     </footer>
   );

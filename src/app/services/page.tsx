@@ -5,6 +5,30 @@ import { Reveal } from "@/components/ui/Reveal";
 import { AtmosphereLayer } from "@/components/ui/AtmosphereLayer";
 import { ProductCards } from "@/components/products/ProductCards";
 import { breadcrumbJsonLd, jsonLd, pageMetadata } from "@/lib/seo";
+import { BookCallLink } from "@/components/booking/BookCallLink";
+import { enquiryHref, formatFrom, serviceById, type ServiceId } from "@/data/pricing";
+
+/** Starting prices shown under each discipline (figures from src/data/pricing.ts). */
+const DISCIPLINE_PRICES: Record<string, [label: string, id: ServiceId][]> = {
+  apps: [
+    ["Custom web applications", "web-application"],
+    ["Android & iOS mobile apps", "mobile-app"],
+  ],
+  web: [["Premium websites", "premium-website"]],
+  systems: [["Business platforms & dashboards", "business-system"]],
+};
+
+function PriceLine({ label, id }: { label: string; id: ServiceId }) {
+  const service = serviceById(id)!;
+  return (
+    <li>
+      <Link href={`/pricing#${service.anchor}`} className="group inline-flex flex-wrap items-baseline gap-x-2 text-sm text-ink-muted transition-colors hover:text-ink">
+        {label}
+        <span className="mono whitespace-nowrap text-xs text-accent-cyan">{formatFrom(service.from)}</span>
+      </Link>
+    </li>
+  );
+}
 
 /** How a client project runs — mirrors the homepage process stages; no fixed timescales or guarantees. */
 const DELIVERY_STEPS = [
@@ -82,6 +106,11 @@ export default function ServicesPage() {
                 <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-muted">
                   {service.description}
                 </p>
+                <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-1.5" aria-label="Starting prices">
+                  {(DISCIPLINE_PRICES[service.slug] ?? []).map(([label, id]) => (
+                    <PriceLine key={id} label={label} id={id} />
+                  ))}
+                </ul>
               </div>
               <Link
                 href={`/services/${service.slug}`}
@@ -104,13 +133,29 @@ export default function ServicesPage() {
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-muted">
                 {flagshipService.description}
               </p>
-              <Link
-                href="/#ecosystem"
-                className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-accent-iris"
-              >
-                See the ecosystem model
-                <span aria-hidden="true">→</span>
-              </Link>
+              <p className="mt-4 flex items-baseline gap-2">
+                <span className="mono text-[11px] uppercase tracking-[0.2em] text-accent-iris">From</span>{" "}
+                <span className="font-display text-2xl font-bold text-ink">
+                  {formatFrom(serviceById("complete-ecosystem")!.from).replace("From ", "")}
+                </span>
+                <span className="text-xs text-ink-muted">for an agreed, defined scope</span>
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+                <Link
+                  href={enquiryHref(["complete-ecosystem"])}
+                  className="inline-flex items-center gap-2 rounded-full border border-accent-iris/40 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-accent-iris hover:text-accent-iris"
+                >
+                  Plan Your Ecosystem
+                  <span aria-hidden="true">→</span>
+                </Link>
+                <Link
+                  href="/#ecosystem"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-accent-iris"
+                >
+                  See the ecosystem model
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </div>
             </Reveal>
           </div>
         </div>
@@ -142,6 +187,16 @@ export default function ServicesPage() {
                 Every project is scoped and quoted individually. Start with a short brief — no technical specification
                 needed — and we’ll discuss what you need before recommending an approach and a quote.
               </p>
+              <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2">
+                <Link href="/pricing" className="inline-flex items-center gap-2 text-sm font-semibold text-accent-cyan">
+                  View starting prices
+                  <span aria-hidden="true">→</span>
+                </Link>
+                <BookCallLink event="intro" className="inline-flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-accent-cyan">
+                  Book a 15-minute call
+                  <span aria-hidden="true">→</span>
+                </BookCallLink>
+              </div>
             </div>
             <Link
               href="/start-a-project"

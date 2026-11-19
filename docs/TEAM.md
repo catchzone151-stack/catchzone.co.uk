@@ -42,4 +42,8 @@ headcounts or `Person` structured data. Daniel Reed, Maya Khan and Oliver
 Bennett are disclosed on the page as CatchZone's digital specialist identities;
 artwork is labelled as stylised, not photographic.
 
+Chloe's guided-assistant avatar (`public/team/chloe-avatar-{dark,light}.webp`, 128 px) is a
+head-and-shoulders crop of her approved portrait files — cropped and resized only, never
+regenerated. See `docs/BOOKING_AND_CHLOE.md`.
+
 Tests: `npm run test:team`; `node scripts/team/qa-browser.mjs`.

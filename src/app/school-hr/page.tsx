@@ -7,6 +7,8 @@ import { RolePerspectives } from "@/components/school-hr/RolePerspectives";
 import { SchoolHrPricing } from "@/components/school-hr/SchoolHrPricing";
 import { ModuleExplorer } from "@/components/school-hr/ModuleExplorer";
 import { SchoolHrEnquiryForm } from "@/components/school-hr/SchoolHrEnquiryForm";
+import { BookCallLink } from "@/components/booking/BookCallLink";
+import { isBookable } from "@/data/booking";
 import { Reveal } from "@/components/ui/Reveal";
 import { CAPABILITIES, FAQS } from "@/data/schoolHr";
 import { jsonLd, pageMetadata } from "@/lib/seo";
@@ -274,6 +276,16 @@ export default function SchoolHrPage() {
                   </a>
                 </dd>
               </div>
+              {isBookable("school-hr-demo") && (
+                <div>
+                  <dt className="mono text-[11px] uppercase tracking-[0.2em] text-ink-faint">Book online</dt>
+                  <dd className="mt-1">
+                    <BookCallLink event="school-hr-demo" className="text-ink transition-colors hover:text-accent-cyan">
+                      20-minute School HR demonstration <span aria-hidden="true">→</span>
+                    </BookCallLink>
+                  </dd>
+                </div>
+              )}
               <div>
                 <dt className="mono text-[11px] uppercase tracking-[0.2em] text-ink-faint">Company</dt>
                 <dd className="mt-1 text-ink-muted">CatchZone School HR — a product by CatchZone Ltd.</dd>

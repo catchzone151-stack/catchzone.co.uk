@@ -6,11 +6,16 @@ export interface NavLink {
   href: string;
 }
 
-/** Main navigation: Services | Products | Work | About. Products also opens a menu. */
-export const primaryNav: (NavLink & { menu?: "products" })[] = [
+/**
+ * Main navigation: Services | Products | Work | Pricing | About. Products also
+ * opens a menu. `wideOnly` links join the desktop pill from 1024px, where there
+ * is room beside the logo and Start a Project; they're always in the mobile menu.
+ */
+export const primaryNav: (NavLink & { menu?: "products"; wideOnly?: boolean })[] = [
   { label: "Services", href: "/services" },
   { label: "Products", href: "/products", menu: "products" },
   { label: "Work", href: "/work" },
+  { label: "Pricing", href: "/pricing", wideOnly: true },
   { label: "About", href: "/about" },
 ];
 
@@ -38,6 +43,7 @@ export const footerColumns: { title: string; links: NavLink[] }[] = [
     title: "Company",
     links: [
       { label: "Work", href: "/work" },
+      { label: "Pricing", href: "/pricing" },
       { label: "About", href: "/about" },
       { label: "Careers", href: "/careers" },
       { label: "Privacy", href: "/privacy" },

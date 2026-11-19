@@ -1,5 +1,7 @@
 import { VoiceEnquiryForm } from "@/components/voice/VoiceEnquiryForm";
 import { VoiceIntentButton } from "@/components/voice/VoiceIntentButton";
+import { BookCallLink } from "@/components/booking/BookCallLink";
+import { isBookable } from "@/data/booking";
 
 /** Consistent bottom contact section for every CatchZone Voice page. */
 export function VoiceContact() {
@@ -50,6 +52,16 @@ export function VoiceContact() {
                 </a>
               </dd>
             </div>
+            {isBookable("voice-demo") && (
+              <div>
+                <dt className="mono text-[11px] uppercase tracking-[0.2em] text-ink-faint">Book online</dt>
+                <dd className="mt-1">
+                  <BookCallLink event="voice-demo" className="text-ink transition-colors hover:text-accent-cyan">
+                    20-minute Voice demonstration <span aria-hidden="true">→</span>
+                  </BookCallLink>
+                </dd>
+              </div>
+            )}
             <div>
               <dt className="mono text-[11px] uppercase tracking-[0.2em] text-ink-faint">Company</dt>
               <dd className="mt-1 text-ink-muted">CatchZone Voice — a product by CatchZone Ltd.</dd>

@@ -55,7 +55,8 @@ smoke-test, then redeploy. Rollback: revert the one line and redeploy.
 
 ## Forms
 
-All four enquiry routes (Start a Project, Voice, School HR, Careers) share:
+All five enquiry routes (Start a Project, Voice, School HR, Careers and, since 19 Nov 2026,
+Chloe at `/api/chloe/enquiry`) share:
 JSON-only + same-origin guard (`formRequestGuard`), hidden honeypot `cz_hp`,
 strict field whitelisting/length limits, CR/LF stripping for header-bound values,
 HTML escaping in email bodies, a fixed recipient (`info@catchzone.co.uk`),
@@ -69,4 +70,8 @@ instance counts separately and limits reset on scale-down. Adequate for current
 volume; a shared store (e.g. Upstash Redis) would be needed for a hard global cap.
 
 Mocked tests (no email is sent): `npm test` — Voice 38, School HR 16, Careers 14,
-Team/content 7, Start a Project 9.
+Team/content 7, Start a Project 11, Chloe 15.
+
+Cal.com (19 Nov 2026): the report-only CSP also allows `https://app.cal.com` (script,
+connect, frame) and `https://cal.com` (frame) for the booking popup, which loads only when
+a booking button is clicked. Booking links are public paths, not credentials.

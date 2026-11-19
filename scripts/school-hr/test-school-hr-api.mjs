@@ -202,8 +202,10 @@ await test("no forbidden claims in School HR content (payroll engine, EPM/IRIS, 
   assert.ok(text.includes("not a payroll system"));
 });
 
-await test("main navigation is Services | Products | Work | About, with both products", () => {
-  assert.deepEqual(nav.primaryNav.map((l) => l.label), ["Services", "Products", "Work", "About"]);
+await test("main navigation is Services | Products | Work | Pricing | About, with both products", () => {
+  assert.deepEqual(nav.primaryNav.map((l) => l.label), ["Services", "Products", "Work", "Pricing", "About"]);
+  // Pricing joins the desktop pill only where it fits (≥1024 px); always in the mobile menu.
+  assert.equal(nav.primaryNav.find((l) => l.label === "Pricing").wideOnly, true);
   assert.deepEqual(products.products.map((p) => p.href), ["/voice", "/school-hr"]);
   assert.ok(products.isProductsPath("/voice/languages") && products.isProductsPath("/school-hr") && products.isProductsPath("/products"));
   assert.ok(!products.isProductsPath("/services"));
@@ -216,7 +218,7 @@ await test("footer columns: Services (3 + flagship), Products, Company", () => {
   assert.equal(svc.links[3].label, "Complete Digital Ecosystems");
   assert.equal(prod.title, "Products");
   assert.deepEqual(prod.links.slice(0, 2).map((l) => l.href), ["/voice", "/school-hr"]);
-  assert.deepEqual(company.links.map((l) => l.href), ["/work", "/about", "/careers", "/privacy"]);
+  assert.deepEqual(company.links.map((l) => l.href), ["/work", "/pricing", "/about", "/careers", "/privacy"]);
 });
 
 globalThis.fetch = realFetch;

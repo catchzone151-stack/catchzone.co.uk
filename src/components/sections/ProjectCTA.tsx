@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useMotionValue, useTransform } from "motion/react";
 import { Reveal } from "@/components/ui/Reveal";
 import { MagneticLink } from "@/components/ui/MagneticLink";
+import { BookCallLink } from "@/components/booking/BookCallLink";
 
 const LINES = [
   { x1: "6%", y1: "10%", color: "#5eead4", delay: 0 },
@@ -104,6 +105,14 @@ export function ProjectCTA() {
             Start a Project
           </MagneticLink>
         </div>
+        {/* Secondary: renders only once the Cal.com introductory call is configured. */}
+        <BookCallLink
+          event="intro"
+          className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-ink-muted transition-colors hover:text-ink"
+        >
+          or book a 15-minute call
+          <span aria-hidden="true">→</span>
+        </BookCallLink>
       </Reveal>
     </section>
   );

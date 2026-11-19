@@ -12,12 +12,15 @@ import { PHASE_DEVELOPMENT_SERVER } from "next/constants.js";
  */
 const CSP_REPORT_ONLY = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  // Cal.com booking popup: embed.js is loaded only when a booking button is clicked.
+  "script-src 'self' 'unsafe-inline' https://app.cal.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
   // CatchZone Voice demo: Soniox real-time STT/TTS (US and regional endpoints).
-  "connect-src 'self' https://*.soniox.com wss://*.soniox.com",
+  "connect-src 'self' https://*.soniox.com wss://*.soniox.com https://app.cal.com",
+  // Cal.com booking popup (iframe).
+  "frame-src 'self' https://app.cal.com https://cal.com",
   "media-src 'self' blob: data:",
   "worker-src 'self' blob:",
   "object-src 'none'",

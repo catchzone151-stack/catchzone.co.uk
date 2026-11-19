@@ -1,11 +1,13 @@
 import {
   budgetOptions,
   buildTypeOptions,
+  legacyBuildTypeOptions,
   priorityOptions,
   startingPointOptions,
   type ConfigOption,
   type ProjectBrief,
 } from "@/data/project-config";
+import { combinationName, findCombination, formatFrom, serviceById } from "@/data/pricing";
 
 /**
  * Formats a validated Start a Project brief as the notification email sent
@@ -31,8 +33,13 @@ interface Row {
 }
 
 function sections(brief: ProjectBrief) {
+  const combo = brief.combination ? findCombination(brief.combination) : undefined;
+  const service = serviceById(brief.buildType);
+  const buildValue = combo
+    ? `${combinationName(combo)} — combined build (${formatFrom(combo.from)})`
+    : `${labelFor([...buildTypeOptions, ...legacyBuildTypeOptions], brief.buildType)}${service ? ` (${formatFrom(service.from)})` : ""}`;
   const project: Row[] = [
-    { label: "1. What are we building?", value: labelFor(buildTypeOptions, brief.buildType) },
+    { label: "1. What are we building?", value: buildValue },
     { label: "2. Where are you now?", value: labelFor(startingPointOptions, brief.startingPoint) },
     {
       label: "3. What matters most?",
@@ -53,13 +60,14 @@ function sections(brief: ProjectBrief) {
 
 export function buildProjectBriefEmail(brief: ProjectBrief, submittedAt: Date) {
   const { project, contact } = sections(brief);
+  const combo = brief.combination ? findCombination(brief.combination) : undefined;
   const when = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "full",
     timeStyle: "short",
     timeZone: "Europe/London",
   }).format(submittedAt);
 
-  const subject = `New project brief: ${brief.name}${brief.company ? ` (${brief.company})` : ""}`;
+  const subject = `New project brief: ${brief.name}${brief.company ? ` (${brief.company})` : ""}${combo ? ` — ${combinationName(combo)}` : ""}`;
 
   const text = [
     "New Start a Project submission from catchzone.co.uk",

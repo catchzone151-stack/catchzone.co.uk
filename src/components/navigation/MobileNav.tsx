@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { primaryNav, primaryCta } from "@/data/navigation";
 import { products, isProductsPath } from "@/data/products";
 import { ProductLogo } from "@/components/brand/ProductLogo";
+import { BookCallLink } from "@/components/booking/BookCallLink";
 
 interface MobileNavProps {
   open: boolean;
@@ -186,6 +187,13 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
             >
               {primaryCta.label}
             </Link>
+            <BookCallLink
+              event="intro"
+              onOpen={onClose}
+              className="mt-1 rounded-full px-5 py-3 text-center text-base font-semibold text-ink-muted transition-colors hover:text-ink"
+            >
+              Book a Call
+            </BookCallLink>
           </nav>
         </motion.div>
       )}

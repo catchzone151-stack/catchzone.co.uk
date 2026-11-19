@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   buildTypeOptions,
@@ -10,6 +10,7 @@ import {
   type ConfigOption,
   type ProjectBrief,
 } from "@/data/project-config";
+import { combinationName, findCombination, formatFrom, type Combination } from "@/data/pricing";
 
 type SubmitState =
   | { status: "idle" }
@@ -27,10 +28,28 @@ function newSubmissionId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
+/**
+ * Pricing deep links: `?service=premium-website` preselects one service;
+ * `?service=premium-website,mobile-app` preselects an approved combination.
+ * Unknown values are ignored, so the form simply starts empty.
+ */
+function readServiceParam(): { buildType: string; combination: Combination | null } | null {
+  if (typeof window === "undefined") return null;
+  const raw = new URLSearchParams(window.location.search).get("service");
+  if (!raw) return null;
+  const ids = raw.split(",").map((id) => id.trim()).filter(Boolean).slice(0, 2);
+  if (ids.length === 2) {
+    const combination = findCombination(ids);
+    return combination ? { buildType: combination.services[0], combination } : null;
+  }
+  return buildTypeOptions.some((o) => o.id === ids[0]) ? { buildType: ids[0]!, combination: null } : null;
+}
+
 function buildMailto(brief: ProjectBrief) {
   const subject = `Project brief — ${brief.name}${brief.company ? ` (${brief.company})` : ""}`;
+  const combo = brief.combination ? findCombination(brief.combination) : undefined;
   const body = [
-    `Build type: ${labelFor(buildTypeOptions, brief.buildType)}`,
+    `Build type: ${combo ? `${combinationName(combo)} (combined build)` : labelFor(buildTypeOptions, brief.buildType)}`,
     `Starting point: ${labelFor(startingPointOptions, brief.startingPoint)}`,
     `Priorities: ${brief.priorities.map((id) => labelFor(priorityOptions, id)).join(", ")}`,
     `Budget: ${labelFor(budgetOptions, brief.budget)}`,
@@ -93,6 +112,8 @@ function OptionGrid({
 export function ProjectConfigurator() {
   const [step, setStep] = useState(0);
   const [buildType, setBuildType] = useState("");
+  // A "Better Together" combination chosen on /pricing (two services).
+  const [combination, setCombination] = useState<Combination | null>(null);
   const [startingPoint, setStartingPoint] = useState("");
   const [priorities, setPriorities] = useState<string[]>([]);
   const [budget, setBudget] = useState("");
@@ -109,6 +130,19 @@ export function ProjectConfigurator() {
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const headingRef = useRef<HTMLHeadingElement>(null);
+
+  // Preselect from a Pricing CTA. Read after hydration so the page stays static.
+  useEffect(() => {
+    const preset = readServiceParam();
+    if (!preset) return;
+    setBuildType(preset.buildType);
+    setCombination(preset.combination);
+  }, []);
+
+  function selectBuildType(id: string) {
+    setCombination(null);
+    setBuildType(id);
+  }
 
   function goTo(nextStep: number) {
     setStep(nextStep);
@@ -135,6 +169,7 @@ export function ProjectConfigurator() {
     priorities,
     budget,
     ...contact,
+    ...(combination ? { combination: [...combination.services] } : {}),
   };
 
   function validateContact(): Record<string, string> {
@@ -236,10 +271,19 @@ export function ProjectConfigurator() {
               <div className="mt-6">
                 <OptionGrid
                   options={buildTypeOptions}
-                  selected={buildType ? [buildType] : []}
-                  onSelect={setBuildType}
+                  selected={combination ? [...combination.services] : buildType ? [buildType] : []}
+                  onSelect={selectBuildType}
                 />
               </div>
+              {combination && (
+                <p className="mt-4 text-sm leading-relaxed text-ink-muted" role="status">
+                  Combined build: <span className="font-semibold text-ink">{combinationName(combination)}</span>{" "}
+                  <span className="mono text-xs text-accent-cyan">{formatFrom(combination.from)}</span>
+                  <span className="block text-xs text-ink-faint">
+                    Choose a single option above to change it.
+                  </span>
+                </p>
+              )}
             </div>
           )}
 

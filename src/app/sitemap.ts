@@ -12,10 +12,11 @@ const siteUrl = "https://catchzone.co.uk";
  */
 const staticRoutes: [route: string, lastModified: string][] = [
   ["", "2026-11-14"],
-  ["/services", "2026-11-16"],
+  ["/services", "2026-11-19"],
   ["/services/apps", "2026-09-10"],
   ["/services/web", "2026-09-10"],
   ["/services/systems", "2026-09-10"],
+  ["/pricing", "2026-11-19"],
   ["/products", "2026-11-15"],
   ["/voice", "2026-11-15"],
   ["/voice/languages", "2026-11-14"],
@@ -24,8 +25,8 @@ const staticRoutes: [route: string, lastModified: string][] = [
   ["/work", "2026-10-06"],
   ["/about", "2026-09-10"],
   ["/careers", "2026-11-15"],
-  ["/start-a-project", "2026-09-10"],
-  ["/privacy", "2026-11-15"],
+  ["/start-a-project", "2026-11-19"],
+  ["/privacy", "2026-11-19"],
 ];
 
 /** Case studies and showcase systems: last content change in projects.ts / showcase.ts. */

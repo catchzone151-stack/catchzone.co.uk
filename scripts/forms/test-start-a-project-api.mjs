@@ -133,6 +133,41 @@ await test("missing / invalid fields → 400 missing_fields, nothing sent", asyn
   assert.equal(fetchCalls.length, 0);
 });
 
+await test("pricing deep links: new step-1 ids accepted; legacy 'web-platform' still accepted and labelled", async () => {
+  setEnv({ RESEND_API_KEY: "re_test_key" });
+  resendOk();
+  for (const [buildType, label] of [
+    ["premium-website", "Premium Website (From £3,500)"],
+    ["web-application", "Web Application (From £4,000)"],
+    ["mobile-app", "Android & iOS Mobile App (From £4,000)"],
+    ["business-system", "Business Platform (From £6,200)"],
+    ["complete-ecosystem", "Complete Digital Ecosystem (From £18,000)"],
+    ["not-sure", "Not Sure Yet"],
+    ["web-platform", "Web Platform"],
+  ]) {
+    fetchCalls = [];
+    const res = await route.POST(req({ ...valid, buildType }));
+    assert.equal(res.status, 200, buildType);
+    assert.ok(fetchCalls[0].body.text.includes(`1. What are we building?: ${label}`), `${buildType}: ${fetchCalls[0].body.text.split("\n")[3]}`);
+  }
+});
+
+await test("combination: an approved pair is included in subject and body; unapproved/mismatched pairs are dropped", async () => {
+  setEnv({ RESEND_API_KEY: "re_test_key" });
+  resendOk();
+  await route.POST(req({ ...valid, buildType: "premium-website", combination: ["premium-website", "mobile-app"] }));
+  let body = fetchCalls[0].body;
+  assert.ok(body.subject.endsWith("— Premium Website + Android & iOS App"), body.subject);
+  assert.ok(body.text.includes("Premium Website + Android & iOS App — combined build (From £7,200)"));
+  for (const combination of [["premium-website", "complete-ecosystem"], ["mobile-app", "business-system"], ["x", "y", "z"], "premium-website,mobile-app"]) {
+    fetchCalls = [];
+    await route.POST(req({ ...valid, buildType: "premium-website", combination }));
+    body = fetchCalls[0].body;
+    assert.ok(!/combined build/.test(body.text), JSON.stringify(combination));
+    assert.ok(body.text.includes("Premium Website (From £3,500)"));
+  }
+});
+
 await test("non-JSON content type → 415; malformed JSON → 400; cross-site request → 403", async () => {
   setEnv({ RESEND_API_KEY: "re_test_key" });
   assert.equal((await route.POST(req(valid, { "content-type": "text/plain" }))).status, 415);

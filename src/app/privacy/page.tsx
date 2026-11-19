@@ -15,7 +15,7 @@ export default function PrivacyPage() {
           CatchZone – Privacy Policy
         </h1>
         <p className="mt-3 text-sm text-ink-muted">
-          Effective Date: 1 January 2026 · Last updated: 15 November 2026
+          Effective Date: 1 January 2026 · Last updated: 19 November 2026
         </p>
 
         <div className="prose-privacy mt-10 space-y-6 text-sm leading-relaxed text-ink-muted [&_h2]:mt-10 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-ink [&_li]:ml-5 [&_li]:list-disc [&_strong]:text-ink">
@@ -103,6 +103,21 @@ export default function PrivacyPage() {
             interest does not mean a vacancy exists. We keep these details
             only as long as needed to reply and, if you agree, to contact you
             about relevant opportunities — and delete them on request.
+          </p>
+          <p>
+            When you leave your details with Chloe, the guided assistant on
+            this website, we collect your name, email address, what you need
+            help with and the service you were asking about, plus the page you
+            were on and any optional phone number, preferred timescale or
+            indicative budget you choose to add. Chloe is a scripted assistant:
+            the questions you type are matched against prepared answers in your
+            browser and are not sent or saved unless you submit your details.
+          </p>
+          <p>
+            If you book a call, the booking calendar is provided by Cal.com. It
+            loads only when you choose to open it, and the details you enter in
+            the booking form are collected by Cal.com and shared with CatchZone
+            to arrange and confirm the call.
           </p>
           <p>
             We use this information solely to respond to your enquiry and
@@ -201,8 +216,8 @@ export default function PrivacyPage() {
           <p>
             Data may be shared only with service providers required to
             operate the apps and this website (such as Supabase for backend
-            services, Resend for delivering website enquiries, Soniox for the
-            CatchZone Voice live demo, or app stores for payments), or if
+            services, Resend for delivering website enquiries, Cal.com for
+            booking calls, Soniox for the CatchZone Voice live demo, or app stores for payments), or if
             required by law.
           </p>
           <p>CatchZone applications do not use third-party advertising networks.</p>

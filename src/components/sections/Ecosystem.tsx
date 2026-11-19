@@ -49,13 +49,22 @@ export function Ecosystem() {
               </li>
             ))}
           </ul>
-          <Link
-            href="/services"
-            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent-iris"
-          >
-            Explore this capability
-            <span aria-hidden="true">→</span>
-          </Link>
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2">
+            <Link
+              href="/services"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-accent-iris"
+            >
+              Explore this capability
+              <span aria-hidden="true">→</span>
+            </Link>
+            <Link
+              href="/pricing"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-ink-muted transition-colors hover:text-ink"
+            >
+              See pricing
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
         </Reveal>
 
         <EcosystemDiagram compact converge={["Apps", "Web", "Systems"]} />

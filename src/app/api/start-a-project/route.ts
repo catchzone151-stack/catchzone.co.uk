@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import {
   buildTypeOptions,
+  legacyBuildTypeOptions,
   startingPointOptions,
   priorityOptions,
   budgetOptions,
   type ProjectBrief,
 } from "@/data/project-config";
 import { buildProjectBriefEmail } from "@/lib/email/projectBriefEmail";
+import { findCombination } from "@/data/pricing";
 import { clientIp, formRequestGuard } from "@/lib/email/inboxDelivery";
 
 /**
@@ -37,7 +39,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FROM_RE = /^(?:[^<>\r\n]{1,80} <)?[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+>?$/;
 const SUBMISSION_ID_RE = /^[A-Za-z0-9-]{8,64}$/;
 
-const VALID_BUILD_TYPES = new Set(buildTypeOptions.map((o) => o.id));
+const VALID_BUILD_TYPES = new Set([...buildTypeOptions, ...legacyBuildTypeOptions].map((o) => o.id));
 const VALID_STARTING_POINTS = new Set(startingPointOptions.map((o) => o.id));
 const VALID_PRIORITIES = new Set(priorityOptions.map((o) => o.id));
 const VALID_BUDGETS = new Set(budgetOptions.map((o) => o.id));
@@ -124,6 +126,16 @@ export async function POST(request: Request) {
     phone: cleanLine(raw.phone, MAX_LEN.phone),
     description: typeof raw.description === "string" ? raw.description.trim().slice(0, MAX_LEN.description) : "",
   };
+
+  // Optional "Better Together" combination: only an approved pair is kept,
+  // and the build type must be one of its two services.
+  if (Array.isArray(raw.combination) && raw.combination.length === 2) {
+    const ids = raw.combination.filter((id): id is string => typeof id === "string");
+    const combo = findCombination(ids);
+    if (combo && combo.services.includes(brief.buildType as (typeof combo.services)[number])) {
+      brief.combination = [...combo.services];
+    }
+  }
 
   // Every one of the five steps is required by the form; reject anything that skipped them.
   if (
