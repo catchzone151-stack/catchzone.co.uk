@@ -6,6 +6,10 @@ run = "npm run dev"
 localPort = 3000
 externalPort = 80
 
+[[ports]]
+localPort = 3001
+externalPort = 3001
+
 [deployment]
 deploymentTarget = "autoscale"
 build = ["npm", "run", "build"]
@@ -13,3 +17,8 @@ run = ["npm", "run", "start"]
 
 [agent]
 expertMode = true
+
+[userenv]
+
+[userenv.production]
+VOICE_DEMO_SPEND_CONTROLS_CONFIRMED = "true"
